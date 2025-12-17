@@ -1,0 +1,15 @@
+<h2 class="titulo">Agregar Origen Alarma</h2>
+<mat-dialog-content>
+
+   <!-- Nombre -->
+      <mat-form-field appearance="outline">
+        <mat-label>Origen</mat-label>
+        <input matInput [(ngModel)]="nombre" name="nombre" required placeholder="Ingrese el nombre del origen">
+      </mat-form-field>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="guardarOrigen()">Guardar</button>
+</mat-dialog-actions>

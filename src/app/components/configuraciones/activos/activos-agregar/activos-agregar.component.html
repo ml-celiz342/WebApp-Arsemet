@@ -1,0 +1,30 @@
+<h2 class="titulo">{{ isEditMode ? 'Editar Activo' : 'Agregar Activo' }}</h2>
+<mat-dialog-content>
+
+   <!-- Código Interno -->
+      <mat-form-field appearance="outline">
+        <mat-label>Código Interno</mat-label>
+        <input matInput [(ngModel)]="codigoInterno" name="codigoInterno" required placeholder="Ingrese el código interno">
+      </mat-form-field>
+
+       <!-- Observación -->
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Observación</mat-label>
+        <textarea matInput [(ngModel)]="observacion" name="observacion" placeholder="Ingrese una observación"></textarea>
+      </mat-form-field>
+
+      <!-- Tipo de Activo -->
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Tipo de Activo</mat-label>
+        <mat-select [(ngModel)]="tipoActivo" name="tipoActivo" required>
+          <mat-option *ngFor="let tipo of tiposActivos" [value]="tipo.id">
+            {{ tipo.nombre }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="guardarActivo()">Guardar</button>
+</mat-dialog-actions>

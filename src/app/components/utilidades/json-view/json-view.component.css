@@ -1,0 +1,25 @@
+.json-card {
+  margin: 20px;
+  padding: 10px;
+  max-height: 400px;
+  overflow: auto;
+}
+
+.json-container {
+  background-color: #f4f4f4;
+  padding: 10px;
+  border-radius: 4px;
+  white-space: pre-wrap;
+  /* Para manejar saltos de línea */
+  word-wrap: break-word;
+  /* Para manejar palabras largas */
+}
+
+mat-card-header {
+  color: #000000;
+}
+
+mat-card-title {
+  font-size: 18px;
+  font-weight: bold;
+}

@@ -1,0 +1,102 @@
+<div class="kpi-contenedor">
+
+  <div class="kpi-contenedor-filtro">
+    <mat-card class="mat-card-custom mat-elevation-z4">
+      <div class="filtro-header">
+        <span class="filtro-texto">
+          <strong>Filtro de datos:</strong>
+          {{ range.start | date : "dd/MM/yyyy HH:mm:ss" }} -
+          {{ range.end | date : "dd/MM/yyyy HH:mm:ss" }} | Activo:
+          {{ selectedAsset.code }}
+        </span>
+
+        <div class="filtro-botones">
+
+          <div class="spinner-wrapper">
+            <mat-spinner *ngIf="cargando" class="spinner-mini"></mat-spinner>
+          </div>
+
+          <button mat-icon-button matTooltip="Recargar" (click)="recargar()">
+            <mat-icon>refresh</mat-icon>
+          </button>
+
+          <button mat-icon-button matTooltip="Aplicar filtros" (click)="openDialog()">
+            <mat-icon>filter_list</mat-icon>
+          </button>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+
+
+  <!-- COMPONENTE PRINCIPAL -->
+  <!-- SE MUESTRA PARA EVIDENCIA POWER -->
+  <div *ngFor="let e of evidenciasPower" class="fila-maquina">
+
+    <!-- IZQUIERDA -->
+    <div class="columna-izquierda">
+      <mat-card class="mat-card-custom mat-elevation-z4 grafico-maquina">
+        <div class="titulo-maquina">
+          {{ e.code }}
+        </div>
+
+        <div class="kpi-potencia-grafico-element">
+          <app-grafico-potencia
+            [evidencia]="e"
+            [unidad]="'W'"
+            [titulo]="'Potencia por fases'">
+          </app-grafico-potencia>
+        </div>
+      </mat-card>
+    </div>
+
+    <!-- DERECHA -->
+    <div class="columna-derecha">
+      <mat-card class="mat-card-custom mat-elevation-z4 kpi-potencia-card">
+
+        <div class="kpi-totalizador-superior">
+          <mat-card class="mat-card-custom totalizador-card">
+            <div class="titulo-totalizador">
+              Potencia total
+            </div>
+            <div class="circulo-valor">
+              {{ e.total_consumption | number:'1.2-2' }} <br>
+              kWh
+            </div>
+          </mat-card>
+
+          <div class="division-vertical"></div>
+
+          <mat-card class="mat-card-custom totalizador-card">
+            <div class="titulo-totalizador">
+              Consumo reactivo total
+            </div>
+            <div class="circulo-valor">
+              {{ e.total_reactive_consumption | number:'1.2-2' }} <br>
+              kVArh
+            </div>
+          </mat-card>
+        </div>
+
+        <div class="division-totalizadores-horizontal"></div>
+
+        <div class="kpi-totalizador-inferior">
+          <mat-card class="mat-card-custom totalizador-card-full">
+            <div class="kpi-potencia-grafico-element">
+
+              <app-grafico-potencia-por-dia
+                [evidencia]="e"
+                [titulo]="'kWh por día'">
+              </app-grafico-potencia-por-dia>
+
+            </div>
+          </mat-card>
+        </div>
+
+      </mat-card>
+    </div>
+
+  </div>
+
+</div>
+

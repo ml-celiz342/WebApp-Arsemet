@@ -1,0 +1,30 @@
+<h2 class="titulo">Vincular activo con grupos</h2>
+<mat-dialog-content>
+
+      <!-- Activo -->
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Activo</mat-label>
+        <mat-select [(ngModel)]="selectActivo" name="selectActivo" required>
+          <mat-option *ngFor="let activo of activos" [value]="activo.id">
+            {{ activo.code }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Sub Activos -->
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Sub activo</mat-label>
+        <mat-select [(ngModel)]="selectSubActivo" name="selectSubActivos" required>
+          <mat-option *ngFor="let sub_activo of sub_activos" [value]="sub_activo.id">
+            {{ sub_activo.code }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="guardarVinculacion()">Guardar</button>
+</mat-dialog-actions>
+

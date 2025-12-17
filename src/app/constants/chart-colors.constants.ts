@@ -1,0 +1,15 @@
+export const CHART_COLORS = {
+  BASE: '#3784c5',
+  LIGHT_1: '#E3F1FB',
+  LIGHT_2: '#A9D0F0',
+  DARK_1: '#2F6DA4',
+  DARK_2: '#1E4D75',
+
+  COMPLEMENTARY: '#F5A25D',
+  SUCCESS: '#48C57A',
+  WARNING: '#F9D976',
+  ERROR: '#E57373',
+
+  TEXT_LIGHT: '#FFFFFF',
+  TEXT_DARK: '#1A1A1A',
+};

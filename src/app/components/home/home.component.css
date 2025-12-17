@@ -1,0 +1,93 @@
+.section-title {
+  font-size: 21px;
+  font-weight: 400;
+  margin: 0;
+  line-height: 40px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-align: center;
+}
+
+.card-list {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  /* Agrega espacio uniforme entre las cards */
+}
+
+.menu-card {
+  cursor: pointer;
+  margin: 10px;
+  width: 200px;
+  height: 150px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  /* Distribuye mejor el contenido */
+  align-items: center;
+  padding: 10px;
+  overflow: hidden;
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+.card-description {
+  font-size: 14px;
+  color: gray;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-height: 5em;
+  /* Limita la altura del texto */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  /* Máximo de 2 líneas */
+  -webkit-box-orient: vertical;
+}
+
+.menu-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+  transform: scale(1.05);
+}
+
+.icon-text-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  /* Permite que el texto pase a otra línea si es necesario */
+  text-align: center;
+}
+
+.card-title {
+  margin-left: 10px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100px;
+  /* Ajusta el ancho máximo del título */
+}
+
+/* RESPONSIVE: Ajuste en pantallas pequeñas */
+@media screen and (max-width: 768px) {
+  .menu-card {
+    width: 90%;
+    /* Ocupa casi todo el ancho en pantallas pequeñas */
+    height: auto;
+  }
+
+  .card-title {
+    max-width: 80%;
+    font-size: 16px;
+  }
+
+  .card-description {
+    font-size: 13px;
+    -webkit-line-clamp: 3;
+    /* Reduce a 2 líneas en pantallas pequeñas */
+  }
+}

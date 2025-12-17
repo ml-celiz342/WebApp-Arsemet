@@ -1,0 +1,66 @@
+<mat-toolbar color="primary" class="toolbar">
+  <button mat-icon-button (click)="toggleSidenav()" class="menu-icon">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <div class="toolbar-logo-container">
+    <img src="assets/Logo_synaptiq.png" alt="Company Logo" class="toolbar-logo" (click)="onLogoClick()"/>
+  </div>
+  <!--
+  <span class="toolbar-title">Plataforma de Monitoreo</span>
+  -->
+  <span class="spacer"></span>
+  <span class="user-name" *ngIf="!isMobile" >{{ userName }}</span>
+  <button mat-icon-button [matMenuTriggerFor]="menu" class="user-icon">
+    <mat-icon>account_circle</mat-icon>
+  </button>
+  <mat-menu #menu="matMenu">
+    <div class="menu-user-name" *ngIf="isMobile">
+      <mat-icon>person</mat-icon>
+      <span>{{ userName }}</span>
+    </div>
+    <button mat-menu-item (click)="cambiarClave()">
+      <mat-icon>key</mat-icon>
+      <span>Clave</span>
+    </button>
+    <button mat-menu-item (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      <span>Salir</span>
+    </button>
+  </mat-menu>
+</mat-toolbar>
+
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #sidenav mode="over" [(opened)]="isSidenavOpen" class="sidenav">
+    <div class="sidenav-content-container">
+      <div class="menu-container">
+        <mat-nav-list>
+          <mat-expansion-panel *ngFor="let section of filteredMenuSections">
+            <mat-expansion-panel-header>
+              <mat-icon>{{ section.icon || 'menu' }}</mat-icon>
+              <span>{{ section.title }}</span>
+            </mat-expansion-panel-header>
+
+            <a mat-list-item *ngFor="let item of section.items"
+              [routerLink]="item.route"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }">
+              <mat-icon matListIcon>{{ item.icon }}</mat-icon>
+              <span>{{ item.label }}</span>
+            </a>
+          </mat-expansion-panel>
+        </mat-nav-list>
+      </div>
+      <div class="logo-container">
+        <img src="assets/Logo_cliente.png" alt="Company Logo" class="logo" (click)="onLogoClick()"/>
+        <span class="copyright">Copyright&copy; {{ currentYear }}</span>
+      </div>
+    </div>
+  </mat-sidenav>
+
+  <!-- Contenido dinámico -->
+  <mat-sidenav-content>
+    <div class="content-general">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

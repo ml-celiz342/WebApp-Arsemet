@@ -1,0 +1,21 @@
+<h2 class="titulo">Historial configuración</h2>
+<mat-dialog-content>
+  <mat-accordion *ngIf="configs.length > 0">
+    <mat-expansion-panel *ngFor="let config of configs; let i = index" [expanded]="i === 0">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{ obtenerTitulo(config) | date: 'yyyy-MM-dd HH:mm:ss' }}
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <ul>
+        <li *ngFor="let key of getKeys(config)">
+          <strong>{{ key }}:</strong> {{ config[key] }}
+        </li>
+      </ul>
+    </mat-expansion-panel>
+  </mat-accordion>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancelar</button>
+</mat-dialog-actions>

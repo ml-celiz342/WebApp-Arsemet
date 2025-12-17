@@ -1,0 +1,185 @@
+.titulo-pagina {
+  font-size: 18px;
+  color: #333;
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+.definicion-contenedor{
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 24px;
+  row-gap: 10px;
+  padding-bottom: 24px;
+}
+
+.definicion-contenedor-filtro {
+  flex: 1 1 100%;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  text-align: center;
+}
+
+.definicion-contenedor-tabla,
+.origen-contenedor-tabla,
+.nivel-contenedor-tabla
+{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 500px;
+
+}
+
+.definicion-contenedor-tabla {
+  width: 100%
+}
+
+.origen-contenedor-tabla{
+  width: calc(25% - 12px)
+}
+
+.nivel-contenedor-tabla {
+  width: calc(75% - 12px)
+}
+
+.mat-card-custom {
+  padding: 0px;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: center;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+
+.filtro-header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.filtro-texto {
+  margin-left: 10px;
+  font-size: 14px;
+  flex-grow: 1;
+  color: #333;
+  text-align: left;
+  word-break: break-word;
+}
+
+.filtro-botones {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: 10px;
+}
+
+.table {
+  width: 100%;
+  background: transparent;
+}
+
+.table-wrapper {
+  flex-grow: 1;
+  overflow-y: auto;
+  overflow-x: auto;
+  overscroll-behavior: contain;
+  width: 100%;
+}
+
+.table-header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: #d8d8d8;
+}
+
+
+.definicion-contenedor-element,
+.origen-contenedor-element,
+.nivel-contenedor-element {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.acciones-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.editar-icono {
+  color: var(--color-dark-1);
+  cursor: pointer;
+}
+
+.eliminar-icono {
+  color: var(--color-error);
+  ;
+  cursor: pointer;
+}
+
+.agregar-icono {
+  color: #000000;
+  cursor: pointer;
+}
+
+/* Opcional: cambiar el color al hacer hover */
+.editar-icono:hover,
+.eliminar-icono:hover,
+.agregar-icono:hover {
+  opacity: 0.7;
+  /* Da un efecto visual al pasar el mouse */
+}
+
+mat-spinner {
+  width: 30px !important;
+  height: 30px !important;
+}
+
+mat-spinner.mostrar {
+  display: inline-block;
+}
+
+.table-paginator {
+  margin-top: 10px;
+  background: transparent;
+}
+
+@media (max-width: 768px) {
+
+  .definicion-contenedor-tabla {
+    width: 100%;
+    height: 500px;
+  }
+
+  .nivel-contenedor-tabla,
+  .origen-contenedor-tabla{
+    width: calc(50% - 12px);
+    height: 500px;
+  }
+
+  .filtro-texto {
+    text-align: center;
+    font-size: 12px;
+    word-wrap: break-word;
+  }
+
+  .filtro-botones {
+    justify-content: center;
+    width: 100%;
+    margin-right: 0;
+  }
+}

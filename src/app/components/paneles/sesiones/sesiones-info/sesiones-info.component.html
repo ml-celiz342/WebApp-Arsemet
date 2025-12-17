@@ -1,0 +1,66 @@
+<div class="container">
+<div class="support-requests-header">
+  <div class="support-requests-title">
+    {{ titulo }}
+  </div>
+  <mat-form-field appearance="outline">
+    <mat-label>Buscar</mat-label>
+    <input matInput (keyup)="applyFilter($event)" placeholder="Buscar" #input />
+  </mat-form-field>
+</div>
+
+<div class="table-container">
+  <div class="table-wrapper">
+    <table mat-table [dataSource]="dataSource" matSort class="table">
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</th>
+        <td class="table-body" mat-cell *matCellDef="let element">
+          <div class="customer-column-wrapper">
+            <mat-icon
+              class="customer-column-icon"
+              *ngIf="element.origen === 'MQTT'"
+              >sim_card</mat-icon
+            >
+            <mat-icon
+              class="customer-column-icon"
+              *ngIf="element.origen === 'API'"
+              >person</mat-icon
+            >
+            <p class="table-body-text">{{ element.name }}</p>
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="login_date">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Login</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.login_date | date : "dd/MM/yyyy HH:mm:ss" }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="logout_date">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Logout</th>
+        <td class="table-body" mat-cell *matCellDef="let element">
+          {{ element.logout_date | date : "dd/MM/yyyy HH:mm:ss" }}
+        </td>
+      </ng-container>
+
+      <tr
+        mat-header-row
+        *matHeaderRowDef="displayedColumnsInfo"
+        class="table-header"
+      ></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsInfo"></tr>
+    </table>
+  </div>
+  <mat-paginator
+    [length]="total"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="[5, 10, 20, 30, 100]"
+    (page)="onPageChange($event)"
+    showFirstLastButtons
+    class="table-paginator"
+  >
+  </mat-paginator>
+</div>
+</div>

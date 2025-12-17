@@ -1,0 +1,6 @@
+<h2 mat-dialog-title> {{ isReconocerMode ? "Reconocer registro" : isEliminarMode ? "Eliminar registro" : "Deshabilitar registro" }}</h2>
+<mat-dialog-content>¿Estás seguro de que deseas  {{ isReconocerMode ? "reconocer" : isEliminarMode ? "eliminar" : "deshabilitar" }} este registro?</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="cerrarDialogo(false)" >No</button>
+  <button mat-button (click)="cerrarDialogo(true)" cdkFocusInitial>Si</button>
+</mat-dialog-actions>

@@ -1,0 +1,13 @@
+<mat-dialog-content>
+  <app-leaflet-mapa
+    [puntos]="puntosMapa"
+    [punto_base]="puntoBaseMapa"
+    [zoom]="16"
+    [mostrarControlCapa]="false"
+    [fijarLabel]="true"
+  ></app-leaflet-mapa>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancelar</button>
+</mat-dialog-actions>

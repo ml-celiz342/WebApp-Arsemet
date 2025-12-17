@@ -1,0 +1,71 @@
+<h2 class="titulo">Cambiar contraseña</h2>
+<mat-dialog-content>
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Contraseña</mat-label>
+    <input
+      matInput
+      [type]="hideContrasenea() ? 'password' : 'text'"
+      [(ngModel)]="contrasenea"
+      name="contrasenea"
+      required
+      placeholder="Ingrese la contraseña"
+      (input)="validatePassword()"
+    />
+    <button
+      mat-icon-button
+      matSuffix
+      type="button"
+      (click)="clickEventHideContrasenea($event)"
+      [attr.aria-label]="'Ocultar contrasenea'"
+      [attr.aria-pressed]="hideContrasenea()"
+    >
+      <mat-icon>{{
+        hideContrasenea() ? "visibility_off" : "visibility"
+      }}</mat-icon>
+    </button>
+  </mat-form-field>
+
+  <ul *ngIf="validationErrors.length > 0" class="error-list">
+    <li *ngFor="let error of validationErrors" class="error">
+      {{ error }}
+    </li>
+  </ul>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Repetir contraseña</mat-label>
+    <input
+      matInput
+      [type]="hideRContrasenea() ? 'password' : 'text'"
+      [(ngModel)]="contraseneaR"
+      name="contraseneaR"
+      required
+      placeholder="Ingrese nuevamente la contraseña"
+    />
+    <button
+      mat-icon-button
+      matSuffix
+      type="button"
+      (click)="clickEventRHideContrasenea($event)"
+      [attr.aria-label]="'Ocultar contrasenea'"
+      [attr.aria-pressed]="hideRContrasenea()"
+    >
+      <mat-icon>{{
+        hideRContrasenea() ? "visibility_off" : "visibility"
+      }}</mat-icon>
+    </button>
+  </mat-form-field>
+
+  <div
+    *ngIf="contrasenea != '' && contraseneaR != contrasenea"
+    class="error-message"
+  >
+    <mat-icon>error</mat-icon> Las contraseñas no coinciden.
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="guardarContrasenea()">
+    Guardar
+  </button>
+</mat-dialog-actions>

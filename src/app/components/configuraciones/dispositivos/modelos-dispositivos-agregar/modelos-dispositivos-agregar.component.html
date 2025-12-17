@@ -1,0 +1,21 @@
+<h2 class="titulo">Agregar modelo dispositivo</h2>
+<mat-dialog-content>
+
+   <!-- Nombre -->
+      <mat-form-field appearance="outline">
+        <mat-label>Modelo</mat-label>
+        <input matInput [(ngModel)]="nombre" name="nombre" required placeholder="Ingrese el modelo de dispositivo">
+      </mat-form-field>
+
+   <!-- Template -->
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Template</mat-label>
+        <textarea matInput [(ngModel)]="template" name="template"  required placeholder="Ingrese la configuración"></textarea>
+      </mat-form-field>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="guardarModeloDispositivo()">Guardar</button>
+</mat-dialog-actions>

@@ -1,0 +1,22 @@
+<h2 class="titulo">Editar Nivel Alarma</h2>
+<mat-dialog-content>
+
+   <!-- Nombre -->
+      <mat-form-field appearance="outline">
+        <mat-label>Nombre</mat-label>
+        <input matInput [(ngModel)]="nombre"  [disabled]="true" name="nombre" required placeholder="Nombre nivel">
+      </mat-form-field>
+
+       <!-- Alias -->
+      <mat-form-field appearance="outline">
+        <mat-label>Acción</mat-label>
+        <input matInput [(ngModel)]="accion"  name="accion" required placeholder="Ingrese la acción">
+      </mat-form-field>
+
+
+    </mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="guardarAlarmLevel()">Guardar</button>
+</mat-dialog-actions>

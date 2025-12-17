@@ -1,0 +1,17 @@
+<h2 class="titulo">Agregar código de servicio</h2>
+<mat-dialog-content>
+
+   <!-- Nombre -->
+      <mat-form-field appearance="outline">
+        <mat-label>Servicio</mat-label>
+        <input matInput [(ngModel)]="nombre" name="nombre" required placeholder="Ingrese el codigo del servicio">
+      </mat-form-field>
+
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="guardarServiceCode()">Guardar</button>
+</mat-dialog-actions>
+

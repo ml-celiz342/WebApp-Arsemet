@@ -1,0 +1,162 @@
+<div class="kpi-contenedor">
+<div class="kpi-contenedor-filtro">
+  <mat-card class="mat-card-custom mat-elevation-z4">
+    <div class="filtro-header">
+      <span class="filtro-texto">
+        <strong>Filtro de datos:</strong>
+          {{ range.start | date : "dd/MM/yyyy HH:mm:ss" }} -
+          {{ range.end | date : "dd/MM/yyyy HH:mm:ss" }} | Activo:
+          {{ selectedAsset.code }}
+        </span>
+
+        <div class="filtro-botones">
+          <mat-spinner *ngIf="cargando" diameter="30"></mat-spinner>
+
+        <button mat-icon-button matTooltip="Recargar" (click)="recargar()">
+          <mat-icon>refresh</mat-icon>
+        </button>
+
+        <button mat-icon-button matTooltip="Aplicar filtros" (click)="openDialog()">
+          <mat-icon>filter_list</mat-icon>
+        </button>
+      </div>
+    </div>
+  </mat-card>
+</div>
+
+<div class="kpi-grid">
+
+  <!-- ESTADOS DE MÁQUINA -->
+  <mat-card class="card">
+    <h3>Distribución de Estados</h3>
+    <apx-chart
+      [series]="chartEstados.series!"
+      [chart]="chartEstados.chart!"
+      [labels]="chartEstados.labels!"
+      [colors]="chartEstados.colors!"
+      [dataLabels]="chartEstados.dataLabels!"
+      [legend]="chartEstados.legend!">
+    </apx-chart>
+  </mat-card>
+
+  <!-- RADIAL UTILIZACION
+  <mat-card class="card radial-chart">
+    <h3>Tasa de Utilización (%)</h3>
+    <apx-chart
+      [series]="chartUtilizacion.series!"
+      [chart]="chartUtilizacion.chart!"
+      [labels]="chartUtilizacion.labels!"
+      [plotOptions]="chartUtilizacion.plotOptions!"
+      [colors]="chartUtilizacion.colors!">
+    </apx-chart>
+  </mat-card>
+  -->
+
+<!-- CONTADORES -->
+<mat-card class="card kpi-contadores kpi-split">
+
+  <!-- ================= KPI SUPERIORES ================= -->
+  <mat-card class="kpi-subcard superior">
+
+    <h4 class="kpi-subtitulo">
+      Días desde último mantenimiento
+    </h4>
+
+    <div class="kpi-row">
+
+      <div class="totalizador-item">
+        <div class="titulo-totalizador">Plegadora 1</div>
+        <div class="circulo-valor">
+          {{ horasUltimoMantenimiento }}
+        </div>
+        <div class="kpi-extra">TM = 120</div>
+      </div>
+
+      <div class="totalizador-item">
+        <div class="titulo-totalizador">Plegadora 2</div>
+        <div class="circulo-valor">
+          {{ horasUltimoMantenimiento }}
+        </div>
+        <div class="kpi-extra">TM = 120</div>
+      </div>
+
+    </div>
+  </mat-card>
+
+  <!-- ================= KPI INFERIORES ================= -->
+  <mat-card class="kpi-subcard inferior">
+
+    <div class="kpi-grid-inferior">
+
+      <div class="totalizador-item">
+        <div class="titulo-totalizador">Consumo Específico<br> de Energía</div>
+        <div class="circulo-valor">
+          {{ consumoEspecifico }}<br>
+          <span class="unidad">kWh/pieza</span>
+        </div>
+      </div>
+
+      <div class="totalizador-item">
+        <div class="titulo-totalizador">Consumo de<br> Alambre</div>
+        <div class="circulo-valor">
+          {{ consumoAlambre }}<br>
+          <span class="unidad">Kg/pieza</span>
+        </div>
+      </div>
+
+      </div>
+    </mat-card>
+
+  </mat-card>
+
+
+  <!-- ENERGÍA TOTAL -->
+  <mat-card class="card">
+    <h3>Energía total consumida (kWh)</h3>
+    <div class="chart-wrapper">
+      <apx-chart
+        [series]="chartEnergia.series!"
+        [chart]="chartEnergia.chart!"
+        [xaxis]="chartEnergia.xaxis!"
+        [colors]="chartEnergia.colors!"
+        [legend]="chartEnergia.legend!">
+      </apx-chart>
+    </div>
+  </mat-card>
+
+  <!-- ENERGÍA NO PRODUCTIVA
+  <mat-card class="card radial-chart">
+    <h3>Energía No Productiva (%)</h3>
+    <apx-chart
+      [series]="chartNoProductiva.series!"
+      [chart]="chartNoProductiva.chart!"
+      [labels]="chartNoProductiva.labels!"
+      [colors]="chartNoProductiva.colors!"
+      [plotOptions]="chartNoProductiva.plotOptions!">
+    </apx-chart>
+  </mat-card>
+  -->
+
+  <!-- PIEZAS POR DÍA
+  <mat-card class="card">
+    <h3>Piezas producidas por día</h3>
+
+    <div class="chart-wrapper">
+      <apx-chart
+        [series]="chartPiezas.series!"
+        [chart]="chartPiezas.chart!"
+        [xaxis]="chartPiezas.xaxis!"
+        [colors]="chartPiezas.colors!">
+      </apx-chart>
+    </div>
+
+    <div class="piezas-totales">
+      <span class="label">Piezas totales:</span>
+      <span class="valor">{{ piezasTotales }}</span>
+    </div>
+  </mat-card>
+  -->
+
+</div>
+</div>
+

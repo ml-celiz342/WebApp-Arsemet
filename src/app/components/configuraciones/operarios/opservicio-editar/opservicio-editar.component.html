@@ -1,0 +1,39 @@
+<h2 class="titulo">Editar Servicios</h2>
+<mat-dialog-content>
+
+    <!-- usuario -->
+    <mat-form-field appearance="outline">
+      <mat-label>Usuario</mat-label>
+      <input matInput [(ngModel)]="usuario" name="usuario" required placeholder="Ingrese el usuario del servicio">
+    </mat-form-field>
+
+   <!-- contraseña -->
+    <mat-form-field appearance="outline">
+      <mat-label>Contraseña</mat-label>
+      <input matInput [(ngModel)]="contrasenea" name="contrasenea" required placeholder="Ingrese la contraseña del servicio">
+    </mat-form-field>
+
+    <!-- UrlLogin -->
+    <mat-form-field appearance="outline">
+      <mat-label>URL Login</mat-label>
+      <input matInput [(ngModel)]="url_login" name="url_login" required placeholder="Ingrese url de login del servicio">
+    </mat-form-field>
+
+    <!-- UrlData -->
+    <mat-form-field appearance="outline">
+      <mat-label>URL Data</mat-label>
+      <input matInput [(ngModel)]="url_data" name="url_data" required placeholder="Ingrese url de data del servicio">
+    </mat-form-field>
+
+    <!-- intervalo -->
+    <mat-form-field appearance="outline">
+      <mat-label>Intervalo</mat-label>
+      <input matInput [(ngModel)]="intervalo" name="intervalo" required placeholder="Ingrese el intervalo de encuesta del servicio">
+    </mat-form-field>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="guardarServicio()">Guardar</button>
+</mat-dialog-actions>

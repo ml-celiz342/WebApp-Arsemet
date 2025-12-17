@@ -1,0 +1,62 @@
+.titulo {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 20px;
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+mat-dialog-content {
+  padding: 20px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+mat-form-field {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+mat-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: red;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+
+  mat-icon {
+    color: red;
+  }
+}
+
+.error-list {
+  list-style-type: none;
+  padding: 0;
+  margin: -10px 0 8px 0;
+  font-size: 0.85rem;
+  color: red;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+}
+
+button {
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+button[mat-flat-button] {
+  min-width: 120px;
+}

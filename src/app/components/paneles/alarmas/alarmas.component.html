@@ -1,0 +1,168 @@
+<h2 class="titulo-pagina">Alarmas</h2>
+<div class="alarma-contenedor">
+  <div class="alarma-contenedor-filtro">
+    <mat-card class="mat-card-custom mat-elevation-z4">
+      <div class="filtro-header">
+        <span class="filtro-texto">
+          <strong>Filtro de datos:</strong>
+          {{ range.start | date : "dd/MM/yyyy HH:mm:ss" }} -
+          {{ range.end | date : "dd/MM/yyyy HH:mm:ss" }}
+        </span>
+        <div class="filtro-botones">
+          <mat-spinner *ngIf="cargando"></mat-spinner>
+          <div class="filtro-contadores">
+            <div class="contador-critico" matTooltip="Crítico"  *ngIf="niveles.includes('Crítica')">
+              <span>{{contadorCritico}}</span>
+            </div>
+            <div class="contador-advertencia" matTooltip="Advertencia" *ngIf="niveles.includes('Advertencia')">
+              <span>{{contadorAdvertencia}}</span>
+            </div>
+            <div class="contador-info" matTooltip="Información" *ngIf="niveles.includes('Información')">
+              <span>{{contadorInformacion}}</span>
+            </div>
+          </div>
+          <button mat-icon-button matTooltip="Recargar" (click)="recargar()">
+            <mat-icon>refresh</mat-icon>
+          </button>
+          <button mat-icon-button matTooltip="Aplicar filtros" (click)="openDialog()">
+            <mat-icon>filter_list</mat-icon>
+          </button>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+  <div class="alarma-contenedor-alarma">
+    <mat-card class="mat-card-custom mat-elevation-z4">
+        <div class="table-wrapper">
+          <table mat-table [dataSource]="dataSourceAlarmas" matSort class="table">
+            <!-- Id -->
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.id }}
+              </td>
+            </ng-container>
+
+            <!-- Activo -->
+            <ng-container matColumnDef="activo">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Activo</th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.activo }}
+              </td>
+            </ng-container>
+
+            <!-- Nivel -->
+            <ng-container matColumnDef="nivel">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Nivel</th>
+              <td
+                mat-cell
+                *matCellDef="let element"
+              >
+              <div class="customer-column">
+              <mat-icon class="icono-alarma" [ngClass]="{
+                'icono-info': element.nivel.toLowerCase() === 'información',
+                'icono-warning': element.nivel.toLowerCase() === 'advertencia',
+                'icono-error': element.nivel.toLowerCase() === 'crítica'
+              }">
+                {{ getIcono(element.nivel.toLowerCase()) }}
+              </mat-icon>
+                {{ utilidades.capitalize(element.nivel) }}
+              </div>
+              </td>
+            </ng-container>
+
+            <!-- nombre -->
+            <ng-container matColumnDef="nombre">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.alias }}
+              </td>
+            </ng-container>
+
+            <!-- causa -->
+            <ng-container matColumnDef="causa">
+              <th mat-header-cell *matHeaderCellDef>Causa</th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.causa }}
+              </td>
+            </ng-container>
+
+            <!-- estado -->
+            <ng-container matColumnDef="estado">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Estado</th>
+              <td mat-cell *matCellDef="let element">
+                <div class="customer-column-wrapper">
+                  <mat-icon
+                    class="customer-column-icon"
+                    *ngIf="element.estado?.toLowerCase() === 'reconocida'"
+                    [matTooltip]="element.nombre_usuario_reconocida + ', ' + element.apellido_usuario_reconocida"
+                  >
+                    account_circle
+                  </mat-icon>
+                  <p>{{ utilidades.capitalize(element.estado) }}</p>
+                </div>
+              </td>
+            </ng-container>
+
+            <!-- origen -->
+            <ng-container matColumnDef="origen">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Origen</th>
+              <td mat-cell *matCellDef="let element">
+                {{ utilidades.capitalize(element.origen) }}
+              </td>
+            </ng-container>
+
+            <!-- inicio -->
+            <ng-container matColumnDef="inicio">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Inicio</th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.inicio | date : "dd/MM/yyyy HH:mm:ss" }}
+              </td>
+            </ng-container>
+
+            <!-- fin -->
+            <ng-container matColumnDef="fin">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Fin</th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.fin | date : "dd/MM/yyyy HH:mm:ss" }}
+              </td>
+            </ng-container>
+
+            <!-- acciones -->
+            <ng-container matColumnDef="acciones">
+              <th mat-header-cell *matHeaderCellDef>Acciones</th>
+              <td mat-cell *matCellDef="let element">
+                <div class="evidencia-cell">
+                  <button
+                mat-icon-button
+                (click)="reconocerAlarma(element)"
+                *ngIf="element.estado.toLowerCase() == 'activa' && (authService.hasPermission('alarmsack','edit'))"
+                matTooltip="Reconocer alarma"
+                >
+                <mat-icon [ngClass]="{ 'reconocer-icono': element.estado.toLowerCase() == 'activa' }">check_circle</mat-icon
+                >
+              </button>
+              <button
+                mat-icon-button
+                (click)="abrirMapa(element)"
+                *ngIf="element.latitud && element.longitud"
+                matTooltip="Ver en mapa"
+                >
+                <mat-icon [ngClass]="{ 'mapa-icono': element.latitud && element.longitud }">location_on</mat-icon
+                >
+              </button>
+                </div>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumnsAlarmas" class="table-header"></tr>
+            <tr
+              mat-row
+              *matRowDef="let row; columns: displayedColumnsAlarmas"
+            ></tr>
+          </table>
+        </div>
+        <mat-paginator #paginatorAlarmas [pageSizeOptions]="[10,20,30]" showFirstLastButtons class="table-paginator"></mat-paginator>
+    </mat-card>
+  </div>
+</div>

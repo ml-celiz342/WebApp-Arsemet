@@ -1,0 +1,330 @@
+/* ===== CONTENEDOR GENERAL ===== */
+
+.kpi-contenedor {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.kpi-contenedor-filtro {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* ===== FILTRO SUPERIOR ===== */
+
+.filtro-header {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.filtro-texto {
+  font-size: 14px;
+  margin-left: 10px;
+  color: #333;
+  flex-grow: 1;
+  text-align: left;
+}
+
+.filtro-botones {
+  display: flex;
+  gap: 10px;
+  margin-right: 10px;
+}
+
+/* ===== FILA DE MÁQUINA (gráfico + totales) ===== */
+
+.fila-maquina {
+  display: flex;
+  gap: 14px;
+  align-items: stretch;
+  min-height: 400px;
+}
+
+.columna-izquierda {
+  flex: 2;
+  display: flex;
+  height: 100%;
+}
+
+.columna-derecha {
+  flex: 1;
+  display: flex;
+}
+
+/* PRUEBA */
+.columna-general {
+  flex: 1;
+  display: flex;
+}
+
+/* ===== CARDS GENERALES ===== */
+.mat-card-custom {
+  padding: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  justify-content: center;
+}
+
+/* ===== GRÁFICO ===== */
+.grafico-maquina {
+  width: 100%;
+  height: 400px;
+  padding: 10px;
+}
+
+.titulo-maquina {
+  font-size: 15px;
+  font-weight: bold;
+  padding: 6px;
+  color: #1A1B1F;
+}
+
+.kpi-potencia-grafico-element {
+  width: 100%;
+  height: calc(100% - 30px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ===== TOTALIZADORES ===== */
+.kpi-potencia-card {
+  width: 100%;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+
+  height: auto;
+  justify-content: center;
+  align-items: center;
+}
+
+.kpi-totalizador-superior {
+  flex: 0.7;
+  display: flex;
+  width: 100%;
+  background: #f5f6f8;
+  border-radius: 12px;
+  overflow: hidden;
+  gap: 10px;
+  padding: 10px;
+
+  align-items: center;
+  justify-content: center;
+}
+
+.kpi-totalizador-inferior {
+  flex: 1.3;
+  display: flex;
+  width: 100%;
+}
+
+.totalizador-card,
+.totalizador-card-full {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 125px;
+  padding-top: 10px;
+
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* ===== INDICADORES CIRCULARES ===== */
+
+.circulo-valor,
+.kpi-potencia-indicador,
+.punto-potencia-total {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: white;
+  font-weight: bold;
+}
+
+.circulo-valor {
+  width: 70px;
+  height: 70px;
+  background: #2F6DA4;
+  border-radius: 50%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+
+  margin-bottom: 16px;
+
+  text-align: center;
+}
+
+.circulo-valor.grande {
+  width: 80px;
+  height: 80px;
+  font-size: 20px;
+}
+
+.punto-potencia-total {
+  width: 55px;
+  height: 55px;
+  background-color: var(--color-dark-2);
+  font-size: 18px;
+}
+
+.punto-potencia {
+  background-color: var(--color-dark-1);
+  padding: 5px 10px;
+  border-radius: 8px;
+  color: white;
+  font-weight: bold;
+}
+
+/* ===== TEXTO ===== */
+
+.kpi-potencia-card-titulo,
+.titulo-totalizador,
+.texto-potencia {
+  font-size: 15px;
+  font-weight: bold;
+  color: #1A1B1F;
+  margin-bottom: 10px;
+}
+
+/* ===== SECCIONES DE POTENCIA ===== */
+
+.resumen-potencia {
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.linea-principal-potencia {
+  height: 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.lineas-secundarias-potencia {
+  width: 100%;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.linea-secundaria-potencia {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ===== SEPARADORES ===== */
+
+.separador-horizontal {
+  height: 2px;
+  width: 100%;
+  background-color: black;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 992px) {
+  .fila-maquina {
+    flex-direction: column;
+  }
+
+  .grafico-maquina {
+    height: 240px;
+  }
+}
+
+@media (max-width: 768px) {
+  .filtro-texto {
+    text-align: center;
+    font-size: 12px;
+  }
+
+  .filtro-botones {
+    margin-right: 0;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .circulo-valor {
+    width: 60px;
+    height: 60px;
+  }
+
+  .punto-potencia-total {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+@media (max-width: 520px) {
+  .grafico-maquina {
+    height: 200px;
+  }
+}
+
+.titulo-maquina-general-derecha {
+  font-size: 15px;
+  font-weight: bold;
+  color: #1A1B1F;
+  padding: 6px 4px;
+  border-bottom: 1.5px solid #d0d0d0;
+  width: 100%;
+}
+
+/* Lineas */
+.division-totalizadores-horizontal {
+  width: 100%;
+  height: 1px;
+  background-color: #d0d0d0;
+}
+
+.division-vertical {
+  width: 1px;
+  height: 1000%;
+  background-color: #d0d0d0;
+  align-self: center;
+}
+
+/* SPINNER MINI */
+.spinner-wrapper {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+
+.spinner-mini {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+.spinner-mini svg {
+  width: 20px !important;
+  height: 20px !important;
+}

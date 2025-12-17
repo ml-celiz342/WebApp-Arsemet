@@ -1,0 +1,50 @@
+<h2 class="titulo">
+  {{ isEditMode ? "Editar analitíca" : "Agregar analítica" }}
+</h2>
+<mat-dialog-content>
+  <!-- nombre -->
+  <mat-form-field appearance="outline">
+    <mat-label>Nombre</mat-label>
+    <input
+      matInput
+      [(ngModel)]="nombre"
+      name="nombre"
+      required
+      placeholder="Ingrese el nombre de la analítica"
+    />
+  </mat-form-field>
+
+  <!-- Comentario -->
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Descripción</mat-label>
+    <textarea
+      matInput
+      [(ngModel)]="descripcion"
+      name="descripcion"
+      placeholder="Ingrese una descripción"
+    ></textarea>
+  </mat-form-field>
+
+  <!-- ruta -->
+  <mat-form-field appearance="outline">
+    <mat-label>Ruta</mat-label>
+    <input
+      matInput
+      [(ngModel)]="ruta"
+      name="ruta"
+      required
+      placeholder="Ingrese la ruta de la analítica"
+    />
+  </mat-form-field>
+
+  <mat-slide-toggle [(ngModel)]="pausada"
+    >Pausada: {{ pausada }}</mat-slide-toggle
+  >
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="guardarAnalitica()">
+    Guardar
+  </button>
+</mat-dialog-actions>

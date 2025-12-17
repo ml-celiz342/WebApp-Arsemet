@@ -1,0 +1,148 @@
+<h2 class="titulo-pagina">Mantenimientos</h2>
+<div class="mantenimiento-contenedor">
+  <div class="mantenimiento-contenedor-filtro">
+    <mat-card class="mat-card-custom mat-elevation-z4">
+      <div class="filtro-header">
+        <span class="filtro-texto">
+          <strong>Filtro de datos:</strong>
+          {{ range.start | date : "dd/MM/yyyy HH:mm:ss" }} -
+          {{ range.end | date : "dd/MM/yyyy HH:mm:ss" }}
+        </span>
+        <div class="filtro-botones">
+          <mat-spinner *ngIf="cargando"></mat-spinner>
+          <button mat-icon-button matTooltip="Recargar" (click)="recargar()">
+            <mat-icon>refresh</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            matTooltip="Aplicar filtros"
+            (click)="openDialog()"
+          >
+            <mat-icon>filter_list</mat-icon>
+          </button>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+  <!-- Resumen de Mantenimiento -->
+  <div class="contenedor-mantenimiento-data">
+    <mat-card class="mat-card-custom mat-elevation-z4">
+      <div class="mantenimiento-contenedor-element">
+        <div class="table-wrapper">
+          <table
+            mat-table
+            [dataSource]="dataSourceMantenimiento"
+            matSort
+            class="table"
+          >
+            <!-- Activo -->
+            <ng-container matColumnDef="activo">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Activo</th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.asset_code }}
+              </td>
+            </ng-container>
+
+            <!-- Razon -->
+            <ng-container matColumnDef="razon">
+              <th mat-header-cell *matHeaderCellDef>Razón</th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.reason }}
+              </td>
+            </ng-container>
+
+            <!-- Observacion -->
+            <ng-container matColumnDef="observacion">
+              <th mat-header-cell *matHeaderCellDef>Observación</th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.observation }}
+              </td>
+            </ng-container>
+
+            <!-- Inicio -->
+            <ng-container matColumnDef="inicio">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Inicio</th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.start | date : "dd/MM/yyyy HH:mm:ss" }}
+              </td>
+            </ng-container>
+
+            <!--Fin -->
+            <ng-container matColumnDef="fin">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Fin</th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.end | date : "dd/MM/yyyy HH:mm:ss" }}
+              </td>
+            </ng-container>
+
+            <!-- Acciones -->
+            <ng-container matColumnDef="acciones">
+              <th mat-header-cell *matHeaderCellDef>
+                <div class="acciones-cell">
+                  Acción
+                  <button
+                    mat-icon-button
+                    (click)="agregarEditarMantenimiento()"
+                    *ngIf="authService.hasPermission('maintenance', 'write')"
+                    matTooltip="Agregar registro de mantenimiento"
+                  >
+                    <mat-icon class="agregar-icono">add_circle</mat-icon>
+                  </button>
+                </div>
+              </th>
+              <td mat-cell *matCellDef="let element">
+                <div class="evidencia-cell">
+                  <!-- Botón para Editar -->
+                  <button
+                    mat-icon-button
+                    (click)="agregarEditarMantenimiento(element)"
+                    [disabled]="element.fin"
+                    *ngIf="
+                      authService.hasPermission('assets', 'read') &&
+                      authService.hasPermission('maintenance', 'edit')
+                    "
+                    matTooltip="Editar registro de mantenimiento"
+                  >
+                    <mat-icon [ngClass]="{ 'editar-icono': !element.low_date }"
+                      >edit</mat-icon
+                    >
+                  </button>
+
+                  <!-- Botón para Eliminar -->
+                  <button
+                    mat-icon-button
+                    (click)="eliminarMantenimiento(element)"
+                    [disabled]="element.low_date"
+                    *ngIf="authService.hasPermission('maintenance', 'edit')"
+                    matTooltip="Eliminar mantenimiento"
+                  >
+                    <mat-icon
+                      [ngClass]="{ 'eliminar-icono': !element.low_date }"
+                      >delete</mat-icon
+                    >
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+
+            <tr
+              mat-header-row
+              *matHeaderRowDef="displayedColumnsMantenimiento"
+              class="table-header"
+            ></tr>
+            <tr
+              mat-row
+              *matRowDef="let row; columns: displayedColumnsMantenimiento"
+            ></tr>
+          </table>
+        </div>
+        <mat-paginator
+          #paginatorMantenimiento
+          [pageSizeOptions]="[10, 20]"
+          showFirstLastButtons
+          class="table-paginator"
+        ></mat-paginator>
+      </div>
+    </mat-card>
+  </div>
+</div>

@@ -1,0 +1,179 @@
+<div class="login-container">
+  <!-- Logo y nombre -->
+  <div class="logo-container" *ngIf="!isLoggedIn">
+    <img src="assets/Logo_cliente.png" alt="Logo" class="logo-image-cliente" />
+    <h2 class="app-name">Plataforma de Monitoreo</h2>
+  </div>
+
+  <!-- Tarjeta de login -->
+  <mat-card class="login-card" *ngIf="!isRenewPass">
+    <mat-card-title class="login-title">Iniciar sesión</mat-card-title>
+
+    <div class="loading-message">
+      <img src="assets/Logo_synaptiqR.png" alt="Logo" class="logo-image" />
+    </div>
+
+
+    <!-- Mensaje de carga -->
+    <div *ngIf="isLoading" class="loading-message">
+      <mat-spinner diameter="30"></mat-spinner> Verificando credenciales...
+    </div>
+
+    <!-- Formulario -->
+    <form *ngIf="!isLoading" (submit)="onLogin()" class="login-form">
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Email</mat-label>
+        <input
+          matInput
+          [(ngModel)]="email"
+          name="email"
+          required
+          placeholder="Ingrese su Email"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Contraseña</mat-label>
+        <input
+          matInput
+          [type]="hide() ? 'password' : 'text'"
+          [(ngModel)]="password"
+          name="password"
+          required
+          placeholder="Ingrese su contraseña"
+        />
+        <button
+          mat-icon-button
+          matSuffix
+          type="button"
+          (click)="clickEventHide($event)"
+          [attr.aria-label]="'Hide password'"
+          [attr.aria-pressed]="hide()"
+        >
+          <mat-icon>{{ hide() ? "visibility_off" : "visibility" }}</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <!-- Mensaje de error, se muestra si hay error -->
+      <div *ngIf="loginError" class="error-message">
+        <mat-icon>error</mat-icon> {{ loginError }}
+      </div>
+
+      <button
+        mat-raised-button
+        color="primary"
+        class="full-width"
+        type="submit"
+      >
+        Ingresar
+      </button>
+    </form>
+  </mat-card>
+
+  <!-- Tarjeta de renovar clave -->
+  <mat-card class="login-card" *ngIf="isRenewPass">
+    <mat-card-title class="login-title">Clave caducada</mat-card-title>
+
+    <!-- Mensaje de carga -->
+    <div *ngIf="isLoading" class="loading-message">
+      <mat-spinner diameter="30"></mat-spinner> Verificando credenciales...
+    </div>
+
+    <!-- Formulario -->
+    <form *ngIf="!isLoading" (submit)="onRenovarClave()" class="login-form">
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Contraseña</mat-label>
+        <input
+          matInput
+          [type]="hideContraseneaN() ? 'password' : 'text'"
+          [(ngModel)]="contraseneaN"
+          name="contrasenea"
+          required
+          placeholder="Ingrese la contraseña"
+          (input)="validatePasswordN()"
+        />
+        <button
+          mat-icon-button
+          matSuffix
+          type="button"
+          (click)="clickEventHideContraseneaN($event)"
+          [attr.aria-label]="'Ocultar contrasenea'"
+          [attr.aria-pressed]="hideContraseneaN()"
+        >
+          <mat-icon>{{
+            hideContraseneaN() ? "visibility_off" : "visibility"
+          }}</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <ul *ngIf="validationErrorsN.length > 0" class="error-list">
+        <li *ngFor="let error of validationErrorsN" class="error">
+          {{ error }}
+        </li>
+      </ul>
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Repetir contraseña</mat-label>
+        <input
+          matInput
+          [type]="hideRContraseneaN() ? 'password' : 'text'"
+          [(ngModel)]="contraseneaRN"
+          name="contraseneaR"
+          required
+          placeholder="Ingrese nuevamente la contraseña"
+        />
+        <button
+          mat-icon-button
+          matSuffix
+          type="button"
+          (click)="clickEventRHideContraseneaN($event)"
+          [attr.aria-label]="'Ocultar contrasenea'"
+          [attr.aria-pressed]="hideRContraseneaN()"
+        >
+          <mat-icon>{{
+            hideRContraseneaN() ? "visibility_off" : "visibility"
+          }}</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <div
+        *ngIf="contraseneaN != '' && contraseneaRN != contraseneaN"
+        class="error-message"
+      >
+        <mat-icon>error</mat-icon> Las contraseñas no coinciden.
+      </div>
+
+      <button
+        mat-raised-button
+        color="primary"
+        class="full-width"
+        type="submit"
+      >
+        Cambiar clave
+      </button>
+    </form>
+  </mat-card>
+
+  <!-- Footer -->
+  <div class="logo-container">
+    <div class="copyright">
+      <span>Copyright&copy; {{ currentYear }} by</span>
+    </div>
+
+    <!-- FILA CENTRAL -->
+    <div class="footer-row">
+      <div class="footer-center">
+        <img
+          src="assets/logo_ministerio.png"
+          alt="Ministerio de Producción de Santa Fe"
+          class="ministerio-logo"
+        />
+      </div>
+
+      <div class="logo">
+        <img src="assets/Logo_clqN.png" alt="Company Logo" />
+      </div>
+    </div>
+  </div>
+
+
+</div>

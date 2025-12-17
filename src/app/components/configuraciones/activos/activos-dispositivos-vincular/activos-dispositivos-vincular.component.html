@@ -1,0 +1,29 @@
+<h2 class="titulo">Vincular activo con dispositivo</h2>
+<mat-dialog-content>
+
+      <!-- Activo -->
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Activo</mat-label>
+        <mat-select [(ngModel)]="selectActivo" name="selectActivo" required>
+          <mat-option *ngFor="let activo of activos" [value]="activo.id">
+            {{ activo.code }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Dispositivo -->
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Dispositivo</mat-label>
+        <mat-select [(ngModel)]="selectDispositivo" name="selectDispositivo" required>
+          <mat-option *ngFor="let dispositivo of dispositivos" [value]="dispositivo.id">
+            {{ dispositivo.numero_serie }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="guardarVinculacion()">Guardar</button>
+</mat-dialog-actions>

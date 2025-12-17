@@ -1,0 +1,29 @@
+<h2 class="titulo">Vincular dispositivo con analítica</h2>
+<mat-dialog-content>
+
+      <!-- Dispositivo -->
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Dispositivo</mat-label>
+        <mat-select [(ngModel)]="selectDispositivo" name="selectDispositivo" required>
+          <mat-option *ngFor="let dispositivo of dispositivos" [value]="dispositivo.id">
+            {{ dispositivo.numero_serie }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Analitica -->
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Analítica</mat-label>
+        <mat-select [(ngModel)]="selectAnalitica" name="selectAnalitica" required>
+          <mat-option *ngFor="let analitica of analiticas" [value]="analitica.id">
+            {{ analitica.nombre }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="guardarVinculacion()">Guardar</button>
+</mat-dialog-actions>

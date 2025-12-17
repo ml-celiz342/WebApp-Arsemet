@@ -1,0 +1,97 @@
+<h2 class="titulo">{{ isEditMode ? "Editar Rol" : "Agregar Rol" }}</h2>
+<mat-dialog-content>
+  <!-- Nombre -->
+  <mat-form-field appearance="outline">
+    <mat-label>Nombre</mat-label>
+    <input
+      matInput
+      [(ngModel)]="nombre"
+      name="nombre"
+      required
+      placeholder="Ingrese el nombre del modulo"
+    />
+  </mat-form-field>
+
+  <!-- Tocken_duracion -->
+  <mat-form-field appearance="outline">
+    <mat-label>Duración token</mat-label>
+    <input
+      matInput
+      [(ngModel)]="token_duracion"
+      name="tocken_duracion"
+      required
+      placeholder="Ingrese la duración permitida"
+    />
+  </mat-form-field>
+
+  <!-- Tocken_Cantidad -->
+  <mat-form-field appearance="outline">
+    <mat-label>Cantidad token</mat-label>
+    <input
+      matInput
+      [(ngModel)]="token_cantidad"
+      name="tocken_cantidad"
+      required
+      placeholder="Ingrese la cantidad de tockens permitidos"
+    />
+  </mat-form-field>
+
+  <!-- Tabla de módulos y permisos -->
+
+  <h3>Permisos por Módulo</h3>
+  <table mat-table [dataSource]="dataSourcePermisos">
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Módulo</th>
+      <td mat-cell *matCellDef="let item">{{ item.nombre }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="read">
+      <th mat-header-cell *matHeaderCellDef>Leer</th>
+      <td mat-cell *matCellDef="let item">
+        <mat-checkbox [(ngModel)]="item.leer"></mat-checkbox>
+          </td>
+    </ng-container>
+
+    <ng-container matColumnDef="write">
+      <th mat-header-cell *matHeaderCellDef>Escribir</th>
+      <td mat-cell *matCellDef="let item">
+        <mat-checkbox [(ngModel)]="item.escribir"></mat-checkbox>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="edit">
+      <th mat-header-cell *matHeaderCellDef>Editar</th>
+      <td mat-cell *matCellDef="let item">
+        <mat-checkbox [(ngModel)]="item.editar"></mat-checkbox>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+
+  <h3>Permisos por Panel</h3>
+  <table mat-table [dataSource]="dataSourcePaneles">
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Nombre</th>
+      <td mat-cell *matCellDef="let item">{{ item.nombre }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="view">
+      <th mat-header-cell *matHeaderCellDef>Ver</th>
+      <td mat-cell *matCellDef="let item">
+        <mat-checkbox [(ngModel)]="item.ver"></mat-checkbox>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumnsPaneles"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumnsPaneles"></tr>
+  </table>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="guardarRol()">
+    Guardar
+  </button>
+</mat-dialog-actions>

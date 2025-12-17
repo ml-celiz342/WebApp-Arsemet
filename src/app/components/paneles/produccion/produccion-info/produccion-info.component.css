@@ -1,0 +1,198 @@
+.info-contenedor {
+  background: white;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-sizing: border-box;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.info-contenedor-titulo{
+  width: 100%;
+  background: var(--color-dark-1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+  color: var(--text-light);
+  box-sizing: border-box;
+}
+
+.info-contenedor-titulo mat-icon {
+  color: white !important;
+}
+
+.info-contenedor-resumen {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+.info-contenedor-resumen-img {
+  flex: 0 0 40%;
+}
+
+.info-contenedor-resumen-img img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.info-contenedor-resumen-txt {
+  flex: 0 0 60%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-size: 14px;
+  gap: 4px;
+}
+
+.info-contenedor-chart{
+  width: 100%;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+.info-contenedor-chart-element{
+  width: calc(50% - 5px);
+  height: 100%;
+}
+
+.info-contenedor-bobina{
+  font-size: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+}
+
+.icono-bobina {
+  font-size: 24px;
+  color: var(--color-dark-1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.info-contenedor-lista {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 0 10px;
+}
+
+.titulo-alarmas {
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.alarma-item {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  gap: 8px;
+}
+
+.mensaje-sin-alarmas {
+  padding: 1rem;
+  color: #888;
+  font-size: 14px;
+  text-align: center;
+}
+
+.alarma-inactiva {
+  opacity: 0.5;
+  filter: grayscale(80%);
+}
+
+.icono-alarma {
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.info-contenedor-lista-elemento{
+  max-height: 100px;
+  overflow-y: auto;
+}
+
+.icono-info {
+  color: var(--color-success);
+}
+
+.icono-warning {
+  color: var(--color-warning);
+}
+
+.icono-error {
+  color: var(--color-error);
+}
+
+.alarma-nombre {
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.alarma-fecha {
+  color: gray;
+  font-size: 12px;
+  margin-left: auto;
+  line-height: 1.2;
+}
+
+.info-contenedor-actualizado {
+  display: flex;
+  align-items: center;
+  background: var(--color-dark-1);
+  /* Esto alinea verticalmente al centro */
+  font-size: 14px;
+  color: var(--text-light);
+  padding: 6px 10px;
+  gap: 6px;
+}
+
+.icono-reloj {
+  font-size: 16px;
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 16px;
+  /* Asegura el alto igual al tamaño de fuente */
+}
+
+/* NUEVO: estilos para Potencia Actual y Consumo Total */
+.info-contenedor-potencia,
+.info-contenedor-consumo {
+  font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    box-sizing: border-box;
+    margin-top: -4px;
+    margin-bottom: 4px;
+}
+
+.icono-potencia {
+  font-size: 22px;
+  color: var(--color-warning);
+}
+
+.icono-consumo {
+  font-size: 22px;
+  color: var(--color-dark-1);
+}
+
+

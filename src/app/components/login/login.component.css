@@ -1,0 +1,136 @@
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f5f5f5;
+  padding: 10px;
+  /* Reducir padding para menos espacio */
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  /* Reducir espacio entre logo y texto */
+  margin-bottom: 15px;
+  /* Menos espacio debajo del logo */
+}
+
+.logo-image {
+  height: 35px;
+  /* Reducir altura del logo */
+}
+
+.logo-image-cliente {
+  height: 50px;
+}
+
+.app-name {
+  font-size: 1.2rem;
+  /* Reducir tamaño de fuente */
+  font-weight: bold;
+  color: #000000;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 350px;
+  /* Reducir ancho máximo */
+  padding: 15px;
+  /* Reducir padding interno */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  /* Sombra más sutil */
+  border-radius: 8px;
+  /* Bordes redondeados */
+}
+
+.login-title {
+  text-align: center;
+  font-size: 1.3rem;
+  /* Reducir tamaño del título */
+  margin-bottom: 10px;
+  color: #000000;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  color: red;
+  font-size: 0.9rem;
+  /* Reducir tamaño de fuente */
+  margin-bottom: 8px;
+  /* Espacio más pequeño */
+}
+
+.loading-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  /* Espaciado más compacto */
+  font-size: 0.9rem;
+  /* Reducir tamaño del texto */
+  color: #000000;
+  margin-bottom: 8px;
+}
+
+.logo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Centra contenido horizontalmente */
+  text-align: center;
+  /* Centra texto */
+  margin-top: 20px;
+  /* Espacio superior */
+}
+
+.copyright {
+  font-size: 0.8rem;
+  /* Tamaño del texto */
+  color: #888;
+  /* Color del texto */
+}
+
+.logo img {
+  height: 30px;
+  /* Tamaño del logo */
+}
+
+.error-list {
+  list-style-type: none;
+  padding: 0;
+  margin: -10px 0 8px 0;
+  font-size: 0.85rem;
+  color: red;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+}
+
+/* Ministerio de santa fe */
+.footer-row {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  /* espacio entre ministerio y company */
+}
+
+.footer-center {
+  display: flex;
+  align-items: center;
+}
+
+.ministerio-logo {
+  height: 35px;
+  width: auto;
+}

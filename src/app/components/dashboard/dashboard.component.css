@@ -1,0 +1,259 @@
+/* General Layout */
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* Barra superior */
+.toolbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: var(--color-base) !important;
+  color: var(--text-light);
+  padding: 0 16px;
+  height: 50px;
+}
+
+.toolbar-logo-container {
+  margin-left: 10px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.toolbar-logo {
+  height: 50%;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.toolbar-logo:hover {
+  transform: scale(1.1);
+  opacity: 0.8;
+}
+
+.toolbar-title {
+  font-weight: 300;
+  margin-left: 10px;
+}
+
+.user-icon mat-icon {
+  color: var(--text-light);
+}
+
+.menu-icon mat-icon {
+  color: var(--text-light);
+}
+
+.menu-user-name {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  font-weight: bold;
+}
+
+.menu-user-name mat-icon {
+  margin-right: 8px;
+}
+
+/* Contenedor para el Sidenav y el contenido */
+.sidenav-container {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  margin-top: 50px;
+  /* Evitar que la barra superior cubra contenido */
+  transition: margin-left 0.3s ease-in-out;
+  /* Añadir transición para el cambio de tamaño */
+}
+
+/* Barra lateral */
+.sidenav {
+  width: 260px;
+  background-color: var(--text-light);
+  position: fixed;
+  top: 50px;
+  bottom: 0;
+  height: calc(100vh - 50px);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  transition: transform 0.3s ease-in-out;
+  box-sizing: content-box;
+}
+
+::ng-deep .menu-container::-webkit-scrollbar {
+  width: 0px;
+}
+
+/* Contenedor general dentro del sidenav */
+.sidenav-content-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Contenedor para el menú superior */
+.menu-container {
+  flex-grow: 1;
+  padding: 16px;
+  overflow-y: auto;
+  padding-bottom: 16px;
+  /* Agregar espacio para evitar superposición */
+}
+
+/* Estilo para los paneles de expansión */
+.sidenav mat-expansion-panel {
+  margin-bottom: 8px;
+  /* Añadimos espacio entre los panels */
+  background-color: inherit;
+}
+
+/* Aseguramos que el icono y los ítems estén correctamente alineados */
+.sidenav mat-list-item {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+/* Evitamos que los items del menú se superpongan */
+.sidenav mat-nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sidenav mat-list-item {
+  display: flex;
+  align-items: center;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.sidenav mat-icon {
+  vertical-align: middle;
+  /* Ajusta la posición del ícono */
+  margin-right: 8px;
+  /* Espacio entre ícono y texto */
+  font-size: 24px;
+  /* Asegura un tamaño consistente */
+}
+
+.sidenav mat-list-item .mat-list-item-content {
+  display: flex;
+  align-items: center;
+}
+
+.sidenav::-webkit-scrollbar {
+  display: none;
+}
+
+/* Contenedor del logo */
+.sidenav .logo-container {
+  padding: 16px;
+  border-top: 1px solid #e0e0e0;
+  text-align: center;
+  margin-top: auto;
+  /* Esto asegura que el logo y copyright estén al final */
+}
+
+/* Logo */
+.sidenav .logo {
+  max-width: 120px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  /* Espacio entre el logo y el copyright */
+}
+
+.logo {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  /* Transiciones suaves */
+}
+
+.logo:hover {
+  transform: scale(1.1);
+  /* Aumenta el tamaño de la imagen */
+  opacity: 0.8;
+  /* Cambia la opacidad */
+}
+
+/* Copyright */
+.sidenav .copyright {
+  font-size: 0.8rem;
+  color: var(--text-light-dark);
+  margin-top: 8px;
+  display: block;
+}
+
+/* Estilo para el contenido principal */
+mat-sidenav-content {
+  /* Espacio para la barra lateral */
+  width: 100%;
+  background: var(--text-light);
+  overflow-y: hidden;
+  transition: margin-left 0.3s ease-in-out;
+  /* Transición cuando se cierre el sidenav */
+}
+
+.content-general {
+  width: 100%;
+  height: 100%;
+  padding: 16px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+/* Ancho de la barra */
+.content-general::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Fondo de la barra */
+.content-general::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+/* Color del "thumb" (barra de desplazamiento) */
+.content-general::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+/* Efecto al pasar el mouse */
+.content-general::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Estilo cuando el sidenav está oculto */
+.sidenav-container.sidenav-closed mat-sidenav {
+  transform: translateX(-100%);
+  /* Mueve el sidenav fuera de la pantalla */
+}
+
+.sidenav-container.sidenav-closed mat-sidenav-content {
+  margin-left: 0;
+  /* El contenido ocupa todo el espacio */
+}
+
+/* Espaciador para el contenido en la barra superior */
+.spacer {
+  flex: 1;
+}
+
+a.active span{
+  color: var(--color-base);
+}
+a.active mat-icon {
+  color: var(--color-base);
+}
+
+@media (max-width: 600px) {
+  .toolbar-title {
+    font-size: 18px;
+  }
+
+}

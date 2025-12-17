@@ -1,0 +1,48 @@
+<h2 class="titulo">{{ isEditMode ? 'Editar Lista Alarma' : 'Agregar Lista Alarma' }}</h2>
+<mat-dialog-content>
+
+   <!-- Nombre -->
+      <mat-form-field appearance="outline">
+        <mat-label>Nombre</mat-label>
+        <input matInput [(ngModel)]="alias" name="alias" required placeholder="Ingrese el nombre de la lista">
+      </mat-form-field>
+
+       <!-- Alias -->
+      <mat-form-field appearance="outline">
+        <mat-label>Identificacion</mat-label>
+        <input matInput [(ngModel)]="nombre" [disabled]="isEditMode" name="nombre" required placeholder="Ingrese su identificación">
+      </mat-form-field>
+
+      <!-- Origen -->
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Origen</mat-label>
+        <mat-select [(ngModel)]="id_origen" name="id_origen" required>
+          <mat-option *ngFor="let origen of tiposOrigen" [value]="origen.id">
+            {{ origen.nombre }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Nivel -->
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Nivel</mat-label>
+        <mat-select [(ngModel)]="id_nivel_alarma" name="id_nivel_alarma" required>
+          <mat-option *ngFor="let nivel of tiposNivel" [value]="nivel.id">
+            {{ nivel.nombre }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Estado -->
+      <mat-slide-toggle class="check mb-2"
+        [(ngModel)]="estado" name="estado"
+      >
+        Estado: {{ estado ? 'Activo' : 'Inactivo' }}
+      </mat-slide-toggle>
+
+    </mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="guardarAlarmList()">Guardar</button>
+</mat-dialog-actions>

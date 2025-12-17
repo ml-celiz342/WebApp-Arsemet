@@ -1,0 +1,82 @@
+<div class="info-contenedor">
+  <div class="info-contenedor-titulo">
+    <span>Detalles del activo</span>
+    <button mat-icon-button (click)="cerrar()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="info-contenedor-resumen">
+    <div class="info-contenedor-resumen-img">
+      <img *ngIf="tipo" [src]="'assets/img_folder/' + codigo_activo.toLowerCase() + '.png'" alt="Icono Activo" class="img"/>
+    </div>
+    <div class="info-contenedor-resumen-txt">
+      <div><strong>Activo: </strong><span>{{codigo_activo}}</span></div>
+      <div><strong>Estado: </strong><span>{{estado_actual}}</span></div>
+    </div>
+  </div>
+
+  <div class="info-contenedor-chart">
+      <!-- HORAS ENCENDIDO -->
+      <div class="info-contenedor-chart-element">
+        <apx-chart
+          #chartEncendido
+          [series]="chartOptionsEncendido.series"
+          [chart]="chartOptionsEncendido.chart"
+          [colors]="chartOptionsEncendido.colors"
+          [title]="chartOptionsEncendido.title"
+          [plotOptions]="chartOptionsEncendido.plotOptions"
+          [labels]="chartOptionsEncendido.labels"
+          style="width: 100%; height: 100%; display: block"
+        ></apx-chart>
+      </div>
+
+      <!-- POTENCIA ACTUAL -->
+      <div class="info-contenedor-chart-element">
+        <apx-chart
+          #chartNoOperativo
+          [series]="chartOptionsNoOperativo.series"
+          [chart]="chartOptionsNoOperativo.chart"
+          [colors]="chartOptionsNoOperativo.colors"
+          [title]="chartOptionsNoOperativo.title"
+          [plotOptions]="chartOptionsNoOperativo.plotOptions"
+          [labels]="chartOptionsNoOperativo.labels"
+          style="width: 100%; height: 100%; display: block"
+        ></apx-chart>
+      </div>
+  </div>
+
+  <!-- CONSUMO TOTAL -->
+  <div class="info-contenedor-consumo">
+    <mat-icon class="icono-consumo">speed</mat-icon>
+    <div>
+      <strong>Consumo total: </strong>
+      <span>{{(consumo_total_actual | number:'1.2-2')}} kWh</span></div>
+  </div>
+
+  <div class="info-contenedor-lista">
+    <div class="titulo-alarmas">Últimas alarmas</div>
+    <div class="info-contenedor-lista-elemento">
+      <div *ngIf="alarmas.length === 0" class="mensaje-sin-alarmas">
+        No hay alarmas disponibles para mostrar en este momento.
+      </div>
+      <div class="alarma-item" *ngFor="let alarma of alarmas" [ngClass]="{ 'alarma-inactiva': alarma.estado === 'inactiva' }">
+        <mat-icon class="icono-alarma" [ngClass]="{
+          'icono-info': alarma.nivel.toLowerCase()== 'información',
+          'icono-warning': alarma.nivel.toLowerCase() === 'advertencia',
+          'icono-error': alarma.nivel.toLowerCase() === 'crítica'
+        }">
+          {{ getIcono(alarma.nivel) }}
+        </mat-icon>
+        <span class="alarma-nombre">{{ alarma.alias }}</span>
+        <span class="alarma-fecha">{{ alarma.inicio | date : "dd/MM/yyyy HH:mm:ss" }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-contenedor-actualizado">
+    <mat-icon class="icono-reloj">schedule</mat-icon>
+    <span class="texto-actualizado">Datos últimas 24 horas</span>
+  </div>
+
+</div>

@@ -1,0 +1,300 @@
+/*
+.titulo-pagina {
+  font-size: 18px;
+  color: #333;
+  margin-top: 2px;
+  margin-bottom: 12px;
+}
+
+.sesion-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.sesion-status-item {
+  height: auto;
+  width: calc(20% - 18px);
+  box-sizing: border-box;
+  margin-bottom: 24px;
+}
+
+.sesion-status-title {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  padding-left: 16px;
+  padding-top: 5px;
+}
+
+.sesion-status-subtitle {
+  font-size: 12px;
+  font-weight: 300;
+  color: #666;
+  margin: 0;
+}
+
+.sesion-status-title-text {
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.sesion-status-content {
+  padding: 12px;
+  display: flex;
+  justify-content: center;
+}
+
+.sesion-status-total-info-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 30px;
+}
+
+.sesion-status-total-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sesion-status-total-info-name {
+  font-size: 14px;
+  font-weight: 400;
+  margin: 0;
+  height: 45px;
+  letter-spacing: 0.15px;
+  color: grey;
+}
+
+
+.text-connected {
+  color: var(--color-success);
+}
+
+.text-timeout {
+  color: var(--color-complementary);
+}
+
+.text-disconnected {
+  color: var(--color-error);
+}
+
+.text-idle {
+  color: var(--color-dark-1);
+}
+
+.sesion-info{
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 24px;
+  row-gap: 10px;
+  padding-bottom: 24px;
+}
+
+.sesion-info-table{
+  width: calc(50% - 12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 500px;
+}
+
+.mat-card-custom{
+  padding: 0px;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: center;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.sesion-info-table-element{
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .sesion-info-table{
+    width: 100%;
+  }
+
+
+  .sesion-status {
+    gap: 12px;
+  }
+
+  .sesion-status-item {
+    width: calc(50% - 12px);
+  }
+
+  .sesion-status-title-text {
+    font-size: 16px;
+  }
+
+  .sesion-status-subtitle {
+    font-size: 10px;
+  }
+
+  .sesion-status-total-info-name {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sesion-status-item {
+    width: 100%;
+  }
+
+  .sesion-status-title-text {
+    font-size: 14px;
+  }
+
+  .sesion-status-subtitle {
+    font-size: 8px;
+  }
+
+  .sesion-status-total-info-name {
+    font-size: 12px;
+  }
+}
+*/
+
+/* ====== Estilos Generales ====== */
+.titulo-pagina {
+  font-size: 18px;
+  color: #333;
+  margin: 2px 0 12px 0;
+}
+
+/* ====== Contenedores principales ====== */
+.sesiones-contenedor,
+.sesion-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+/* ====== Tarjetas ====== */
+.card-sesiones,
+.sesion-info-table {
+  flex: 1 1 calc(50% - 12px);
+  display: flex;
+  flex-direction: column;
+  max-height: 400px;
+  /* altura máxima para scroll */
+  overflow: hidden;
+}
+
+/* ====== Títulos de tarjetas ====== */
+mat-card.mat-card-custom h3 {
+  width: 100%;
+  margin: 0;
+  padding: 12px 16px;
+  background: #e5e5e5;
+  font-size: 15px;
+  font-weight: 500;
+  border-bottom: 1px solid #ccc;
+}
+
+/* Títulos de tablas de información usuarios y dispositivos más bajos */
+.sesion-info-table h3 {
+  width: auto;
+  padding: 4px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  border-bottom: 1px solid #ccc;
+  background: #e5e5e5;
+}
+
+/* ====== Wrapper scroll para tablas ====== */
+.sesion-table-wrapper,
+.sesion-info-table-element {
+  flex-grow: 1;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: auto;
+  height: 400px;
+  overscroll-behavior: contain;
+}
+
+/* ====== Tablas ====== */
+.sesion-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: max-content;
+}
+
+.sesion-table th {
+  background-color: #d8d8d8;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: 10px;
+  font-weight: 500;
+  border-bottom: 1px solid #bfbfbf;
+}
+
+.sesion-table td {
+  padding: 10px;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 14px;
+}
+
+.sesion-table tr:hover td {
+  background: #f5f5f5;
+}
+
+/* ====== Estados ====== */
+.text-connected {
+  color: var(--color-success);
+}
+
+.text-timeout {
+  color: var(--color-complementary);
+}
+
+.text-disconnected {
+  color: var(--color-error);
+}
+
+.text-idle {
+  color: var(--color-dark-1);
+}
+
+/* ====== Responsive ====== */
+@media (max-width: 768px) {
+
+  .card-sesiones,
+  .sesion-info-table {
+    flex: 1 1 100%;
+  }
+
+  .sesion-table td,
+  .sesion-table th {
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+
+  mat-card.mat-card-custom h3 {
+    font-size: 14px;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .sesion-table td,
+  .sesion-table th {
+    font-size: 11px;
+  }
+}

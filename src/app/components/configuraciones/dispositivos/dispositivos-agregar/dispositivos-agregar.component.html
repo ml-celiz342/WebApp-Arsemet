@@ -1,0 +1,46 @@
+<h2 class="titulo">{{ isEditMode ? 'Editar Dispositivo' : 'Agregar Dispositivo' }}</h2>
+<mat-dialog-content>
+
+   <!-- Numero de serie -->
+      <mat-form-field appearance="outline">
+        <mat-label>Numero de Serie</mat-label>
+        <input matInput [(ngModel)]="numero_serie" name="numero de serie" required placeholder="Ingrese el número de serie del dispositivo">
+      </mat-form-field>
+
+      <!-- Tipo de Dispositivo-->
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Tipo de Modelo</mat-label>
+        <mat-select [(ngModel)]="tipoModelo" name="tipoModelo" (selectionChange)="seleccionarModelo($event)" required>
+          <mat-option *ngFor="let tipo of tiposModelos" [value]="tipo.id">
+            {{ tipo.nombre }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Servicio-->
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Servicio</mat-label>
+        <mat-select [(ngModel)]="tipoServicio" name="tipoServicio" required>
+          <mat-option *ngFor="let servicio of tipoServicios" [value]="servicio.id">
+            {{ servicio.nombre }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+        <!-- Manifiesto -->
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Manifiesto</mat-label>
+        <textarea matInput [(ngModel)]="manifiesto" name="manifiesto"  required placeholder="Ingrese la configuración"></textarea>
+      </mat-form-field>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="guardarDispositivo()">Guardar</button>
+</mat-dialog-actions>
+
+
+
+
+

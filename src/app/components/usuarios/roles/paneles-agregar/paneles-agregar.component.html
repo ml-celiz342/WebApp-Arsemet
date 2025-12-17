@@ -1,0 +1,16 @@
+<h2 class="titulo">Agregar panel</h2>
+<mat-dialog-content>
+
+   <!-- Nombre -->
+      <mat-form-field appearance="outline">
+        <mat-label>Panel</mat-label>
+        <input matInput [(ngModel)]="nombre" name="nombre" required placeholder="Ingrese el nombre del panel">
+      </mat-form-field>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="guardarPanel()">Guardar</button>
+</mat-dialog-actions>
+

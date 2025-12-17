@@ -1,0 +1,15 @@
+<h2 class="titulo">{{ isEditMode ? 'Editar Sector' : 'Agregar Sector' }}</h2>
+<mat-dialog-content>
+
+   <!-- Sector -->
+      <mat-form-field appearance="outline">
+        <mat-label>Sector</mat-label>
+        <input matInput [(ngModel)]="nombre" name="nombre" required placeholder="Ingrese el nombre del sector">
+      </mat-form-field>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="guardarSector()">Guardar</button>
+</mat-dialog-actions>

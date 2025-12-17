@@ -1,0 +1,58 @@
+<h2 class="titulo">Configuración de analítica</h2>
+<mat-dialog-content>
+  <!-- FORMULARIO DINÁMICO -->
+  <ng-container *ngFor="let key of objectKeys(camposActual)">
+    <!-- Ignorar campos -->
+    <ng-container *ngIf="!shouldIgnoreField(key)">
+      <!-- Checkbox para booleanos -->
+      <mat-slide-toggle
+        *ngIf="isBoolean(key)"
+        class="check mb-2"
+        [(ngModel)]="camposActual[key]"
+        [name]="key"
+      >
+        {{ key | titlecase }}
+      </mat-slide-toggle>
+
+      <!-- Campo numérico -->
+      <mat-form-field
+        appearance="outline"
+        class="w-full mb-2"
+        *ngIf="isNumber(key)"
+      >
+        <mat-label>{{ key | titlecase }}</mat-label>
+        <input
+          matInput
+          type="number"
+          [(ngModel)]="camposActual[key]"
+          (ngModelChange)="onNumberChange(key, $event)"
+          [name]="key"
+          placeholder="Ingrese {{ key }}"
+        />
+      </mat-form-field>
+
+      <!-- Campo de texto o fecha (por defecto) -->
+      <mat-form-field
+        appearance="outline"
+        class="w-full mb-2"
+        *ngIf="!isBoolean(key) && !isNumber(key)"
+      >
+        <mat-label>{{ key | titlecase }}</mat-label>
+        <input
+          matInput
+          type="text"
+          [(ngModel)]="camposActual[key]"
+          [name]="key"
+          placeholder="Ingrese {{ key }}"
+        />
+      </mat-form-field>
+    </ng-container>
+  </ng-container>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="guardarAnalitica()">
+    Guardar
+  </button>
+</mat-dialog-actions>

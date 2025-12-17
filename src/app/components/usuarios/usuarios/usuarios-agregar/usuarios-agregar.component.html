@@ -1,0 +1,119 @@
+<h2 class="titulo">{{ isEditMode ? "Editar usuario" : "Agregar usuario" }}</h2>
+<mat-dialog-content>
+  <!-- Nombre -->
+  <mat-form-field appearance="outline">
+    <mat-label>Nombre</mat-label>
+    <input
+      matInput
+      [(ngModel)]="nombre"
+      name="nombre"
+      required
+      placeholder="Ingrese el nombre"
+    />
+  </mat-form-field>
+
+  <!-- Apellido -->
+  <mat-form-field appearance="outline">
+    <mat-label>Apellido</mat-label>
+    <input
+      matInput
+      [(ngModel)]="apellido"
+      name="apellido"
+      required
+      placeholder="Ingrese el apellido"
+    />
+  </mat-form-field>
+
+  <!-- Email -->
+  <mat-form-field appearance="outline">
+    <mat-label>Email</mat-label>
+    <input
+      type="email"
+      matInput
+      [(ngModel)]="email"
+      [disabled]="isEditMode"
+      name="email"
+      required
+      placeholder="Ingrese el email"
+    />
+  </mat-form-field>
+
+  <!-- Rol -->
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Rol de usuario</mat-label>
+    <mat-select [(ngModel)]="rol" name="rol" required>
+      <mat-option *ngFor="let rol of tiposRoles" [value]="rol.id">
+        {{ rol.nombre }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="full-width" *ngIf="!isEditMode">
+    <mat-label>Contraseña</mat-label>
+    <input
+      matInput
+      [type]="hideContrasenea() ? 'password' : 'text'"
+      [(ngModel)]="contrasenea"
+      name="contrasenea"
+      required
+      placeholder="Ingrese la contraseña"
+      (input)="validatePassword()"
+    />
+    <button
+      mat-icon-button
+      matSuffix
+      type="button"
+      (click)="clickEventHideContrasenea($event)"
+      [attr.aria-label]="'Ocultar contrasenea'"
+      [attr.aria-pressed]="hideContrasenea()"
+    >
+      <mat-icon>{{
+        hideContrasenea() ? "visibility_off" : "visibility"
+      }}</mat-icon>
+    </button>
+  </mat-form-field>
+
+  <ul *ngIf="validationErrors.length > 0" class="error-list">
+    <li *ngFor="let error of validationErrors" class="error">
+      {{ error }}
+    </li>
+  </ul>
+
+  <mat-form-field appearance="fill" class="full-width" *ngIf="!isEditMode">
+    <mat-label>Repetir contraseña</mat-label>
+    <input
+      matInput
+      [type]="hideRContrasenea() ? 'password' : 'text'"
+      [(ngModel)]="contraseneaR"
+      name="contraseneaR"
+      required
+      placeholder="Ingrese nuevamente la contraseña"
+    />
+    <button
+      mat-icon-button
+      matSuffix
+      type="button"
+      (click)="clickEventRHideContrasenea($event)"
+      [attr.aria-label]="'Ocultar contrasenea'"
+      [attr.aria-pressed]="hideRContrasenea()"
+    >
+      <mat-icon>{{
+        hideRContrasenea() ? "visibility_off" : "visibility"
+      }}</mat-icon>
+    </button>
+  </mat-form-field>
+
+  <div
+    *ngIf="contrasenea != '' && contraseneaR != contrasenea && !isEditMode"
+    class="error-message"
+  >
+    <mat-icon>error</mat-icon> Las contrañas no coinciden.
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="guardarUsuario()">
+    Guardar
+  </button>
+</mat-dialog-actions>

@@ -1,0 +1,22 @@
+<div class="home-container">
+  <div *ngFor="let section of filteredMenuSections" class="section-container">
+    <h2 class="section-title">{{ section.title }}</h2>
+    <div class="card-list">
+      <mat-card
+        *ngFor="let item of section.items"
+        class="menu-card"
+        (click)="navigateTo(item.route)">
+        <mat-card-header>
+          <div class="icon-text-container">
+            <mat-icon [ngStyle]="{'color': item.iconColor}">{{ item.icon }}</mat-icon>
+            <span class="card-title">{{ item.label }}</span>
+          </div>
+        </mat-card-header>
+        <mat-card-content>
+          <p class="card-description">{{ item.description }}</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>
+

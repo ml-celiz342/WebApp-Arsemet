@@ -1,0 +1,63 @@
+<h2 class="titulo">{{ isEditMode ? "Editar TRegistro" : "Registrar mantenimiento" }}</h2>
+<mat-dialog-content [formGroup]="form">
+
+  <!-- Activo -->
+  <mat-form-field appearance="outline">
+    <mat-label>Activo</mat-label>
+    <mat-select formControlName="id_asset">
+      <mat-option *ngFor="let p of activos" [value]="p.id">{{ p.code }}</mat-option>
+    </mat-select>
+    <mat-error *ngIf="form.get('id_asset')?.hasError('required')">
+      Debe seleccionar una activo
+    </mat-error>
+  </mat-form-field>
+
+  <!-- Razon -->
+  <mat-form-field appearance="outline">
+    <mat-label>Razon</mat-label>
+    <input matInput formControlName="reason" placeholder="Ingrese el detalle"/>
+  </mat-form-field>
+
+  <!-- Detalle -->
+  <mat-form-field appearance="outline">
+    <mat-label>Detalle</mat-label>
+    <input matInput formControlName="detail" placeholder="Ingrese el detalle"/>
+  </mat-form-field>
+
+  <!-- Inicio -->
+  <div class="fecha-hora">
+    <!-- Fecha y hora inicio -->
+    <mat-form-field appearance="outline">
+      <mat-label>Fecha y Hora de Inicio</mat-label>
+      <input matInput type="datetime-local" formControlName="start" placeholder="Seleccione fecha y hora"/>
+    </mat-form-field>
+
+    <!-- Checkbox -->
+    <mat-checkbox (change)="setNow('start', $event.checked)">Ahora</mat-checkbox>
+
+  </div>
+
+  <!-- Fin (opcional) -->
+  <div class="fecha-hora">
+    <!-- Fecha y hora fin -->
+    <mat-form-field appearance="outline">
+      <mat-label>Fecha y Hora de Fin</mat-label>
+      <input matInput type="datetime-local" formControlName="end" placeholder="Seleccione fecha y hora"/>
+    </mat-form-field>
+
+    <!-- Checkbox -->
+    <mat-checkbox (change)="setNow('end', $event.checked)">Ahora</mat-checkbox>
+
+  </div>
+
+
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="guardarTarea()">Guardar</button>
+</mat-dialog-actions>
+
+
+
