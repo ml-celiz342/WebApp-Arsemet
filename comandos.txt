@@ -1,6 +1,6 @@
 //compilar angular en modo produccion
 ng build --configuration production
 
-docker build -t web_app_giorgi:0.0.1 .
+docker build -t web_app_arsemet:0.0.1 .
 
-docker save -o ./img_docker/web_app_giorgi_v0_0_1.tar web_app_giorgi:0.0.1
+docker save -o ./img_docker/web_app_arsemet_v0_0_1.tar web_app_arsemet:0.0.1
