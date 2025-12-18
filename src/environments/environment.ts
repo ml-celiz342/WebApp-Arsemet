@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://giorgi.colloquia.com.ar/api/',
+  apiUrl: 'https://arsemet.colloquia.com.ar/api/',
 };
