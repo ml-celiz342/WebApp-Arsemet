@@ -85,7 +85,7 @@ export class KpiComponent {
 
   constructor(
     private assetsService: AssetsService,
-    private dialog: MatDialog,
+    private dialog: MatDialog
   ) {}
 
   // Cargar datos
@@ -314,94 +314,197 @@ export class KpiComponent {
       opacity: 1,
     },
 
-    colors: [
-      CHART_COLORS.BASE, 
-      CHART_COLORS.DARK_2,
-    ],
+    colors: [CHART_COLORS.BASE, CHART_COLORS.DARK_2],
   };
 
   // ENERGÍA NO PRODUCTIVA
   chartNoProductiva: ChartOptions = {
-    series: [22, 40],
+    series: [22], // valor de energía no productiva del activo plegadora_1
 
     chart: {
-      type: 'radialBar',
-      height: 260,
+      type: 'radialBar' as ChartType,
+      height: 250,
     },
 
-    labels: ['Brazo', 'Soldadura'],
+    labels: ['Energía no productiva'],
 
-    colors: [
-      CHART_COLORS.BASE,
-      CHART_COLORS.DARK_1,
-    ],
+    colors: [CHART_COLORS.BASE],
 
     plotOptions: {
       radialBar: {
         hollow: {
-          size: '55%',
+          size: '65%', // mismo hollow que Utilización
         },
 
         track: {
-          background: '#eef2f6',
+          background: '#E3F1FB', // mismo track
         },
 
         dataLabels: {
           name: {
             show: true,
-            fontSize: '13px',
-            offsetY: -4,
+            fontSize: '14px',
+            offsetY: 10,
           },
 
           value: {
             show: true,
-            fontSize: '13px',
-            fontWeight: 600,
-            offsetY: 4,
-          },
-
-          total: {
-            show: true,
-            label: 'Total',
-            fontSize: '13px',
-            fontWeight: 600,
-            color: CHART_COLORS.BASE,
-
-            formatter: function (w) {
-              const values = w.globals.seriesTotals;
-              const avg =
-                values.reduce((a: number, b: number) => a + b, 0) /
-                values.length;
-              return `${avg.toFixed(0)}%`;
-            },
+            fontSize: '14px',
+            fontWeight: 700,
+            formatter: (val: number) => `${Math.round(val)}%`,
           },
         },
       },
     },
   };
 
-  // PIEZAS POR DÍA
-  chartPiezas: ChartOptions = {
+  // ACTOS INSEGUROS
+  chartActosInseguros: ChartOptions = {
     series: [
       {
-        name: 'Piezas',
-        data: [12, 19, 15, 22, 18, 24, 20],
+        name: 'Actos inseguros',
+        data: [1, 0, 2, 3, 1, 0, 2], // ejemplo
       },
     ] as ApexAxisChartSeries,
+
     chart: {
-      type: 'line' as ChartType,
-      height: '100%',
-      width: '100%',
+      type: 'bar' as ChartType,
+      height: 260,
       toolbar: {
         show: false,
       },
     },
+
     xaxis: {
       categories: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
     },
-    stroke: { width: 3 },
-    colors: [CHART_COLORS.BASE],
+
+    dataLabels: {
+      enabled: true,
+    },
+
+    colors: [CHART_COLORS.ERROR],
   };
+
+  // PIEZAS PRODUCIDAS POR HORA
+  chartPiezasHora: ChartOptions = {
+    series: [
+      {
+        name: 'Piezas / hora',
+        data: [14, 16, 18, 17, 20, 19, 21], // ejemplo
+      },
+    ] as ApexAxisChartSeries,
+
+    chart: {
+      type: 'line' as ChartType,
+      height: 260,
+      toolbar: {
+        show: false,
+      },
+    },
+
+    xaxis: {
+      categories: [
+        '08:00',
+        '09:00',
+        '10:00',
+        '11:00',
+        '12:00',
+        '13:00',
+        '14:00',
+      ],
+    },
+
+    stroke: {
+      width: 3,
+      curve: 'smooth',
+    },
+
+    colors: [CHART_COLORS.WARNING],
+  };
+
+// TIEMPO VS ESTADO (TIMELINE / GANTT)
+chartTiempoEstado: ChartOptions = {
+  series: [
+    {
+      name: 'Plegadora 1',
+      data: [
+        {
+          x: 'Apagado',
+          y: [
+            new Date('2025-01-10T06:00:00').getTime(),
+            new Date('2025-01-10T07:30:00').getTime(),
+          ],
+        },
+        {
+          x: 'Operativo',
+          y: [
+            new Date('2025-01-10T07:30:00').getTime(),
+            new Date('2025-01-10T11:00:00').getTime(),
+          ],
+        },
+        {
+          x: 'Operativo en vacío',
+          y: [
+            new Date('2025-01-10T11:00:00').getTime(),
+            new Date('2025-01-10T12:00:00').getTime(),
+          ],
+        },
+        {
+          x: 'Mantenimiento',
+          y: [
+            new Date('2025-01-10T12:00:00').getTime(),
+            new Date('2025-01-10T13:00:00').getTime(),
+          ],
+        },
+        {
+          x: 'Operativo',
+          y: [
+            new Date('2025-01-10T13:00:00').getTime(),
+            new Date('2025-01-10T15:00:00').getTime(),
+          ],
+        },
+      ],
+    },
+  ] as ApexAxisChartSeries,
+
+  chart: {
+    type: 'rangeBar' as ChartType,
+    height: '100%',
+    toolbar: {
+      show: false,
+    },
+  },
+
+  plotOptions: {
+    bar: {
+      horizontal: true,
+      barHeight: '60%',
+      distributed: true, // 🔑 clave para colorear por estado
+    },
+  },
+
+  xaxis: {
+    type: 'datetime',
+  },
+
+  dataLabels: {
+    enabled: false,
+  },
+
+  legend: {
+    position: 'top',
+  },
+
+  // colores en el mismo orden en que aparecen los estados
+  colors: [
+    CHART_COLORS.ERROR,     // Apagado
+    CHART_COLORS.WARNING,   // Operativo
+    CHART_COLORS.LIGHT_2,   // Operativo en vacío
+    CHART_COLORS.DARK_2,    // Mantenimiento
+    CHART_COLORS.WARNING,   // Operativo (segunda aparición)
+  ],
+};
 
   // CONTADORES
   piezasTotales = 130;

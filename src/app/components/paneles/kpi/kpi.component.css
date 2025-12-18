@@ -1,7 +1,7 @@
 /* GRID GENERAL */
 .kpi-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 15px;
 }
 
@@ -147,8 +147,8 @@ apx-chart {
 
 /* CÍRCULO VALOR */
 .circulo-valor {
-  width: 76px;
-  height: 76px;
+  width: 70px;
+  height: 70px;
   border-radius: 50%;
   background: #2F6DA4;
   display: flex;
