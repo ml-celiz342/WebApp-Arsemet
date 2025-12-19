@@ -103,7 +103,7 @@ export class TareasComponent {
 
   ngOnInit(): void {
     this.setRangoAHora();
-    this.loadDataTasks();
+    //this.loadDataTasks();
     this.loadDataAssets();
   }
 
@@ -111,6 +111,7 @@ export class TareasComponent {
     this.dataSourceTasks.paginator = this.paginatorTasks;
   }
 
+  /*
   // Carga de datos
   // Cargar datos de tareas
   async loadDataTasks() {
@@ -138,6 +139,7 @@ export class TareasComponent {
       this.dataSourceTasks.data = [];
     }
   }
+    */
 
   // Carga de datos de activos
   async loadDataAssets() {
@@ -190,7 +192,7 @@ export class TareasComponent {
           const endDate = new Date(this.range.end);
           endDate.setHours(23, 59, 59, 999);
           this.range.end = endDate;
-          await this.loadDataTasks();
+          //await this.loadDataTasks();
         }
       } else {
         this.dataSourceTasks.data = [];
@@ -199,10 +201,26 @@ export class TareasComponent {
     });
   }
 
+  /* AGREGAR + ADELANTE
+  // Visualizacion de planos en pdf de piezas
+  async onPlanosClick(row: Parts) {
+    if (!row.plan) {
+      alert('No hay planos para mostrar.');
+      return;
+    }
+
+    // Abrimos el diálogo, el componente interno se encarga de pedir el PDF
+    this.dialog.open(PiezaPlanosComponent, {
+      data: { id_part: row.id_part, title: row.name || 'Plano de pieza' },
+      width: '90vw',
+      height: '90vh',
+    });
+  }
+  */
+
   async recargar() {
     this.cargando = true;
-    // Recargar tablas de tareas, piezas y activos
-    await this.loadDataTasks();
+    //await this.loadDataTasks();
     await this.loadDataAssets();
     this.cargando = false;
   }

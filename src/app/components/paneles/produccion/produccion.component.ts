@@ -55,7 +55,6 @@ export class ProduccionComponent implements AfterViewInit {
     this.loadDataTiposActivos();
     this.loadDataStates();
     this.iniciarActualizacionEstados();
-
   }
 
   ngAfterViewInit() {
@@ -66,7 +65,6 @@ export class ProduccionComponent implements AfterViewInit {
     }, 100);
 
     this.dataSourceStates.paginator = this.paginatorStates;
-
   }
 
   // Carga de datos
@@ -84,7 +82,6 @@ export class ProduccionComponent implements AfterViewInit {
         duration: 3000,
       });
     }
-
   }
 
   // Load de tipos de activos
@@ -102,7 +99,6 @@ export class ProduccionComponent implements AfterViewInit {
         duration: 3000,
       });
     }
-
   }
 
   // Load de state
@@ -119,7 +115,7 @@ export class ProduccionComponent implements AfterViewInit {
       // Cargar estados y asignar: COORDENADAS Y TIPO DE ACTIVO segun ID
       this.estados = this.dataSourceStates.data.map((estado: any) => {
         // Tipo de activo
-        const activo = this.activos.find((a) => a.id === estado.id); // Buscar activo por id
+        const activo = this.obtenerActivoOBase(estado.id); // Buscar activo por id
         const idType = activo ? activo.id_type : null; // Id del tipo de activo
         const tipoActivo = this.tiposActivos.find((t) => t.id === idType); // Buscar tipo de activo por idType
         const type = tipoActivo ? tipoActivo.nombre : ''; // Nombre del tipo de activo
@@ -128,13 +124,11 @@ export class ProduccionComponent implements AfterViewInit {
           ...estado,
           type,
         };
-
       });
 
       setTimeout(() => {
         this.pintarEstadosEnSvg();
       }, 0);
-
     } catch (err) {
       this._snackBar.open('Error al obtener los estados', 'Cerrar', {
         duration: 3000,
@@ -175,7 +169,7 @@ export class ProduccionComponent implements AfterViewInit {
     // Agregar COORDENADAS y TIPO DE ACTIVO segun ID
     this.estados = response.map((estado: State) => {
       // Tipo de activo
-      const activo = this.activos.find((a) => a.id === estado.id); // Buscar activo por id
+      const activo = this.obtenerActivoOBase(estado.id); // Buscar activo por id
       const idType = activo ? activo.id_type : null; // Id del tipo de activo
       const tipoActivo = this.tiposActivos.find((t) => t.id === idType); // Buscar tipo de activo por idType
       const type = tipoActivo ? tipoActivo.nombre : ''; // Nombre del tipo de activo
@@ -184,9 +178,7 @@ export class ProduccionComponent implements AfterViewInit {
         ...estado,
         type,
       };
-
     });
-
   }
 
   ngOnDestroy(): void {
@@ -217,7 +209,6 @@ export class ProduccionComponent implements AfterViewInit {
         if (reset) reset.setAttribute('title', 'Restablecer');
       }, 200);
     }
-
   }
 
   // Eventos al tocar el area del plano
@@ -244,7 +235,6 @@ export class ProduccionComponent implements AfterViewInit {
         });
       }
     });
-
   }
 
   resetZoom() {
@@ -286,6 +276,21 @@ export class ProduccionComponent implements AfterViewInit {
     });
   }
 
+  // Helper para devolver al activo padre en caso de que no tenga activos hijos
+  private obtenerActivoOBase(id: number): any | null {
+    // Buscar sub-activo
+    const subActivo = this.activos.find((a) => a.id === id);
+
+    if (subActivo) {
+      return subActivo;
+    }
+
+    // Si no hay sub-activo, buscar activo base
+    const activoBase = this.activos.find((a) => a.id === id);
+
+    return activoBase ?? null;
+  }
+
   // MODAL
   // Variables
   modalAbierto = false;
@@ -305,5 +310,4 @@ export class ProduccionComponent implements AfterViewInit {
   cerrarModal() {
     this.modalAbierto = false;
   }
-
 }

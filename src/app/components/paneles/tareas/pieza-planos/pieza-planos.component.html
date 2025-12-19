@@ -1,0 +1,35 @@
+<h2 style="width: 100%; display: flex; justify-content: center; align-items: center; text-align: center; font-size: 1.4rem; font-weight: bold; color: #000000; padding-bottom: 15px;">
+  {{ data.title }}
+</h2>
+
+<mat-dialog-content style="padding: 15px 20px; display: flex; flex-direction: column; align-items: center;">
+
+  <ngx-extended-pdf-viewer
+    *ngIf="!loading && !errorCarga"
+    [src]="pdfSrc"
+    useBrowserLocale="true"
+    height="80vh"
+    [showSidebarButton]="true"
+    [showFindButton]="true"
+    [showPresentationModeButton]="true"
+    (pagesLoaded)="onLoadComplete()"
+    (error)="onError($event)"
+    style="width: 100%; max-width: 1200px; box-shadow: 0px 2px 10px rgba(0,0,0,0.2); border-radius: 4px;">
+  </ngx-extended-pdf-viewer>
+
+  <div *ngIf="loading" style="display: flex; justify-content: center; align-items: center; height: 80vh;">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <div *ngIf="errorCarga" style="color: red; font-weight: bold; text-align: center; margin-top: 20px;">
+    No se pudo cargar el PDF.
+  </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" style="display: flex; justify-content: flex-end; padding-top: 15px;">
+  <button mat-flat-button color="primary" (click)="close()"
+          style="border: none; border-radius: 50px; background-color:#1976d2; color:white; height:36px; padding:0 30px; font-size: 14px;">
+    Cerrar
+  </button>
+</mat-dialog-actions>

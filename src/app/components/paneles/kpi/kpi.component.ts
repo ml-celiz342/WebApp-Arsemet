@@ -283,7 +283,7 @@ export class KpiComponent {
     chart: {
       type: 'bar',
       height: '100%',
-      width: '100%',
+      width: '600px',
       stacked: true,
       toolbar: {
         show: false,
@@ -370,6 +370,7 @@ export class KpiComponent {
     chart: {
       type: 'bar' as ChartType,
       height: 260,
+      width: '600px',
       toolbar: {
         show: false,
       },
@@ -398,6 +399,7 @@ export class KpiComponent {
     chart: {
       type: 'line' as ChartType,
       height: 260,
+      width: '600px',
       toolbar: {
         show: false,
       },
@@ -423,88 +425,89 @@ export class KpiComponent {
     colors: [CHART_COLORS.WARNING],
   };
 
-// TIEMPO VS ESTADO (TIMELINE / GANTT)
-chartTiempoEstado: ChartOptions = {
-  series: [
-    {
-      name: 'Plegadora 1',
-      data: [
-        {
-          x: 'Apagado',
-          y: [
-            new Date('2025-01-10T06:00:00').getTime(),
-            new Date('2025-01-10T07:30:00').getTime(),
-          ],
-        },
-        {
-          x: 'Operativo',
-          y: [
-            new Date('2025-01-10T07:30:00').getTime(),
-            new Date('2025-01-10T11:00:00').getTime(),
-          ],
-        },
-        {
-          x: 'Operativo en vacío',
-          y: [
-            new Date('2025-01-10T11:00:00').getTime(),
-            new Date('2025-01-10T12:00:00').getTime(),
-          ],
-        },
-        {
-          x: 'Mantenimiento',
-          y: [
-            new Date('2025-01-10T12:00:00').getTime(),
-            new Date('2025-01-10T13:00:00').getTime(),
-          ],
-        },
-        {
-          x: 'Operativo',
-          y: [
-            new Date('2025-01-10T13:00:00').getTime(),
-            new Date('2025-01-10T15:00:00').getTime(),
-          ],
-        },
-      ],
+  // TIEMPO VS ESTADO (TIMELINE / GANTT)
+  chartTiempoEstado: ChartOptions = {
+    series: [
+      {
+        name: 'Plegadora 1',
+        data: [
+          {
+            x: 'Apagado',
+            y: [
+              new Date('2025-01-10T06:00:00').getTime(),
+              new Date('2025-01-10T07:30:00').getTime(),
+            ],
+          },
+          {
+            x: 'Operativo',
+            y: [
+              new Date('2025-01-10T07:30:00').getTime(),
+              new Date('2025-01-10T11:00:00').getTime(),
+            ],
+          },
+          {
+            x: 'Operativo en vacío',
+            y: [
+              new Date('2025-01-10T11:00:00').getTime(),
+              new Date('2025-01-10T12:00:00').getTime(),
+            ],
+          },
+          {
+            x: 'Mantenimiento',
+            y: [
+              new Date('2025-01-10T12:00:00').getTime(),
+              new Date('2025-01-10T13:00:00').getTime(),
+            ],
+          },
+          {
+            x: 'Operativo',
+            y: [
+              new Date('2025-01-10T13:00:00').getTime(),
+              new Date('2025-01-10T15:00:00').getTime(),
+            ],
+          },
+        ],
+      },
+    ] as ApexAxisChartSeries,
+
+    chart: {
+      type: 'rangeBar' as ChartType,
+      height: '100%',
+      width: '600px',
+      toolbar: {
+        show: false,
+      },
     },
-  ] as ApexAxisChartSeries,
 
-  chart: {
-    type: 'rangeBar' as ChartType,
-    height: '100%',
-    toolbar: {
-      show: false,
+    plotOptions: {
+      bar: {
+        horizontal: true,
+        barHeight: '60%',
+        distributed: true, // 🔑 clave para colorear por estado
+      },
     },
-  },
 
-  plotOptions: {
-    bar: {
-      horizontal: true,
-      barHeight: '60%',
-      distributed: true, // 🔑 clave para colorear por estado
+    xaxis: {
+      type: 'datetime',
     },
-  },
 
-  xaxis: {
-    type: 'datetime',
-  },
+    dataLabels: {
+      enabled: false,
+    },
 
-  dataLabels: {
-    enabled: false,
-  },
+    legend: {
+      position: 'top',
+    },
 
-  legend: {
-    position: 'top',
-  },
-
-  // colores en el mismo orden en que aparecen los estados
-  colors: [
-    CHART_COLORS.ERROR,     // Apagado
-    CHART_COLORS.WARNING,   // Operativo
-    CHART_COLORS.LIGHT_2,   // Operativo en vacío
-    CHART_COLORS.DARK_2,    // Mantenimiento
-    CHART_COLORS.WARNING,   // Operativo (segunda aparición)
-  ],
-};
+    // colores en el mismo orden en que aparecen los estados
+    colors: [
+      CHART_COLORS.ERROR, // Apagado
+      CHART_COLORS.WARNING, // Operativo
+      CHART_COLORS.LIGHT_2, // Operativo en vacío
+      CHART_COLORS.DARK_2, // Mantenimiento
+      CHART_COLORS.WARNING, // Operativo (segunda aparición)
+    ],
+  };
 
   // CONTADORES
   piezasTotales = 130;

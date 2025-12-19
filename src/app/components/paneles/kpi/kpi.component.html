@@ -52,22 +52,6 @@
       </apx-chart>
     </mat-card>
 
-    <!-- TIEMPO VS ESTADO -->
-    <mat-card class="card">
-      <h3>Tiempo vs Estado</h3>
-      <div class="chart-wrapper">
-        <apx-chart
-          [series]="chartTiempoEstado.series!"
-          [chart]="chartTiempoEstado.chart!"
-          [plotOptions]="chartTiempoEstado.plotOptions!"
-          [xaxis]="chartTiempoEstado.xaxis!"
-          [dataLabels]="chartTiempoEstado.dataLabels!"
-          [legend]="chartTiempoEstado.legend!"
-          [colors]="chartTiempoEstado.colors!">
-        </apx-chart>
-      </div>
-    </mat-card>
-
     <!-- ================= USO Y ENERGÍA ================= -->
 
     <!-- TASA DE UTILIZACIÓN -->
@@ -92,20 +76,6 @@
         [colors]="chartNoProductiva.colors!"
         [plotOptions]="chartNoProductiva.plotOptions!">
       </apx-chart>
-    </mat-card>
-
-    <!-- ENERGÍA TOTAL -->
-    <mat-card class="card">
-      <h3>Energía total consumida (kWh)</h3>
-      <div class="chart-wrapper">
-        <apx-chart
-          [series]="chartEnergia.series!"
-          [chart]="chartEnergia.chart!"
-          [xaxis]="chartEnergia.xaxis!"
-          [colors]="chartEnergia.colors!"
-          [legend]="chartEnergia.legend!">
-        </apx-chart>
-      </div>
     </mat-card>
 
     <!-- ================= KPIs OPERATIVOS ================= -->
@@ -153,9 +123,38 @@
 
     </mat-card>
 
-    <!-- ================= PRODUCCIÓN ================= -->
+    <!-- TIEMPO VS ESTADO -->
+    <mat-card class="card doble">
+      <h3>Tiempo vs Estado</h3>
+      <div class="chart-wrapper">
+        <apx-chart
+          [series]="chartTiempoEstado.series!"
+          [chart]="chartTiempoEstado.chart!"
+          [plotOptions]="chartTiempoEstado.plotOptions!"
+          [xaxis]="chartTiempoEstado.xaxis!"
+          [dataLabels]="chartTiempoEstado.dataLabels!"
+          [legend]="chartTiempoEstado.legend!"
+          [colors]="chartTiempoEstado.colors!">
+        </apx-chart>
+      </div>
+    </mat-card>
 
-    <mat-card class="card">
+    <!-- ENERGÍA TOTAL -->
+    <mat-card class="card doble">
+      <h3>Energía total consumida (kWh)</h3>
+      <div class="chart-wrapper">
+        <apx-chart
+          [series]="chartEnergia.series!"
+          [chart]="chartEnergia.chart!"
+          [xaxis]="chartEnergia.xaxis!"
+          [colors]="chartEnergia.colors!"
+          [legend]="chartEnergia.legend!">
+        </apx-chart>
+      </div>
+    </mat-card>
+
+    <!-- ================= PRODUCCIÓN ================= -->
+    <mat-card class="card doble">
       <h3>Piezas producidas por hora</h3>
       <div class="chart-wrapper">
         <apx-chart
@@ -169,8 +168,7 @@
     </mat-card>
 
     <!-- ================= SEGURIDAD ================= -->
-
-    <mat-card class="card">
+    <mat-card class="card doble">
       <h3>Actos Inseguros Detectados</h3>
       <div class="chart-wrapper">
         <apx-chart
