@@ -89,21 +89,36 @@ export class EvidenciaComponent {
 
   // Load de evidencias por filtro
   async loadDataEvidenciasByFilter() {
-
     // Resetear arreglos
     this.evidenciasPower = [];
     this.dataSourceEvidencias.data = [];
 
+    if (!this.selectedAsset || !this.selectedAsset.id) {
+      return;
+    }
+    /* ANTES
     if (!this.selectedAsset?.subAssets?.length) {
       return;
     }
+      */
 
     const desde = this.range.start.toISOString();
     const hasta = this.range.end.toISOString();
 
-    try {
-      const requests = this.selectedAsset.subAssets.map((sa) => {
+    // NUEVO
+    // Decidir qué activos consultar
+    const assetsAConsultar =
+      this.selectedAsset.subAssets && this.selectedAsset.subAssets.length > 0
+        ? this.selectedAsset.subAssets
+        : [
+            {
+              id: this.selectedAsset.id,
+              type: 'tablero_electrico', // o el tipo que corresponda
+            },
+          ];
 
+    try {
+      const requests = assetsAConsultar.map((sa) => {
         console.log(`→ Llamando API para subAsset ${sa.id} (${sa.type})`);
 
         return lastValueFrom(
@@ -121,7 +136,6 @@ export class EvidenciaComponent {
         if (!res) return;
         this.evidenciasPower.push(res);
       });
-
     } catch (error) {
       console.error('Error filtrando evidencias', error);
       this._snackBar.open('Error filtrando evidencias', 'Cerrar', {

@@ -115,7 +115,7 @@ export class ProduccionComponent implements AfterViewInit {
       // Cargar estados y asignar: COORDENADAS Y TIPO DE ACTIVO segun ID
       this.estados = this.dataSourceStates.data.map((estado: any) => {
         // Tipo de activo
-        const activo = this.obtenerActivoOBase(estado.id); // Buscar activo por id
+        const activo = this.activos.find((a) => a.id === estado.id); // Buscar activo por id
         const idType = activo ? activo.id_type : null; // Id del tipo de activo
         const tipoActivo = this.tiposActivos.find((t) => t.id === idType); // Buscar tipo de activo por idType
         const type = tipoActivo ? tipoActivo.nombre : ''; // Nombre del tipo de activo
@@ -169,7 +169,7 @@ export class ProduccionComponent implements AfterViewInit {
     // Agregar COORDENADAS y TIPO DE ACTIVO segun ID
     this.estados = response.map((estado: State) => {
       // Tipo de activo
-      const activo = this.obtenerActivoOBase(estado.id); // Buscar activo por id
+      const activo = this.activos.find((a) => a.id === estado.id); // Buscar activo por id
       const idType = activo ? activo.id_type : null; // Id del tipo de activo
       const tipoActivo = this.tiposActivos.find((t) => t.id === idType); // Buscar tipo de activo por idType
       const type = tipoActivo ? tipoActivo.nombre : ''; // Nombre del tipo de activo
@@ -274,21 +274,6 @@ export class ProduccionComponent implements AfterViewInit {
       const clase = this.estadoClase(estado.state);
       elemento.classList.add(`estado-${clase}`);
     });
-  }
-
-  // Helper para devolver al activo padre en caso de que no tenga activos hijos
-  private obtenerActivoOBase(id: number): any | null {
-    // Buscar sub-activo
-    const subActivo = this.activos.find((a) => a.id === id);
-
-    if (subActivo) {
-      return subActivo;
-    }
-
-    // Si no hay sub-activo, buscar activo base
-    const activoBase = this.activos.find((a) => a.id === id);
-
-    return activoBase ?? null;
   }
 
   // MODAL
