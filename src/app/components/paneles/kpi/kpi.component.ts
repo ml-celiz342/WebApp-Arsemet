@@ -79,6 +79,8 @@ export class KpiComponent {
   selectedAsset: FiltroAssets = { id: 0, code: '' };
   assetsFiltro: FiltroAssets[] = [];
 
+  selectedAssetIds: number[] = [];
+
   cargando = false;
   perDay = false;
   cdr: any;
@@ -127,7 +129,7 @@ export class KpiComponent {
           value: item.id,
           viewValue: item.code,
         })),
-        selectedAssets: this.nombreAssets, // ahora es array
+        selectedAssets: this.selectedAssetIds,
       },
     });
 
@@ -141,6 +143,8 @@ export class KpiComponent {
       const selectedIds: number[] = result.selectedOptions.map((x: string) =>
         Number(x)
       );
+
+      this.selectedAssetIds = result.selectedOptions ?? [];
 
       const selectedAssets = this.assetsFiltro.filter((item) =>
         selectedIds.includes(item.id)

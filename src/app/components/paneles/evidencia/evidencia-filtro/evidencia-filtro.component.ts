@@ -62,7 +62,7 @@ export class EvidenciaFiltroComponent {
       end: new Date(this.data.end),
     });
 
-    this.selectedValue = this.data.selectedAsset || []; // Asegurar array siempre
+    this.selectedValue = this.data.selectedAssets || [];
   }
 
   close(): void {

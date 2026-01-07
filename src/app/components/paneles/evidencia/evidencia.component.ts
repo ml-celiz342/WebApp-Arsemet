@@ -39,7 +39,7 @@ import { lastValueFrom } from 'rxjs';
     MatTooltipModule,
     GraficoPotenciaComponent,
     GraficoPotenciaPorDiaComponent,
-],
+  ],
   providers: [DatePipe],
   templateUrl: './evidencia.component.html',
   styleUrl: './evidencia.component.css',
@@ -52,6 +52,8 @@ export class EvidenciaComponent {
   range = { start: new Date(), end: new Date() };
   selectedAsset: FiltroAssets = { id: 0, code: '' };
   assetsFiltro: FiltroAssets[] = [];
+
+  selectedAssetIds: number[] = [];
 
   cargando = false;
   perDay = false;
@@ -171,7 +173,7 @@ export class EvidenciaComponent {
           value: item.id,
           viewValue: item.code,
         })),
-        selectedAssets: this.nombreAssets,
+        selectedAssets: this.selectedAssetIds,
       },
     });
 
@@ -184,6 +186,8 @@ export class EvidenciaComponent {
       const selectedIds: number[] = result.selectedOptions.map((x: string) =>
         Number(x)
       );
+
+      this.selectedAssetIds = result.selectedOptions ?? [];
 
       const selectedAssets = this.assetsFiltro.filter((item) =>
         selectedIds.includes(item.id)
@@ -202,7 +206,6 @@ export class EvidenciaComponent {
           id: sa.id_asset,
           type: sa.assettype,
         }));
-
       }
 
       // Ajuste de fechas (igual que antes)
