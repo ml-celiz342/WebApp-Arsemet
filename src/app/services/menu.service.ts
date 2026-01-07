@@ -36,7 +36,7 @@ export class MenuService {
           route: '/mantenimiento',
           description: 'Registro de mantenimientos realizados.',
           icon: 'build',
-          iconColor: CHART_COLORS.BASE,
+          iconColor: CHART_COLORS.WARNING,
           permissions: [{ module: 'maintenance', action: 'read' }],
           panelPermission: 'paneles-mantenimiento',
         },

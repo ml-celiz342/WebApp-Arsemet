@@ -9,10 +9,25 @@
           {{ range.end | date : "dd/MM/yyyy HH:mm:ss" }}
         </span>
         <div class="filtro-botones">
+
           <mat-spinner *ngIf="cargando"></mat-spinner>
+
+          <button
+            mat-icon-button
+            (click)="agregarEditarMantenimiento()"
+            *ngIf="
+              authService.hasPermission('maintenance', 'edit') &&
+              authService.hasPermission('assets', 'read')
+            "
+            matTooltip="Agregar mantenimiento"
+          >
+            <mat-icon class="agregar-icono">add_circle</mat-icon>
+          </button>
+
           <button mat-icon-button matTooltip="Recargar" (click)="recargar()">
             <mat-icon>refresh</mat-icon>
           </button>
+
           <button
             mat-icon-button
             matTooltip="Aplicar filtros"
@@ -20,6 +35,7 @@
           >
             <mat-icon>filter_list</mat-icon>
           </button>
+
         </div>
       </div>
     </mat-card>
@@ -80,15 +96,6 @@
               <th mat-header-cell *matHeaderCellDef>
                 <div class="acciones-cell">
                   Acción
-                  <button
-                    mat-icon-button
-                    (click)="agregarEditarMantenimiento()"
-                    *ngIf="authService.hasPermission('maintenance', 'write') && authService.hasPermission('assets', 'read')"
-                    matTooltip="Agregar registro de mantenimiento"
-
-                  >
-                    <mat-icon class="agregar-icono">add_circle</mat-icon>
-                  </button>
                 </div>
               </th>
               <td mat-cell *matCellDef="let element">
@@ -102,7 +109,7 @@
                       authService.hasPermission('assets', 'read') &&
                       authService.hasPermission('maintenance', 'edit')
                     "
-                    matTooltip="Editar registro de mantenimiento"
+                    matTooltip="Editar mantenimiento"
                   >
                     <mat-icon [ngClass]="{ 'editar-icono': !element.low_date }"
                       >edit</mat-icon
