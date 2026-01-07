@@ -44,7 +44,7 @@ export class KpiFiltroComponent {
   });
   options: any[] = [];
 
-  selectedValue: any[] = []; // Arreglo para seleccionar varios
+  selectedValue: number | null = null; // 1 sol
 
   constructor(
     public dialogRef: MatDialogRef<KpiFiltroComponent>,
@@ -58,7 +58,7 @@ export class KpiFiltroComponent {
       end: new Date(this.data.end),
     });
 
-    this.selectedValue = this.data.selectedAssets || [];
+    this.selectedValue = this.data.selectedAssets?.[0] ?? null;
   }
 
   close(): void {
@@ -68,8 +68,7 @@ export class KpiFiltroComponent {
   applyFilters(): void {
     this.dialogRef.close({
       dateRange: this.range.value,
-
-      selectedOptions: this.selectedValue,
+      selectedOptions: this.selectedValue !== null ? [this.selectedValue] : [],
     });
   }
 }

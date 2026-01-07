@@ -83,8 +83,9 @@
                   <button
                     mat-icon-button
                     (click)="agregarEditarMantenimiento()"
-                    *ngIf="authService.hasPermission('maintenance', 'write')"
+                    *ngIf="authService.hasPermission('maintenance', 'write') && authService.hasPermission('assets', 'read')"
                     matTooltip="Agregar registro de mantenimiento"
+
                   >
                     <mat-icon class="agregar-icono">add_circle</mat-icon>
                   </button>

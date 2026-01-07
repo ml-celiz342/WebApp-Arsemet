@@ -42,13 +42,13 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
   styleUrl: './evidencia-filtro.component.css',
 })
 export class EvidenciaFiltroComponent {
-    range = new FormGroup({
+  range = new FormGroup({
     start: new FormControl(),
     end: new FormControl(),
   });
   options: any[] = [];
 
-  selectedValue: any[] = []; // Arreglo para seleccionar varios
+  selectedValue: number | null = null; // 1 solo
 
   constructor(
     public dialogRef: MatDialogRef<EvidenciaFiltroComponent>,
@@ -62,7 +62,7 @@ export class EvidenciaFiltroComponent {
       end: new Date(this.data.end),
     });
 
-    this.selectedValue = this.data.selectedAssets || [];
+    this.selectedValue = this.data.selectedAssets?.[0] ?? null;
   }
 
   close(): void {
@@ -72,8 +72,7 @@ export class EvidenciaFiltroComponent {
   applyFilters(): void {
     this.dialogRef.close({
       dateRange: this.range.value,
-
-      selectedOptions: this.selectedValue,
+      selectedOptions: this.selectedValue !== null ? [this.selectedValue] : [],
     });
   }
 }

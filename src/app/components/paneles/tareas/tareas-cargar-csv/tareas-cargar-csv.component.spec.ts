@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PiezaPlanosComponent } from './pieza-planos.component';
+import { TareasCargarCsvComponent } from './tareas-cargar-csv.component';
 
-describe('PiezaPlanosComponent', () => {
-  let component: PiezaPlanosComponent;
-  let fixture: ComponentFixture<PiezaPlanosComponent>;
+describe('TareasCargarCsvComponent', () => {
+  let component: TareasCargarCsvComponent;
+  let fixture: ComponentFixture<TareasCargarCsvComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PiezaPlanosComponent]
+      imports: [TareasCargarCsvComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(PiezaPlanosComponent);
+    fixture = TestBed.createComponent(TareasCargarCsvComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -15,6 +15,17 @@
           <!-- Spinner -->
           <mat-spinner *ngIf="cargando"></mat-spinner>
 
+          <!-- Cargar csv -->
+          <!-- *ngIf="authService.hasPermission('tasks', 'write')" -->
+          <button
+            mat-icon-button
+            (click)="cargarCsv()"
+
+            matTooltip="Cargar archivo csv"
+          >
+            <mat-icon class="agregar-icono">add_circle</mat-icon>
+          </button>
+
           <!-- Boton recargar -->
           <button mat-icon-button (click)="recargar()" matTooltip="Recargar tareas">
             <mat-icon>refresh</mat-icon>

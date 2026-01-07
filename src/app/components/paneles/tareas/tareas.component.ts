@@ -29,6 +29,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { environment } from '../../../../environments/environment';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
+import { CsvService } from '../../../services/csv.service';
+import { TareasCargarCsvComponent } from './tareas-cargar-csv/tareas-cargar-csv.component';
 
 @Component({
   selector: 'app-tareas',
@@ -96,6 +98,7 @@ export class TareasComponent {
     private dialog: MatDialog,
     private tasksService: TasksService,
     private assetsService: AssetsService,
+    private csvService: CsvService,
     public authService: AuthService,
     private dialogDescripcion: MatDialog,
     private datePipe: DatePipe
@@ -201,22 +204,25 @@ export class TareasComponent {
     });
   }
 
-  /* AGREGAR + ADELANTE
-  // Visualizacion de planos en pdf de piezas
-  async onPlanosClick(row: Parts) {
-    if (!row.plan) {
-      alert('No hay planos para mostrar.');
-      return;
-    }
+  /* Cargar csv */
+  cargarCsv(): void {
+    const dialogRef = this.dialog.open(TareasCargarCsvComponent, {
+      width: '400px',
+    });
 
-    // Abrimos el diálogo, el componente interno se encarga de pedir el PDF
-    this.dialog.open(PiezaPlanosComponent, {
-      data: { id_part: row.id_part, title: row.name || 'Plano de pieza' },
-      width: '90vw',
-      height: '90vh',
+    dialogRef.afterClosed().subscribe((file: File | undefined) => {
+      if (!file) return;
+
+      this.csvService.uploadCsv(file).subscribe({
+        next: () => {
+          alert('CSV cargado correctamente');
+        },
+        error: (err) => {
+          alert(err?.error?.descripcion || 'Error al cargar CSV');
+        },
+      });
     });
   }
-  */
 
   async recargar() {
     this.cargando = true;
