@@ -1,47 +1,40 @@
-export interface TareaOperario {
-  id_task: number;
-  quantity: number;
-  detail: string;
-  start: Date; // date
-  end?: Date | null;
-  load_date: Date;
-  update_date?: Date | null;
+export interface Tarea {
+  id: number
+
+  // Relaciones
   id_asset: number;
-  id_part: number;
-  id_user: number;
+  id_data_csv: number;
 
-  // Datos del activo
-  asset_code: string;
-  asset_observation: string;
+  // Ciclo
+  cycle_start_est?: Date | null;
+  cycle_end?: Date | null;
+  cycle_duration?: number | null;
 
-  // Datos de la pieza
-  part_code: string;
-  part_name: string;
+  // Lote
+  batch_weight?: number | null;
 
-  // Datos del usuario
-  user_email: string;
-  user_name: string;
-  user_lastname: string;
+  // Piezas
+  planned_qty?: number | null;
+  good_qty?: number | null;
+  bad_qty?: number | null;
+  part_length?: number | null;
+  part_width?: number | null;
+  part_weight?: number | null;
+  user_qty?: number | null;
+
+  // Material
+  material_thickness?: number | null;
+  material_description?: string | null;
+
+  // Artículo
+  article_code: string;
+
+  // Usuarios
+  system_user?: string | null;
+
+  // Plegado
+  people_count?: number | null;
+  hits_count?: number | null;
+  tool_change_count?: number | null;
 }
-
-export interface NewTareaOperario {
-  quantity: number;
-  detail?: string;
-  start: Date;
-  end?: Date | null;
-  id_asset: number;
-  id_part: number;
-  id_user: number;
-}
-
-export interface TareaOperarioUpdate {
-  quantity?: number;
-  detail?: string;
-  start?: Date;
-  end?: Date | null;
-  id_asset?: number;
-  id_part?: number;
-  id_user?: number;
-}
-
 

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { EMPTY, expand, map, Observable, reduce, throwError } from 'rxjs';
-import {TareaOperario, NewTareaOperario, TareaOperarioUpdate} from '../models/tasks';
+import { EMPTY, expand, Observable, reduce} from 'rxjs';
+import {Tarea} from '../models/tasks';
 
 
 @Injectable({
@@ -14,7 +14,11 @@ export class TasksService {
   constructor(private http: HttpClient) {}
 
   // Obtener todas las tareas
-  getTasks(desde: string, hasta: string): Observable<TareaOperario[]> {
+  getTasks(
+    desde: string,
+    hasta: string,
+    id_activos: number[],
+  ): Observable<Tarea[]> {
     let params = new HttpParams();
 
     if (desde) {
@@ -25,9 +29,15 @@ export class TasksService {
       params = params.set('to', hasta);
     }
 
+    if (id_activos && id_activos.length > 0) {
+      id_activos.forEach((id) => {
+        params = params.append('id_asset', id.toString());
+      });
+    }
+
     params = params.set('limit', 100);
 
-    return this.http.get<any>(this.apiURLTasks, {params}).pipe(
+    return this.http.get<any>(this.apiURLTasks, { params }).pipe(
       expand((response) => {
         if (
           response?.pagination?.current_page !== undefined &&
@@ -44,32 +54,57 @@ export class TasksService {
         }
         return EMPTY;
       }),
-      reduce<TareaOperario[], any>((acc, response) => {
+      reduce<Tarea[], any>((acc, response) => {
         if (
           response &&
           typeof response === 'object' &&
           'data' in response &&
           Array.isArray(response.data)
         ) {
-          const mappedData = response.data.map((item: any) => ({
-            id_task: item.id_task,
-            quantity: item.quantity,
-            detail: item.detail,
-            start: item.start,
-            end: item.end,
-            load_date: item.load_date,
-            update_date: item.update_date,
-            id_asset: item.id_asset,
-            id_part: item.id_part,
-            id_user: item.id_user,
-            asset_code: item.asset_code,
-            asset_observation: item.asset_observation,
-            part_code: item.part_code,
-            part_name: item.part_name,
-            user_email: item.user_email,
-            user_name: item.user_name,
-            user_lastname: item.user_lastname,
-          }));
+          const mappedData = response.data.map(
+            (item: any): Tarea => ({
+              id: item.id,
+
+              // Relaciones
+              id_asset: item.id_asset,
+              id_data_csv: item.id_data_csv,
+
+              // Ciclo
+              cycle_start_est: item.cycle_start_est
+                ? new Date(item.cycle_start_est)
+                : null,
+              cycle_end: item.cycle_end ? new Date(item.cycle_end) : null,
+              cycle_duration: item.cycle_duration ?? null,
+
+              // Lote
+              batch_weight: item.batch_weight ?? null,
+
+              // Piezas
+              planned_qty: item.planned_qty ?? null,
+              good_qty: item.good_qty ?? null,
+              bad_qty: item.bad_qty ?? null,
+              part_length: item.part_length ?? null,
+              part_width: item.part_width ?? null,
+              part_weight: item.part_weight ?? null,
+              user_qty: item.user_qty ?? null,
+
+              // Material
+              material_thickness: item.material_thickness ?? null,
+              material_description: item.material_description ?? null,
+
+              // Artículo
+              article_code: item.article_code,
+
+              // Usuarios
+              system_user: item.system_user ?? null,
+
+              // Plegado
+              people_count: item.people_count ?? null,
+              hits_count: item.hits_count ?? null,
+              tool_change_count: item.tool_change_count ?? null,
+            })
+          );
+
           acc.push(...mappedData);
         }
         return acc;
@@ -77,6 +112,7 @@ export class TasksService {
     );
   }
 
+  /*
   // Obtener tarea por id?
   getTaskById(id: number): Observable<TareaOperario> {
     const url = `${this.apiURLTasks}/${id}`;
@@ -214,4 +250,5 @@ export class TasksService {
       .delete<void>(baseUrl, { observe: 'response' })
       .pipe(map((response) => response.status));
   }
+  */
 }

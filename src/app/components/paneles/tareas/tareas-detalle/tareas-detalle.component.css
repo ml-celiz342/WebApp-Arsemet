@@ -1,0 +1,31 @@
+.detalle-simple {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fila {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.fila span {
+  color: #666;
+  font-size: 15px;
+}
+
+.fila b {
+  font-size: 15px;
+  color: #222;
+  margin-left: auto;
+  text-align: right;
+}
+
+h2[mat-dialog-title] {
+  font-weight: 600;
+  font-size: 20px;
+  text-align: center;
+}

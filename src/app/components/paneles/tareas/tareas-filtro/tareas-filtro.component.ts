@@ -41,12 +41,13 @@ import { TareasComponent } from '../tareas.component';
   styleUrl: './tareas-filtro.component.css',
 })
 export class TareasFiltroComponent {
-    range = new FormGroup({
+  range = new FormGroup({
     start: new FormControl(),
     end: new FormControl(),
   });
-  options: any[] = [];
-  selectedValue: any;
+
+  activos = new FormControl('');
+  activosList: string[] = [];
 
   constructor(
     public dialogRef: MatDialogRef<TareasFiltroComponent>,
@@ -54,12 +55,14 @@ export class TareasFiltroComponent {
   ) {}
 
   ngOnInit() {
-    this.options = this.data.opciones;
-    this.range.patchValue({
-      start: new Date(this.data.start),
-      end: new Date(this.data.end),
-    });
-    this.selectedValue = this.data.selectedAsset;
+    if (this.data) {
+      this.activosList = this.data.activosList;
+      this.activos.setValue(this.data.activos);
+      this.range.patchValue({
+        start: new Date(this.data.start),
+        end: new Date(this.data.end),
+      });
+    }
   }
 
   close(): void {
@@ -69,7 +72,7 @@ export class TareasFiltroComponent {
   applyFilters(): void {
     this.dialogRef.close({
       dateRange: this.range.value,
-      selectedOption: this.selectedValue,
+      activos: this.activos.value,
     });
   }
 }

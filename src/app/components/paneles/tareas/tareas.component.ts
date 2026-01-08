@@ -15,20 +15,19 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { lastValueFrom } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TasksService } from '../../../services/tasks.service';
-import { TareaOperario } from '../../../models/tasks';
+import { Tarea} from '../../../models/tasks';
 import { AuthService } from '../../../auth.service';
 import { MatDialog } from '@angular/material/dialog';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, MatOptionModule } from '@angular/material/core';
 import { TareasFiltroComponent } from './tareas-filtro/tareas-filtro.component';
-import { FiltroTareas } from '../../../models/filtro-tareas';
 import { AssetsService } from '../../../services/assets.service';
 import { FiltroAssets } from '../../../models/filtro-assets';
 import { MatSelectModule } from '@angular/material/select';
-import { PdfViewerModule } from 'ng2-pdf-viewer';
-import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { CsvService } from '../../../services/csv.service';
 import { TareasCargarCsvComponent } from './tareas-cargar-csv/tareas-cargar-csv.component';
+import { TareasDetalleComponent } from './tareas-detalle/tareas-detalle.component';
+import { MatSort, MatSortHeader, MatSortModule } from '@angular/material/sort';
 
 @Component({
   selector: 'app-tareas',
@@ -50,8 +49,9 @@ import { TareasCargarCsvComponent } from './tareas-cargar-csv/tareas-cargar-csv.
     MatNativeDateModule,
     MatSelectModule,
     MatOptionModule,
-    PdfViewerModule,
-    NgxExtendedPdfViewerModule,
+    MatSortHeader,
+    MatSort,
+    MatSortModule,
   ],
   providers: [DatePipe],
   templateUrl: './tareas.component.html',
@@ -63,31 +63,37 @@ export class TareasComponent {
 
   // Filtro por fechas
   range = { start: new Date(), end: new Date() };
-  selectedTarea: FiltroTareas = { id_task: 0, detail: '' };
-  tareasFiltro: FiltroTareas[] = [];
 
-  // Activos
-  assets: FiltroAssets[] = [];
+  // Activos filtro
+  assetsFiltro: FiltroAssets[] = [];
+
+  // Mapa para id_activo - code
+  assetCodeMap = new Map<number, string>();
 
   // Para metodo agregar/ editar tareas
-  activos: any[] = [];
+  activos: number[] = [];
 
   // Ordenar por fecha
   ordenFecha: 'asc' | 'desc' = 'desc';
 
   // Columnas tabla de tareas
   displayedColumnsTasks: string[] = [
-    'product',
-    'estimated_start_time',
-    'actual_start_time',
-    'estimated_end_time',
-    'actual_end_time',
-    'estimated_duration',
-    'actual_duration',
-    'client',
+    'codigo_activo',
+    'codigo_articulo',
+    'ciclo_fecha_fin',
+    'ciclo_fecha_inicio_est',
+    'ciclo_fecha_inicio_medida',
+    'pza_cant_prog',
+    'pza_cant_buenas',
+    'pza_cant_malas',
+    'pza_cant_usuario',
+    'detalle',
   ];
-  dataSourceTasks = new MatTableDataSource<TareaOperario>([]);
+  dataSourceTasks = new MatTableDataSource<Tarea>([]);
   @ViewChild('paginatorTasks') paginatorTasks!: MatPaginator;
+
+  @ViewChild(MatSort)
+  sort!: MatSort;
 
   private _snackBar = inject(MatSnackBar);
 
@@ -104,15 +110,25 @@ export class TareasComponent {
 
   ngOnInit(): void {
     this.setRangoAHora();
-    //this.loadDataTasks();
+    this.loadDataTasks();
     this.loadDataAssets();
   }
 
   ngAfterViewInit() {
     this.dataSourceTasks.paginator = this.paginatorTasks;
+    this.dataSourceTasks.sort = this.sort;
+
+    // Ordenar por codigo articulo
+    this.dataSourceTasks.sortingDataAccessor = (item, property) => {
+      switch (property) {
+        case 'codigo_articulo':
+          return item.article_code?.toLowerCase() ?? '';
+        default:
+          return (item as any)[property];
+      }
+    };
   }
 
-  /*
   // Carga de datos
   // Cargar datos de tareas
   async loadDataTasks() {
@@ -123,10 +139,7 @@ export class TareasComponent {
 
     try {
       const response = await lastValueFrom(
-        this.tasksService.getTasks(
-          formattedStart, // desde
-          formattedEnd
-        )
+        this.tasksService.getTasks(formattedStart, formattedEnd, this.activos)
       );
       if (response.length !== 0) {
         this.dataSourceTasks.data = response;
@@ -140,20 +153,25 @@ export class TareasComponent {
       this.dataSourceTasks.data = [];
     }
   }
-    */
 
   // Carga de datos de activos
   async loadDataAssets() {
     try {
-      const response = await lastValueFrom(this.assetsService.getAssets());
+      const response = await lastValueFrom(
+        this.assetsService.getFiltroAssets(true)
+      );
       if (response.length !== 0) {
-        this.assets = response;
-      } else {
-        this.assets = [];
-      }
+        this.assetsFiltro = response;
+        this.activos = this.assetsFiltro.map((item) => item.id);
 
-      // Cargar activos
-      this.activos = this.assets;
+        // Mapa id -> code
+        this.assetCodeMap.clear();
+        this.assetsFiltro.forEach((asset) => {
+          this.assetCodeMap.set(asset.id, asset.code);
+        });
+      } else {
+        this.assetsFiltro = [];
+      }
     } catch (err) {
       this._snackBar.open('Error al obtener los datos', 'Cerrar', {
         duration: 3000,
@@ -169,18 +187,17 @@ export class TareasComponent {
     this.range.end.setHours(23, 59, 59, 0);
   }
 
-  // Filtrado por fecha
+  // Filtros
   async openDialog(): Promise<void> {
     const dialogRef = this.dialog.open(TareasFiltroComponent, {
       width: '400px',
       data: {
         start: this.range.start,
         end: this.range.end,
-        opciones: this.tareasFiltro.map((item) => ({
-          value: item.id_task,
-          viewValue: item.detail,
-        })),
-        selectedTarea: this.selectedTarea.id_task,
+        activos: this.assetsFiltro
+          .filter((item) => this.activos.includes(item.id))
+          .map((item) => item.code),
+        activosList: this.assetsFiltro.map((item) => item.code),
       },
     });
 
@@ -188,17 +205,22 @@ export class TareasComponent {
       if (result) {
         this.cargando = true;
         this.range = result.dateRange;
-        if (this.range.start && this.range.end) {
-          this.range.start.setHours(0, 0, 0, 0);
-          const endDate = new Date(this.range.end);
-          endDate.setHours(23, 59, 59, 999);
-          this.range.end = endDate;
-          //await this.loadDataTasks();
+        this.activos = this.assetsFiltro
+          .filter((item) => result.activos.includes(item.code))
+          .map((item) => item.id);
+        if (this.activos.length > 0) {
+          if (this.range.start && this.range.end) {
+            this.range.start.setHours(0, 0, 0, 0);
+            const endDate = new Date(this.range.end);
+            endDate.setHours(23, 59, 59, 999);
+            this.range.end = endDate;
+            await this.loadDataTasks();
+          }
+        } else {
+          this.dataSourceTasks.data = [];
         }
-      } else {
-        this.dataSourceTasks.data = [];
+        this.cargando = false;
       }
-      this.cargando = false;
     });
   }
 
@@ -222,10 +244,24 @@ export class TareasComponent {
     });
   }
 
+  // Detalle de piezas
+  async onDetalleClick(row: Tarea) {
+    this.dialogDescripcion.open(TareasDetalleComponent, {
+      data: row,
+      width: '800px',
+    });
+  }
+
+  // Obtener codigo de activo por id
+  getAssetCode(idActivo: number): string {
+    return this.assetCodeMap.get(idActivo) ?? '-';
+  }
+
   async recargar() {
     this.cargando = true;
-    //await this.loadDataTasks();
-    await this.loadDataAssets();
+
+    await this.loadDataTasks();
+
     this.cargando = false;
   }
 }

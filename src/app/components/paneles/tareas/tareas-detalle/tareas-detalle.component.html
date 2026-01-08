@@ -1,0 +1,62 @@
+<h2 mat-dialog-title>Detalle</h2>
+
+<mat-dialog-content class="detalle-simple">
+
+  <div class="fila">
+    <span>Peso Total</span>
+    <b>{{ data.batch_weight ?? '—' }}</b>
+  </div>
+
+  <div class="fila">
+    <span>Largo de la Pieza</span>
+    <b>{{ data.part_length ?? '—' }}</b>
+  </div>
+
+  <div class="fila">
+    <span>Ancho de la Pieza</span>
+    <b>{{ data.part_width ?? '—' }}</b>
+  </div>
+
+  <div class="fila">
+    <span>Peso de la Pieza</span>
+    <b>{{ data.part_weight ?? '—' }}</b>
+  </div>
+
+  <div class="fila">
+    <span>Espesor del Material</span>
+    <b>{{ data.material_thickness ?? '—' }}</b>
+  </div>
+
+  <div class="fila">
+    <span>Descripción del Material</span>
+    <b>{{ data.material_description ?? '—' }}</b>
+  </div>
+
+  <div class="fila">
+    <span>Operario</span>
+    <b>{{ data.system_user ?? '—' }}</b>
+  </div>
+
+  <div class="fila">
+    <span>Numero de Personas</span>
+    <b>{{ data.people_count ?? '—' }}</b>
+  </div>
+
+  <div class="fila">
+    <span>Numero de Golpes</span>
+    <b>{{ data.hits_count ?? '—' }}</b>
+  </div>
+
+  <div class="fila">
+    <span>Cambio de Herramental</span>
+    <b>{{ data.tool_change_count ?? '—' }}</b>
+  </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cerrar</button>
+</mat-dialog-actions>
+
+
+
