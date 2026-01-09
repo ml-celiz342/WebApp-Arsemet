@@ -11,6 +11,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { StateService } from '../../../services/state.service';
 import { interval, lastValueFrom, Subscription, switchMap } from 'rxjs';
 import { AssetsService } from '../../../services/assets.service';
+import { CHART_COLORS } from '../../../constants/chart-colors.constants';
 
 @Component({
   selector: 'app-root',
@@ -21,7 +22,7 @@ import { AssetsService } from '../../../services/assets.service';
 })
 export class ProduccionComponent implements AfterViewInit {
   title = 'miMapa';
-  hoveredId: string = '';
+  hoveredCode: string = '';
   panZoomInstance: any;
 
   private _snackBar = inject(MatSnackBar);
@@ -41,6 +42,9 @@ export class ProduccionComponent implements AfterViewInit {
   @ViewChild('svgElement', { static: false }) svgElement!: ElementRef;
   @ViewChild('paginatorStates', { static: false })
   paginatorStates!: MatPaginator; // Paginador para estados
+
+  tooltipX: number = 0;
+  tooltipY: number = 0;
 
   // Constructor
   constructor(
@@ -209,29 +213,43 @@ export class ProduccionComponent implements AfterViewInit {
     }
   }
 
+  private actualizarTooltip(element: SVGGraphicsElement) {
+    const svgRect = this.svgElement.nativeElement.getBoundingClientRect();
+    const rectBox = element.getBoundingClientRect();
+
+    this.tooltipX = rectBox.left - svgRect.left + rectBox.width / 2;
+
+    this.tooltipY = rectBox.top - svgRect.top;
+  }
+
   // Eventos al tocar el area del plano
   addEventListeners() {
     const targetIds = ['1', '2'];
 
     targetIds.forEach((id) => {
-      const element = document.getElementById(id);
-      if (element) {
-        element.addEventListener('click', () => {
-          // Buscar el estado por ID
-          const estado = this.estados.find((e) => e.id === Number(id));
-          const code = estado ? estado.code : ''; // Codigo
-          const type = estado?.type ?? ''; // Tipo de activo
+      const element = document.getElementById(id) as unknown as SVGGraphicsElement;
+      if (!element) return;
 
-          //  Llamar al modal con id + code + type
-          this.abrirModal(Number(id), code, type);
-        });
-        element.addEventListener('mouseover', () => {
-          this.hoveredId = id;
-        });
-        element.addEventListener('mouseout', () => {
-          this.hoveredId = '';
-        });
-      }
+      element.addEventListener('click', () => {
+        const estado = this.estados.find((e) => e.id === Number(id));
+        const code = estado?.code ?? '';
+        const type = estado?.type ?? '';
+        this.abrirModal(Number(id), code, type);
+      });
+
+      element.addEventListener('mouseover', () => {
+        const estado = this.estados.find((e) => e.id === Number(id));
+        this.hoveredCode = estado?.code ?? '';
+        this.actualizarTooltip(element);
+      });
+
+      element.addEventListener('mousemove', () => {
+        this.actualizarTooltip(element);
+      });
+
+      element.addEventListener('mouseout', () => {
+        this.hoveredCode = '';
+      });
     });
   }
 
@@ -254,23 +272,60 @@ export class ProduccionComponent implements AfterViewInit {
     );
   }
 
-  // PINTAR FIGURAS SEGUN ID EN EL CVG
+  private obtenerRectDePattern(patternId: string): SVGRectElement | null {
+    let pattern = document.getElementById(
+      patternId
+    ) as unknown as SVGPatternElement;
+    if (!pattern) return null;
+
+    while (pattern.hasAttribute('xlink:href')) {
+      const refId = pattern.getAttribute('xlink:href')!.replace('#', '');
+
+      pattern = document.getElementById(refId) as unknown as SVGPatternElement;
+      if (!pattern) return null;
+    }
+
+    const rect = pattern.querySelector('rect');
+    return rect instanceof SVGRectElement ? rect : null;
+  }
+
+  private colorPorEstado(state: string): string {
+    switch (state) {
+      case 'critico':
+        return CHART_COLORS.ERROR;
+      case 'advertencia':
+        return CHART_COLORS.WARNING;
+      case 'informacion':
+        return CHART_COLORS.SUCCESS;
+      case 'normal':
+        return CHART_COLORS.BASE;
+      case 'desconectado':
+        return CHART_COLORS.TEXT_LIGHT;
+      default:
+        return CHART_COLORS.TEXT_LIGHT;
+    }
+  }
+
   pintarEstadosEnSvg(): void {
     this.estados.forEach((estado) => {
-      const elemento = document.getElementById(String(estado.id));
-
+      const elemento = document.getElementById(
+        String(estado.id)
+      ) as unknown as SVGRectElement;
       if (!elemento) return;
 
-      elemento.classList.remove(
-        'estado-critico',
-        'estado-advertencia',
-        'estado-informacion',
-        'estado-normal',
-        'estado-desconectado'
-      );
+      const fill = elemento.getAttribute('fill');
+      if (!fill || !fill.startsWith('url(')) return;
 
+      const patternId = fill.replace('url(#', '').replace(')', '');
+      const rectPattern = this.obtenerRectDePattern(patternId);
+      if (!rectPattern) return;
+
+      // definir color por estado
       const clase = this.estadoClase(estado.state);
-      elemento.classList.add(`estado-${clase}`);
+      const color = this.colorPorEstado(clase);
+
+      // aplicar color al patrón
+      rectPattern.setAttribute('fill', color);
     });
   }
 
