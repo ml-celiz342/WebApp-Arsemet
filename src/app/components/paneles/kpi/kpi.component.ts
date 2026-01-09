@@ -26,7 +26,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { KpiFiltroComponent } from './kpi-filtro/kpi-filtro.component';
 import { MatDialog } from '@angular/material/dialog';
-import { KpiGraficoTortaComponent } from "./kpi-grafico-torta/kpi-grafico-torta.component";
 
 // PALETA DE COLORES DE LA APP
 export const CHART_COLORS = {
@@ -70,7 +69,6 @@ export type ChartOptions = {
     MatTooltipModule,
     MatButtonModule,
     MatProgressSpinnerModule,
-    KpiGraficoTortaComponent,
   ],
 })
 export class KpiComponent {
