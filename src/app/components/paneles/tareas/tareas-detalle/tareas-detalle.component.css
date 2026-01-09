@@ -12,14 +12,22 @@
   border-bottom: 1px solid #eee;
 }
 
+/* TÍTULOS */
 .fila span {
-  color: #666;
+  font-weight: 550;
+  /* negrita */
+  color: #222;
+  /* color principal */
   font-size: 15px;
 }
 
+/* VALORES */
 .fila b {
+  font-weight: 400;
+  /* quita el bold visual */
+  color: #666;
+  /* gris */
   font-size: 15px;
-  color: #222;
   margin-left: auto;
   text-align: right;
 }

@@ -1,0 +1,21 @@
+.titulo {
+  width: 100%;
+  text-align: center;
+  padding-bottom: 20px;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+mat-dialog-content {
+  padding: 20px;
+}
+
+mat-form-field {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+mat-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+}

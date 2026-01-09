@@ -29,27 +29,14 @@
               {
                 "glob": "**/*",
                 "input": "public"
-              },
-              {
-                "glob": "**/*",
-                "input": "./node_modules/leaflet/dist/images",
-                "output": "assets/"
-              },
-              {
-                "glob": "**/*",
-                "input": "node_modules/ngx-extended-pdf-viewer/assets",
-                "output": "assets/"
               }
             ],
             "styles": [
               "@angular/material/prebuilt-themes/azure-blue.css",
-              "src/styles.css",
-              "node_modules/leaflet/dist/leaflet.css",
-              "node_modules/leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css"
+              "src/styles.css"
             ],
             "scripts": [
-              "node_modules/apexcharts/dist/apexcharts.min.js",
-              "node_modules/leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.js"
+              "node_modules/apexcharts/dist/apexcharts.min.js"
             ]
           },
           "configurations": {
@@ -113,13 +100,10 @@
             ],
             "styles": [
               "@angular/material/prebuilt-themes/azure-blue.css",
-              "src/styles.css",
-              "node_modules/leaflet/dist/leaflet.css",
-              "node_modules/leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css"
+              "src/styles.css"
             ],
             "scripts": [
-              "node_modules/apexcharts/dist/apexcharts.min.js",
-              "node_modules/leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.js"
+              "node_modules/apexcharts/dist/apexcharts.min.js"
             ]
           }
         }

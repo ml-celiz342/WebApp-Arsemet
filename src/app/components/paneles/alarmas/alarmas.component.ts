@@ -19,7 +19,6 @@ import { AlarmasService } from '../../../services/alarmas.service';
 import { UtilidadesService } from '../../../services/utilidades.service';
 import { AuthService } from '../../../auth.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { AlarmasMapaComponent } from './alarmas-mapa/alarmas-mapa.component';
 
 @Component({
   selector: 'app-alarmas',
@@ -264,17 +263,6 @@ export class AlarmasComponent implements OnDestroy {
           });
         }
       }
-    });
-  }
-
-  abrirMapa(item: Alarmas) {
-    const dialogRef = this.dialogFiltro.open(AlarmasMapaComponent, {
-      width: '400px',
-      data: {
-        latitud: item.latitud,
-        longitud: item.longitud,
-        nombre: item.activo,
-      },
     });
   }
 

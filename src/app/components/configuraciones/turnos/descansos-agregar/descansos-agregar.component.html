@@ -1,0 +1,47 @@
+<h2 class="titulo">Agregar descanso</h2>
+
+<mat-dialog-content>
+  <!-- Nombre del descanso -->
+  <mat-form-field appearance="outline">
+    <mat-label>Nombre</mat-label>
+    <input
+      matInput
+      [(ngModel)]="break_name"
+      placeholder="Nombre del descanso"
+      required
+    />
+  </mat-form-field>
+
+  <!-- Inicio -->
+  <mat-form-field appearance="outline">
+    <mat-label>Inicio</mat-label>
+    <input
+      matInput
+      [matTimepicker]="inicioPicker"
+      [(ngModel)]="break_start"
+      aria-label="Hora de inicio"
+    />
+    <mat-timepicker-toggle matIconSuffix [for]="inicioPicker" />
+    <mat-timepicker #inicioPicker />
+  </mat-form-field>
+
+  <!-- Fin -->
+  <mat-form-field appearance="outline">
+    <mat-label>Fin</mat-label>
+    <input
+      matInput
+      [matTimepicker]="finPicker"
+      [(ngModel)]="break_end"
+      aria-label="Hora de fin"
+    />
+    <mat-timepicker-toggle matIconSuffix [for]="finPicker" />
+    <mat-timepicker #finPicker />
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="guardarDescanso()">
+    Guardar
+  </button>
+</mat-dialog-actions>

@@ -1,0 +1,29 @@
+<h2 class="titulo">Vincular turno con activo</h2>
+<mat-dialog-content>
+
+      <!-- Turno -->
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Turno</mat-label>
+        <mat-select [(ngModel)]="selectTurno" name="selectTurno" required>
+          <mat-option *ngFor="let t of turnos" [value]="t.id_shift">
+            {{ t.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Activo -->
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Activo</mat-label>
+        <mat-select [(ngModel)]="selectActivo" name="selectActivo" required>
+          <mat-option *ngFor="let a of activos" [value]="a.id">
+            {{ a.code }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="guardarVinculacion()">Guardar</button>
+</mat-dialog-actions>

@@ -1,3 +1,4 @@
+// IMPORTANTE: EN ESTE PANEL SE VA A TENER QUE CREAR UN COMPONENTE POR GRAFICO
 import {Component, inject } from '@angular/core';
 import {
   ApexChart,
@@ -25,6 +26,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { KpiFiltroComponent } from './kpi-filtro/kpi-filtro.component';
 import { MatDialog } from '@angular/material/dialog';
+import { KpiGraficoTortaComponent } from "./kpi-grafico-torta/kpi-grafico-torta.component";
 
 // PALETA DE COLORES DE LA APP
 export const CHART_COLORS = {
@@ -68,6 +70,7 @@ export type ChartOptions = {
     MatTooltipModule,
     MatButtonModule,
     MatProgressSpinnerModule,
+    KpiGraficoTortaComponent,
   ],
 })
 export class KpiComponent {
@@ -208,6 +211,14 @@ export class KpiComponent {
 
   // GRAFICOS
   // DISTRIBUCIÓN DE ESTADOS
+  /* Data cruda para pasarle a chartEstados
+  estadosTareas = [
+    { label: 'Apagado', value: 40, color: CHART_COLORS.ERROR },
+    { label: 'Operativo', value: 35, color: CHART_COLORS.WARNING },
+    { label: 'Operativo en vacío', value: 15, color: CHART_COLORS.LIGHT_2 },
+    { label: 'Mantenimiento', value: 10, color: CHART_COLORS.DARK_2 },
+  ];
+  */
   chartEstados: ChartOptions = {
     series: [40, 35, 15, 10],
     chart: {

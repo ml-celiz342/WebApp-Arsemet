@@ -1,0 +1,65 @@
+.titulo {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding-bottom: 10px;
+  text-align: center;
+  justify-content: center;
+  height: auto;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #000000;
+
+  justify-content: space-between;
+}
+
+mat-dialog-content {
+  padding: 20px;
+  min-width: 350px;
+}
+
+mat-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+mat-accordion {
+  width: 100%;
+}
+
+mat-expansion-panel {
+  margin-bottom: 0.8rem;
+}
+
+mat-panel-title {
+  font-weight: 600;
+  justify-content: space-between;
+}
+
+p {
+  margin: 0;
+  font-size: 15px;
+  color: #444;
+}
+
+/* BOTONES */
+.eliminar-icono {
+  color: var(--color-error);
+  cursor: pointer;
+}
+
+.agregar-icono {
+  color: #000000;
+  cursor: pointer;
+}
+
+/* Cambiar el color al hacer hover */
+.agregar-icono:hover,
+.eliminar-icono:hover {
+  opacity: 0.7;
+}
+
+.no-descansos {
+  color: gray;
+  margin-bottom: 10px;
+}

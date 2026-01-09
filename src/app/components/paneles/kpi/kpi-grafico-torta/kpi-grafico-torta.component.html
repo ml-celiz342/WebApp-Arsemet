@@ -1,0 +1,15 @@
+<div class="kpi-grafico-torta">
+  <h3 class="titulo">{{ titulo }}</h3>
+
+  <apx-chart
+    *ngIf="chartOptions"
+    [series]="chartOptions.series"
+    [chart]="chartOptions.chart"
+    [labels]="chartOptions.labels"
+    [colors]="chartOptions.colors"
+    [dataLabels]="chartOptions.dataLabels"
+    [legend]="chartOptions.legend">
+  </apx-chart>
+</div>
+
+

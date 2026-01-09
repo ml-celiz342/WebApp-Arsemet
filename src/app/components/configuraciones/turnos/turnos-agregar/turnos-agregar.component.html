@@ -1,0 +1,98 @@
+<h2 class="titulo">
+  {{ isEditMode ? 'Editar turno' : 'Agregar turno' }}
+</h2>
+
+<mat-dialog-content>
+
+  <!-- Nombre -->
+  <mat-form-field appearance="outline">
+    <mat-label>Nombre</mat-label>
+    <input
+      matInput
+      [(ngModel)]="nombre"
+      placeholder="Nombre del turno"
+      required
+    />
+  </mat-form-field>
+
+  <!-- Inicio -->
+  <mat-form-field appearance="outline">
+    <mat-label>Inicio</mat-label>
+    <input
+      matInput
+      [matTimepicker]="inicioPicker"
+      [(ngModel)]="inicio"
+      aria-label="Hora de inicio"
+    />
+    <mat-timepicker-toggle matIconSuffix [for]="inicioPicker" />
+    <mat-timepicker #inicioPicker />
+  </mat-form-field>
+
+  <!-- Fin -->
+  <mat-form-field appearance="outline">
+    <mat-label>Fin</mat-label>
+    <input
+      matInput
+      [matTimepicker]="finPicker"
+      [(ngModel)]="fin"
+      aria-label="Hora de fin"
+    />
+    <mat-timepicker-toggle matIconSuffix [for]="finPicker" />
+    <mat-timepicker #finPicker />
+  </mat-form-field>
+
+  <!-- Días -->
+  <div class="dias-grid">
+    <div class="dia">
+      <span>L</span>
+      <mat-checkbox [(ngModel)]="monday"></mat-checkbox>
+    </div>
+
+    <div class="dia">
+      <span>M</span>
+      <mat-checkbox [(ngModel)]="tuesday"></mat-checkbox>
+    </div>
+
+    <div class="dia">
+      <span>M</span>
+      <mat-checkbox [(ngModel)]="wednesday"></mat-checkbox>
+    </div>
+
+    <div class="dia">
+      <span>J</span>
+      <mat-checkbox [(ngModel)]="thursday"></mat-checkbox>
+    </div>
+
+    <div class="dia">
+      <span>V</span>
+      <mat-checkbox [(ngModel)]="friday"></mat-checkbox>
+    </div>
+
+    <div class="dia">
+      <span>S</span>
+      <mat-checkbox [(ngModel)]="saturday"></mat-checkbox>
+    </div>
+
+    <div class="dia">
+      <span>D</span>
+      <mat-checkbox [(ngModel)]="sunday"></mat-checkbox>
+    </div>
+  </div>
+
+  <!-- Texto de ayuda -->
+  <div
+    class="dias-hint"
+    *ngIf="!monday && !tuesday && !wednesday && !thursday && !friday && !saturday && !sunday"
+  >
+    *Seleccioná al menos un día para el turno
+  </div>
+
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="guardarTurno()">
+    Guardar
+  </button>
+</mat-dialog-actions>

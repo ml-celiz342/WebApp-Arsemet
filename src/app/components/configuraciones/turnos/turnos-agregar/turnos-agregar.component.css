@@ -1,0 +1,49 @@
+.titulo {
+  width: 100%;
+  text-align: center;
+  padding-bottom: 20px;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+mat-dialog-content {
+  padding: 20px;
+}
+
+mat-form-field {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+mat-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* DIAS */
+.dias-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  text-align: center;
+}
+
+.dia {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+.dia span {
+  font-weight: 500;
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.dias-hint {
+  margin-top: 8px;
+  font-size: 15px;
+  color: rgba(0, 0, 0, 0.6);
+  text-align: left;
+}

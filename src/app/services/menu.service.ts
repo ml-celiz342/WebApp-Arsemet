@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MenuSection } from '../models/menu';
 import { AuthService } from '../auth.service';
-import { icon } from 'leaflet';
 import { CHART_COLORS } from '../constants/chart-colors.constants';
 
 @Injectable({
@@ -150,6 +149,18 @@ export class MenuService {
           iconColor: '#f44336',
           permissions: [{ module: 'alarms', action: 'read' }], // 'read' es válido
           panelPermission: 'configuraciones-alarmas',
+        },
+        {
+          label: 'Turnos',
+          route: '/turnos',
+          description: 'Administración de turnos y sus activos.',
+          icon: 'schedule',
+          iconColor: '#1976d2',
+          permissions: [
+            { module: 'assets', action: 'read' }, // permisos a dar: asset shift
+            { module: 'shifts', action: 'read' },
+          ],
+          panelPermission: 'configuraciones-turnos', // configuraciones-turnos
         },
       ],
     },

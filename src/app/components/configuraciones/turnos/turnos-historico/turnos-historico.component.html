@@ -1,0 +1,60 @@
+<h2 class="titulo" mat-dialog-title>
+  <span>
+    Descansos del Turno - {{ shift.name }}
+  </span>
+
+  <button
+    mat-icon-button
+    *ngIf="authService.hasPermission('shifts','edit')"
+    (click)="agregarDescanso()"
+    matTooltip="Agregar descanso"
+  >
+    <mat-icon class="agregar-icono">add_circle</mat-icon>
+  </button>
+</h2>
+
+<mat-dialog-content>
+
+  <!-- Mensaje si no hay descansos -->
+  <p *ngIf="!shift.breaks.length" class="no-descansos">
+    No hay descansos para este turno.
+  </p>
+
+  <mat-accordion multi>
+
+    <mat-expansion-panel
+    *ngFor="let b of shift.breaks; let i = index"
+    [expanded]="i === 0">
+      <!-- TÍTULO -->
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <span>
+            {{ getBreakHour(b.break_start) }} hs – {{ getBreakHour(b.break_end) }} hs
+          </span>
+
+          <button
+            mat-icon-button
+            *ngIf="authService.hasPermission('shifts','edit')"
+            (click)="eliminarDescanso(b.id_break)"
+            matTooltip="Deshabilitar descanso"
+          >
+            <mat-icon class="eliminar-icono">delete</mat-icon>
+          </button>
+
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <!-- DESCRIPCIÓN -->
+      <p>
+        {{ b.break_name }}
+      </p>
+
+    </mat-expansion-panel>
+
+  </mat-accordion>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cerrar</button>
+</mat-dialog-actions>

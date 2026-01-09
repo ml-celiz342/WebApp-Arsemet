@@ -34,8 +34,6 @@ export class ProduccionComponent implements AfterViewInit {
   activos: any[] = [];
   tiposActivos: any[] = [];
 
-  // IMPORTANTE: Cuando agregue la API para que me traiga los 2 activos, voy a tener que guardarlos en un arreglo y asignarle las coordenadas para que funcione correctamente
-
   // Data sources
   dataSourceStates = new MatTableDataSource<State>([]);
 

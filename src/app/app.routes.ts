@@ -18,6 +18,7 @@ import { EvidenciaComponent } from './components/paneles/evidencia/evidencia.com
 import { MantenimientoComponent } from './components/paneles/mantenimiento/mantenimiento.component';
 import { AlarmasComponent } from './components/paneles/alarmas/alarmas.component';
 import { TareasComponent } from './components/paneles/tareas/tareas.component';
+import { TurnosComponent } from './components/configuraciones/turnos/turnos.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -104,6 +105,11 @@ export const routes: Routes = [
       {
         path: 'evidencias',
         component: EvidenciaComponent,
+        canActivate: [authGuard],
+      },
+      {
+        path: 'turnos',
+        component: TurnosComponent,
         canActivate: [authGuard],
       },
       {

@@ -27,16 +27,6 @@
   </div>
 
   <div class="kpi-grid">
-
-    <!-- IDEA DE LECTURA
-    ¿Qué estoy mirando? - Contexto / Filtro
-    ¿En qué estado estuvo la máquina? - Estados + Timeline
-    ¿Qué tan bien se usó? - Utilización + Energía
-    ¿Qué tan eficiente fue? - KPIs duros (ciclo, consumo, fallas)
-    ¿Qué produjo? - Producción
-    ¿Hubo problemas de seguridad? - Actos inseguros (alerta)
-    -->
-
     <!-- ================= ESTADOS (QUÉ + CUÁNDO) ================= -->
 
     <!-- DISTRIBUCIÓN DE ESTADOS -->
@@ -50,6 +40,12 @@
         [dataLabels]="chartEstados.dataLabels!"
         [legend]="chartEstados.legend!">
       </apx-chart>
+      <!--
+      <app-kpi-grafico-torta
+        titulo="Distribución de Tareas"
+        [data]="estadosTareas">
+      </app-kpi-grafico-torta>
+      -->
     </mat-card>
 
     <!-- ================= USO Y ENERGÍA ================= -->
