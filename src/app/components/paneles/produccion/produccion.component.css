@@ -28,7 +28,7 @@
   border: 1px solid #ccc;
   overflow: hidden;
   position: relative;
-  background-color: white;
+  background-color: #3e3d3c;
   border-radius: 10px;
   margin-left: 10px;
 }
@@ -153,27 +153,27 @@ svg {
 
 /* COLORES DE ESTADO UNIFICADOS */
 .estado-critico {
-  color: #d9534f;
+  color: var(--color-error);
   font-weight: 600;
 }
 
 .estado-advertencia {
-  color: #f0ad4e;
+  color: var(--color-warning);
   font-weight: 600;
 }
 
 .estado-informacion {
-  color: #5cb85c;
+  color: var(--color-success);
   font-weight: 600;
 }
 
 .estado-normal {
-  color: #0275d8;
+  color: var(--color-base);
   font-weight: 600;
 }
 
 .estado-desconectado {
-  color: #bbbbbb;
+  color: var(--color-text-light);
   font-weight: 600;
 }
 
@@ -197,11 +197,6 @@ svg {
 
 /* Escalado de label */
 /* Pantallas medianas */
-@media (min-width: 1200px) {
-  .map-legend {
-    font-size: 15px;
-  }
-}
 
 /* Pantallas grandes */
 @media (min-width: 1600px) {
@@ -225,20 +220,16 @@ svg {
 }
 
 .dot {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
+  border-width: 1px;
+  border-style: solid;
+  border-color: black;
   display: inline-block;
 }
 
 /* Escalado de dot */
-/* Pantallas medianas */
-@media (min-width: 1200px) {
-  .dot {
-    width: 15px;
-    height: 15px;
-  }
-}
 
 /* Pantallas grandes */
 @media (min-width: 1600px) {
@@ -257,23 +248,23 @@ svg {
 }
 
 .critico {
-  background: #d9534f;
+  background: var(--color-error);
 }
 
 .advertencia {
-  background: #f0ad4e;
+  background: var(--color-warning);
 }
 
 .informacion {
-  background: #5cb85c;
+  background: var(--color-success);
 }
 
 .normal {
-  background: #0275d8;
+  background: var(--color-base);
 }
 
 .desconectado {
-  background: #bbbbbb;
+  background: var(--color-text-light);
 }
 
 /* LABEL */
@@ -290,31 +281,4 @@ svg {
   text-anchor: middle;
   dominant-baseline: middle;
   pointer-events: none;
-}
-
-/* COLORES */
-/* === ESTADOS APLICADOS AL SVG === */
-svg rect.estado-critico,
-svg ellipse.estado-critico {
-  fill: #d9534f !important;
-}
-
-svg rect.estado-advertencia,
-svg ellipse.estado-advertencia {
-  fill: #f0ad4e !important;
-}
-
-svg rect.estado-informacion,
-svg ellipse.estado-informacion {
-  fill: #5cb85c !important;
-}
-
-svg rect.estado-normal,
-svg ellipse.estado-normal {
-  fill: #0275d8 !important;
-}
-
-svg rect.estado-desconectado,
-svg ellipse.estado-desconectado {
-  fill: #bbbbbb !important;
 }
