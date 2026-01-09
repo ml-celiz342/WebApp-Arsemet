@@ -22,7 +22,7 @@ import { CHART_COLORS } from '../../../constants/chart-colors.constants';
 })
 export class ProduccionComponent implements AfterViewInit {
   title = 'miMapa';
-  hoveredId: string = '';
+  hoveredCode: string = '';
   panZoomInstance: any;
 
   private _snackBar = inject(MatSnackBar);
@@ -44,6 +44,9 @@ export class ProduccionComponent implements AfterViewInit {
   @ViewChild('svgElement', { static: false }) svgElement!: ElementRef;
   @ViewChild('paginatorStates', { static: false })
   paginatorStates!: MatPaginator; // Paginador para estados
+
+  tooltipX: number = 0;
+  tooltipY: number = 0;
 
   // Constructor
   constructor(
@@ -212,29 +215,43 @@ export class ProduccionComponent implements AfterViewInit {
     }
   }
 
+  private actualizarTooltip(element: SVGGraphicsElement) {
+    const svgRect = this.svgElement.nativeElement.getBoundingClientRect();
+    const rectBox = element.getBoundingClientRect();
+
+    this.tooltipX = rectBox.left - svgRect.left + rectBox.width / 2;
+
+    this.tooltipY = rectBox.top - svgRect.top;
+  }
+
   // Eventos al tocar el area del plano
   addEventListeners() {
     const targetIds = ['1', '2'];
 
     targetIds.forEach((id) => {
-      const element = document.getElementById(id);
-      if (element) {
-        element.addEventListener('click', () => {
-          // Buscar el estado por ID
-          const estado = this.estados.find((e) => e.id === Number(id));
-          const code = estado ? estado.code : ''; // Codigo
-          const type = estado?.type ?? ''; // Tipo de activo
+      const element = document.getElementById(id) as unknown as SVGGraphicsElement;
+      if (!element) return;
 
-          //  Llamar al modal con id + code + type
-          this.abrirModal(Number(id), code, type);
-        });
-        element.addEventListener('mouseover', () => {
-          this.hoveredId = "A";
-        });
-        element.addEventListener('mouseout', () => {
-          this.hoveredId = '';
-        });
-      }
+      element.addEventListener('click', () => {
+        const estado = this.estados.find((e) => e.id === Number(id));
+        const code = estado?.code ?? '';
+        const type = estado?.type ?? '';
+        this.abrirModal(Number(id), code, type);
+      });
+
+      element.addEventListener('mouseover', () => {
+        const estado = this.estados.find((e) => e.id === Number(id));
+        this.hoveredCode = estado?.code ?? '';
+        this.actualizarTooltip(element);
+      });
+
+      element.addEventListener('mousemove', () => {
+        this.actualizarTooltip(element);
+      });
+
+      element.addEventListener('mouseout', () => {
+        this.hoveredCode = '';
+      });
     });
   }
 

@@ -1,10 +1,5 @@
 <div class="container">
 
-  <!-- Notificación centrada -->
-  <div class="notification" *ngIf="hoveredId">
-    {{ hoveredId }}
-  </div>
-
   <div class="main-content">
 
     <!-- COLUMNA IZQUIERDA: MAPA -->
@@ -908,6 +903,14 @@
       <rect id="1" x="631.54" y="213.91" width="117.08" height="45.817" fill="url(#pattern16)" opacity=".43529" stroke="#fefefe" stroke-width=".044486"/>
       </svg>
 
+      <div
+        class="notification"
+        *ngIf="hoveredCode"
+        [style.left.px]="tooltipX"
+        [style.top.px]="tooltipY"
+      >
+        {{ hoveredCode }}
+      </div>
 
       <!-- LEYENDA FIJA ABAJO A LA DERECHA -->
       <div class="map-legend">
