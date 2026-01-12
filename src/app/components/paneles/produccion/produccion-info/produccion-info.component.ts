@@ -75,7 +75,6 @@ export class ProduccionInfoComponent implements OnInit, OnDestroy {
   horas_encendido: string = '00:00:00';
   potencia_actual: number = 0;
   consumo_total_actual: number = 0;
-  tipo: string = '';
   local_activo: number = 0; // Que es esto?
 
   rawDetail: Detalle = {

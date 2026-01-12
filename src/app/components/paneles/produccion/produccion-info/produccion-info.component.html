@@ -8,7 +8,7 @@
 
   <div class="info-contenedor-resumen">
     <div class="info-contenedor-resumen-img">
-      <img *ngIf="tipo" [src]="'assets/img_folder/' + codigo_activo.toLowerCase() + '.png'" alt="Icono Activo" class="img"/>
+      <img *ngIf="codigo_activo" [src]="'assets/img_folder/' + codigo_activo.toLowerCase() + '.png'" alt="Icono Activo" class="img"/>
     </div>
     <div class="info-contenedor-resumen-txt">
       <div><strong>Activo: </strong><span>{{codigo_activo}}</span></div>
