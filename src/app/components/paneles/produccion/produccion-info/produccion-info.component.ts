@@ -305,7 +305,7 @@ export class ProduccionInfoComponent implements OnInit, OnDestroy {
       this.rawDetailActual.current_power = this.rawDetail.current_power;
 
       const valorKW = this.truncar2(this.rawDetailActual.current_power);
-      const maxKW = 380 * 80 * 3; // <- VALOR MAXIMO DE POTENCIA?
+      const maxKW = 220 * 80 * 3; // <- VALOR MAXIMO DE POTENCIA
 
       const porcentaje = Math.round((valorKW * 100) / maxKW);
 
