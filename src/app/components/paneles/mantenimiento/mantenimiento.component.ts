@@ -289,8 +289,9 @@ export class MantenimientoComponent {
 
   async recargar() {
     this.cargando = true;
+    
     await this.loadDataMaintenance();
-    await this.loadDataAssets();
+
     this.cargando = false;
   }
 }

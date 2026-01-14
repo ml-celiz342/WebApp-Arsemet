@@ -73,7 +73,8 @@ export class EvidenciaComponent {
     private dialog: MatDialog,
     private assetsService: AssetsService,
     private utilidades: UtilidadesService,
-    private evidenciaPotenciaService: EvidenciaPotenciaService
+    private evidenciaPotenciaService: EvidenciaPotenciaService,
+    private datePipe: DatePipe
   ) {}
 
   // Cargar datos
@@ -98,16 +99,13 @@ export class EvidenciaComponent {
     if (!this.selectedAsset || !this.selectedAsset.id) {
       return;
     }
-    /* ANTES
-    if (!this.selectedAsset?.subAssets?.length) {
-      return;
-    }
-      */
 
-    const desde = this.range.start.toISOString();
-    const hasta = this.range.end.toISOString();
+    const formattedStart =
+      this.datePipe.transform(this.range.start, 'yyyy-MM-dd HH:mm:ss') ?? '';
 
-    // NUEVO
+    const formattedEnd =
+      this.datePipe.transform(this.range.end, 'yyyy-MM-dd HH:mm:ss') ?? '';
+
     // Decidir qué activos consultar
     const assetsAConsultar =
       this.selectedAsset.subAssets && this.selectedAsset.subAssets.length > 0
@@ -126,8 +124,8 @@ export class EvidenciaComponent {
         return lastValueFrom(
           this.evidenciaPotenciaService.getEvidenciaPowerById(
             sa.id,
-            desde,
-            hasta
+            formattedStart,
+            formattedEnd
           )
         );
       });
@@ -237,24 +235,7 @@ export class EvidenciaComponent {
   async recargar() {
     this.cargando = true;
 
-    // Crear fechas del día actual
-    const hoy = new Date();
-
-    const inicio = new Date(hoy);
-    inicio.setHours(0, 0, 0, 0);
-
-    const fin = new Date(hoy);
-    fin.setHours(23, 59, 59, 999);
-
-    // Aplicar al filtro del componente
-    this.range = { start: inicio, end: fin };
-
-    // Resetear filtro de activo seleccionado ("Todos")
-    this.selectedAsset = { id: 0, code: '' };
-
-    // Recargar tablas de activos y evidencias
     await this.cargarDatos();
-    await this.loadDataAssets();
     await this.loadDataEvidenciasByFilter();
 
     this.cargando = false;

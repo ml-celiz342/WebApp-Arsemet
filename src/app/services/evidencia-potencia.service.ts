@@ -9,22 +9,8 @@ import { Evidencia} from '../models/evidencia-potencia';
 })
 export class EvidenciaPotenciaService {
   private apiURLEvidenciaPower = environment.apiUrl + 'data/evidences/power';
-  private apiURLEvidenciaBalance =
-    environment.apiUrl + 'data/evidences/balance';
 
   constructor(private http: HttpClient) {}
-
-  /* FORMATO FECHA */
-  private formatDateForBackend(date: Date): string {
-    const year = date.getFullYear();
-    const month = ('0' + (date.getMonth() + 1)).slice(-2);
-    const day = ('0' + date.getDate()).slice(-2);
-    const hours = ('0' + date.getHours()).slice(-2);
-    const minutes = ('0' + date.getMinutes()).slice(-2);
-    const seconds = ('0' + date.getSeconds()).slice(-2);
-
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-  }
 
   // EVIDENCIA POWER
   getEvidenciaPowerById(
@@ -32,18 +18,21 @@ export class EvidenciaPotenciaService {
     desde?: string,
     hasta?: string
   ): Observable<Evidencia> {
-    let params = new HttpParams().set('idAsset', id_activo.toString());
+    let params = new HttpParams();
 
-    // Convertir fechas al formato del backend
+    if (id_activo) {
+      params = params.set('idAsset', id_activo);
+    }
+
     if (desde) {
-      const desdeFormatted = this.formatDateForBackend(new Date(desde));
-      params = params.set('from', desdeFormatted);
+      params = params.set('from', desde);
     }
 
     if (hasta) {
-      const hastaFormatted = this.formatDateForBackend(new Date(hasta));
-      params = params.set('to', hastaFormatted);
+      params = params.set('to', hasta);
     }
+
+    params = params.set('limit', 100);
 
     return this.http
       .get<any>(this.apiURLEvidenciaPower, { params })
