@@ -185,24 +185,7 @@ export class KpiComponent {
   async recargar() {
     this.cargando = true;
 
-    // Crear fechas del día actual
-    const hoy = new Date();
-
-    const inicio = new Date(hoy);
-    inicio.setHours(0, 0, 0, 0);
-
-    const fin = new Date(hoy);
-    fin.setHours(23, 59, 59, 999);
-
-    // Aplicar al filtro del componente
-    this.range = { start: inicio, end: fin };
-
-    // Resetear filtro de activo seleccionado ("Todos")
-    this.selectedAsset = { id: 0, code: '' };
-
-    // Recargar tablas de activos y evidencias
     await this.cargarDatos();
-    await this.loadDataAssets();
 
     this.cargando = false;
   }
