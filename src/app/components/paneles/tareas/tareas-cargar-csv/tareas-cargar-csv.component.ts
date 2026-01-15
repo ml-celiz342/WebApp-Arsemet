@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-tareas-cargar-csv',
@@ -13,6 +14,8 @@ import { MatButtonModule } from '@angular/material/button';
 export class TareasCargarCsvComponent {
   selectedFile: File | null = null;
   selectedFileName: string | null = null;
+
+  private _snackBar = inject(MatSnackBar);
 
   constructor(public dialogRef: MatDialogRef<TareasCargarCsvComponent>) {}
 
@@ -26,7 +29,11 @@ export class TareasCargarCsvComponent {
     const isXlsx = fileName.endsWith('.xlsx');
 
     if (!isCsv && !isXlsx) {
-      alert('Solo se permiten archivos CSV o Excel (.xlsx)');
+      this._snackBar.open(
+        'Solo se permiten archivos CSV o Excel (.xlsx)',
+        'Cerrar',
+        { duration: 3000 }
+      );
       return;
     }
 
@@ -40,7 +47,9 @@ export class TareasCargarCsvComponent {
 
   subirCsv(): void {
     if (!this.selectedFile) {
-      alert('Debe seleccionar un archivo CSV');
+      this._snackBar.open('Debe seleccionar un archivo', 'Cerrar', {
+        duration: 3000,
+      });
       return;
     }
 

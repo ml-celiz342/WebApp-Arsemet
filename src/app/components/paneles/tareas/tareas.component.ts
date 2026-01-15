@@ -235,10 +235,10 @@ export class TareasComponent {
 
       this.csvService.uploadCsv(file).subscribe({
         next: () => {
-          alert('CSV cargado correctamente');
+          alert('Archivo cargado correctamente');
         },
         error: (err) => {
-          alert(err?.error?.descripcion || 'Error al cargar CSV');
+          alert(err?.error?.descripcion || 'Error al cargar el archivo');
         },
       });
     });
