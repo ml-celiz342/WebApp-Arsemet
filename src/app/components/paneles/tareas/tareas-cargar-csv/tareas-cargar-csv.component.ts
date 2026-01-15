@@ -27,10 +27,11 @@ export class TareasCargarCsvComponent {
 
     const isCsv = fileName.endsWith('.csv');
     const isXlsx = fileName.endsWith('.xlsx');
+    const isXls = fileName.endsWith('.xls');
 
-    if (!isCsv && !isXlsx) {
+    if (!isCsv && !isXlsx && !isXls) {
       this._snackBar.open(
-        'Solo se permiten archivos CSV o Excel (.xlsx)',
+        'Solo se permiten archivos CSV o Excel (.xlsx, .xls)',
         'Cerrar',
         { duration: 3000 }
       );
