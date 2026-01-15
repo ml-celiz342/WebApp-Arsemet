@@ -235,10 +235,14 @@ export class TareasComponent {
 
       this.csvService.uploadCsv(file).subscribe({
         next: () => {
-          alert('Archivo cargado correctamente');
+          this._snackBar.open('Archivo cargado correctamente', 'Cerrar', {
+            duration: 3000,
+          });
         },
         error: (err) => {
-          alert(err?.error?.descripcion || 'Error al cargar el archivo');
+          this._snackBar.open('Error al cargar el archivo', 'Cerrar', {
+            duration: 3000,
+          });
         },
       });
     });
