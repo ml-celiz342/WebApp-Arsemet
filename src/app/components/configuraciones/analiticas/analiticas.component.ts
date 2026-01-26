@@ -87,7 +87,7 @@ export class AnaliticasComponent {
     'fecha',
   ];
   dataSourceLogsAnaliticas = new MatTableDataSource<AnaliticaObservacion>([]);
-  @ViewChild('paginatorAnaliticas') paginatorLogsAnaliticas!: MatPaginator;
+  @ViewChild('paginatorLogsAnaliticas') paginatorLogsAnaliticas!: MatPaginator;
 
   @ViewChild(MatSort)
   sort!: MatSort;
