@@ -27,55 +27,34 @@
   </div>
 
   <div class="kpi-grid">
-    <!-- ================= ESTADOS (QUÉ + CUÁNDO) ================= -->
 
     <!-- DISTRIBUCIÓN DE ESTADOS -->
     <mat-card class="card">
       <h3>Distribución de Tareas</h3>
-      <apx-chart
-        [series]="chartEstados.series!"
-        [chart]="chartEstados.chart!"
-        [labels]="chartEstados.labels!"
-        [colors]="chartEstados.colors!"
-        [dataLabels]="chartEstados.dataLabels!"
-        [legend]="chartEstados.legend!">
-      </apx-chart>
-      <!--
       <app-kpi-grafico-torta
-        titulo="Distribución de Tareas"
-        [data]="estadosTareas">
+        [data]="estadosTorta">
       </app-kpi-grafico-torta>
-      -->
     </mat-card>
-
-    <!-- ================= USO Y ENERGÍA ================= -->
 
     <!-- TASA DE UTILIZACIÓN -->
     <mat-card class="card radial-chart">
       <h3>Tasa de Utilización (%)</h3>
-      <apx-chart
-        [series]="chartUtilizacion.series!"
-        [chart]="chartUtilizacion.chart!"
-        [labels]="chartUtilizacion.labels!"
-        [plotOptions]="chartUtilizacion.plotOptions!"
-        [colors]="chartUtilizacion.colors!">
-      </apx-chart>
+      <app-kpi-grafico-radial-bar
+        label="Utilización promedio"
+        [valor]="this.promediosRadial.tasa_de_utilizacion">
+      </app-kpi-grafico-radial-bar>
     </mat-card>
 
     <!-- ENERGÍA NO PRODUCTIVA -->
     <mat-card class="card radial-chart">
       <h3>Energía No Productiva (%)</h3>
-      <apx-chart
-        [series]="chartNoProductiva.series!"
-        [chart]="chartNoProductiva.chart!"
-        [labels]="chartNoProductiva.labels!"
-        [colors]="chartNoProductiva.colors!"
-        [plotOptions]="chartNoProductiva.plotOptions!">
-      </apx-chart>
+      <app-kpi-grafico-radial-bar
+        label="Utilización promedio"
+        [valor]="this.promediosRadial.energia_no_productiva">
+      </app-kpi-grafico-radial-bar>
     </mat-card>
 
-    <!-- ================= KPIs OPERATIVOS ================= -->
-
+    <!-- KPIs OPERATIVOS -->
     <mat-card class="card kpi-contadores kpi-split">
 
       <mat-card class="kpi-subcard superior">
@@ -122,16 +101,10 @@
     <!-- TIEMPO VS ESTADO -->
     <mat-card class="card doble">
       <h3>Tiempo vs Estado</h3>
-      <div class="chart-wrapper">
-        <apx-chart
-          [series]="chartTiempoEstado.series!"
-          [chart]="chartTiempoEstado.chart!"
-          [plotOptions]="chartTiempoEstado.plotOptions!"
-          [xaxis]="chartTiempoEstado.xaxis!"
-          [dataLabels]="chartTiempoEstado.dataLabels!"
-          [legend]="chartTiempoEstado.legend!"
-          [colors]="chartTiempoEstado.colors!">
-        </apx-chart>
+      <div class="gantt-wrapper" appBlockWheelScroll>
+        <app-kpi-grafico-gantt
+          [data]="estadosGantt">
+        </app-kpi-grafico-gantt>
       </div>
     </mat-card>
 
@@ -139,41 +112,29 @@
     <mat-card class="card doble">
       <h3>Energía total consumida (kWh)</h3>
       <div class="chart-wrapper">
-        <apx-chart
-          [series]="chartEnergia.series!"
-          [chart]="chartEnergia.chart!"
-          [xaxis]="chartEnergia.xaxis!"
-          [colors]="chartEnergia.colors!"
-          [legend]="chartEnergia.legend!">
-        </apx-chart>
+        <app-kpi-grafico-barra-apilado
+          [data]="energiaConsumidaBarra">
+        </app-kpi-grafico-barra-apilado>
       </div>
     </mat-card>
 
-    <!-- ================= PRODUCCIÓN ================= -->
+    <!--  PRODUCCIÓN  -->
     <mat-card class="card doble">
       <h3>Piezas producidas por hora</h3>
-      <div class="chart-wrapper">
-        <apx-chart
-          [series]="chartPiezasHora.series!"
-          [chart]="chartPiezasHora.chart!"
-          [xaxis]="chartPiezasHora.xaxis!"
-          [stroke]="chartPiezasHora.stroke!"
-          [colors]="chartPiezasHora.colors!">
-        </apx-chart>
+      <div class="chart-wrapper" appBlockWheelScroll>
+        <app-kpi-grafico-linea
+          [data]="piezasPorHoraLinea">
+        </app-kpi-grafico-linea>
       </div>
     </mat-card>
 
-    <!-- ================= SEGURIDAD ================= -->
+    <!--  ACTOS INSEGUROS -->
     <mat-card class="card doble">
-      <h3>Actos Inseguros Detectados</h3>
+      <h3>Actos inseguros</h3>
       <div class="chart-wrapper">
-        <apx-chart
-          [series]="chartActosInseguros.series!"
-          [chart]="chartActosInseguros.chart!"
-          [xaxis]="chartActosInseguros.xaxis!"
-          [colors]="chartActosInseguros.colors!"
-          [dataLabels]="chartActosInseguros.dataLabels!">
-        </apx-chart>
+        <app-kpi-grafico-barra
+          [data]="actosInsegurosBarra">
+        </app-kpi-grafico-barra>
       </div>
     </mat-card>
 

@@ -1,1 +1,11 @@
-<p>kpi-grafico-barra-apilado works!</p>
+<ng-container *ngIf="chartOptions">
+  <apx-chart
+    [series]="chartOptions.series"
+    [chart]="chartOptions.chart"
+    [plotOptions]="chartOptions.plotOptions"
+    [xaxis]="chartOptions.xaxis"
+    [legend]="chartOptions.legend"
+    [fill]="chartOptions.fill"
+    [colors]="chartOptions.colors">
+  </apx-chart>
+</ng-container>

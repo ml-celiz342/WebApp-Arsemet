@@ -1,19 +1,4 @@
-// IMPORTANTE: EN ESTE PANEL SE VA A TENER QUE CREAR UN COMPONENTE POR GRAFICO
 import {Component, inject } from '@angular/core';
-import {
-  ApexChart,
-  ApexNonAxisChartSeries,
-  ApexAxisChartSeries,
-  ApexResponsive,
-  ApexPlotOptions,
-  ApexStroke,
-  ApexXAxis,
-  ApexYAxis,
-  ApexDataLabels,
-  ApexFill,
-  ChartType,
-  ChartComponent,
-} from 'ng-apexcharts';
 import { MatCard } from '@angular/material/card';
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { MatIcon } from "@angular/material/icon";
@@ -26,22 +11,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { KpiFiltroComponent } from './kpi-filtro/kpi-filtro.component';
 import { MatDialog } from '@angular/material/dialog';
-import { CHART_COLORS } from '../../../constants/chart-colors.constants';
-
-export type ChartOptions = {
-  series?: ApexAxisChartSeries | ApexNonAxisChartSeries;
-  chart?: ApexChart;
-  labels?: string[];
-  responsive?: ApexResponsive[];
-  plotOptions?: ApexPlotOptions;
-  stroke?: ApexStroke;
-  dataLabels?: ApexDataLabels;
-  fill?: ApexFill;
-  xaxis?: ApexXAxis;
-  yaxis?: ApexYAxis;
-  colors?: string[];
-  legend?: ApexLegend;
-};
+import { KpiGraficoTortaComponent } from "./kpi-grafico-torta/kpi-grafico-torta.component";
+import { KpiGraficoRadialBarComponent } from "./kpi-grafico-radial-bar/kpi-grafico-radial-bar.component";
+import { KpiGraficoGanttComponent } from "./kpi-grafico-gantt/kpi-grafico-gantt.component";
+import { KpiGraficoBarraApiladoComponent } from "./kpi-grafico-barra-apilado/kpi-grafico-barra-apilado.component";
+import { KpiGraficoBarraComponent } from "./kpi-grafico-barra/kpi-grafico-barra.component";
+import { KpiGraficoLineaComponent } from "./kpi-grafico-linea/kpi-grafico-linea.component";
+import { BlockWheelScrollDirective } from '../../../directives/block-wheel-scroll.directive';
 
 @Component({
   selector: 'app-kpi',
@@ -51,12 +27,18 @@ export type ChartOptions = {
   imports: [
     CommonModule,
     MatCard,
-    ChartComponent,
     MatProgressSpinner,
     MatIcon,
     MatTooltipModule,
     MatButtonModule,
     MatProgressSpinnerModule,
+    KpiGraficoTortaComponent,
+    KpiGraficoRadialBarComponent,
+    KpiGraficoGanttComponent,
+    KpiGraficoBarraApiladoComponent,
+    KpiGraficoBarraComponent,
+    KpiGraficoLineaComponent,
+    BlockWheelScrollDirective
   ],
 })
 export class KpiComponent {
@@ -76,7 +58,7 @@ export class KpiComponent {
 
   constructor(
     private assetsService: AssetsService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
   ) {}
 
   // Cargar datos
@@ -130,13 +112,13 @@ export class KpiComponent {
       this.range = result.dateRange;
 
       const selectedIds: number[] = result.selectedOptions.map((x: string) =>
-        Number(x)
+        Number(x),
       );
 
       this.selectedAssetIds = result.selectedOptions ?? [];
 
       const selectedAssets = this.assetsFiltro.filter((item) =>
-        selectedIds.includes(item.id)
+        selectedIds.includes(item.id),
       );
 
       if (selectedAssets.length > 0) {
@@ -179,319 +161,101 @@ export class KpiComponent {
   }
 
   // GRAFICOS
-  // DISTRIBUCIÓN DE ESTADOS
-  /* Data cruda para pasarle a chartEstados
-  estadosTareas = [
-    { label: 'Apagado', value: 40, color: CHART_COLORS.ERROR },
-    { label: 'Operativo', value: 35, color: CHART_COLORS.WARNING },
-    { label: 'Operativo en vacío', value: 15, color: CHART_COLORS.LIGHT_2 },
-    { label: 'Mantenimiento', value: 10, color: CHART_COLORS.DARK_2 },
+  /* Data cruda para pasarle a charts */
+
+  // Torta
+  estadosTorta = [
+    { valor: 40, estado: 'Apagado' },
+    { valor: 35, estado: 'Operativo' },
+    { valor: 15, estado: 'Operativo en vacío' },
+    { valor: 10, estado: 'Mantenimiento' },
   ];
-  */
-  chartEstados: ChartOptions = {
-    series: [40, 35, 15, 10],
-    chart: {
-      type: 'pie' as ChartType,
-      height: 200,
-    },
-    labels: ['Apagado', 'Operativo', 'Operativo en vacío', 'Mantenimiento'],
-    colors: [
-      CHART_COLORS.ERROR,
-      CHART_COLORS.WARNING,
-      CHART_COLORS.LIGHT_2,
-      CHART_COLORS.DARK_2,
-    ],
-    dataLabels: {
-      enabled: false,
-    },
-    legend: {
-      position: 'bottom',
-      fontSize: '10.5px',
-      itemMargin: {
-        horizontal: 8,
-      },
-      formatter: (seriesName: string, opts: any) => {
-        const value = opts.w.globals.series[opts.seriesIndex];
-        return `${seriesName}: ${value}%`;
-      },
-    },
+
+  // Radial bar
+  promediosRadial = {
+    tasa_de_utilizacion: 67,
+    energia_no_productiva: 22,
   };
 
-  // TASA DE UTILIZACIÓN
-  chartUtilizacion: ChartOptions = {
-    series: [67],
-    chart: {
-      type: 'radialBar' as ChartType,
-      height: 250,
-    },
-    labels: ['Utilización promedio'],
-    colors: [CHART_COLORS.BASE],
-    plotOptions: {
-      radialBar: {
-        hollow: {
-          size: '65%',
-        },
-        track: {
-          background: '#E3F1FB',
-        },
-        dataLabels: {
-          name: {
-            show: true,
-            fontSize: '14px',
-            offsetY: 10,
-          },
-          value: {
-            show: true,
-            fontSize: '14px',
-            fontWeight: 700,
-            formatter: (val: number) => `${Math.round(val)}%`,
-          },
-        },
-      },
-    },
-  };
+  // Gantt
+  estadosGantt = [
+    { estado: 'Apagado', fecha: '2025-01-10T05:30:00' },
+    { estado: 'Apagado', fecha: '2025-01-10T07:00:00' },
+    { estado: 'Operativo', fecha: '2025-01-10T07:00:00' },
+    { estado: 'Operativo', fecha: '2025-01-10T10:30:00' },
+    { estado: 'Operativo en vacío', fecha: '2025-01-10T10:30:00' },
+    { estado: 'Operativo en vacío', fecha: '2025-01-10T11:15:00' },
+    { estado: 'Operativo', fecha: '2025-01-10T11:15:00' },
+    { estado: 'Operativo', fecha: '2025-01-10T13:00:00' },
+    { estado: 'Mantenimiento', fecha: '2025-01-10T13:00:00' },
+    { estado: 'Mantenimiento', fecha: '2025-01-10T13:45:00' },
+    { estado: 'Operativo', fecha: '2025-01-10T13:45:00' },
+    { estado: 'Operativo', fecha: '2025-01-10T17:30:00' },
+    { estado: 'Operativo en vacío', fecha: '2025-01-10T17:30:00' },
+    { estado: 'Operativo en vacío', fecha: '2025-01-10T18:00:00' },
+    { estado: 'Apagado', fecha: '2025-01-10T18:00:00' },
+    { estado: 'Apagado', fecha: '2025-01-10T20:00:00' },
+  ];
 
-  // ENERGÍA TOTAL CONSUMIDA
-  chartEnergia: ChartOptions = {
-    series: [
-      {
-        name: 'Plegadora 1',
-        data: [60, 70, 80, 75, 85, 95, 100],
-      },
-      {
-        name: 'Plegadora 2',
-        data: [40, 50, 60, 65, 70, 80, 85],
-      },
-    ] as ApexAxisChartSeries,
-
-    chart: {
-      type: 'bar',
-      height: '100%',
-      width: '600px',
-      stacked: true,
-      toolbar: {
-        show: false,
-      },
-    },
-
-    plotOptions: {
-      bar: {
-        horizontal: false,
-        borderRadius: 6,
-      },
-    },
-
-    xaxis: {
-      categories: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
-    },
-
-    legend: {
-      position: 'top',
-      horizontalAlign: 'center',
-      markers: {
-        shape: 'circle',
-        size: 8,
-      },
-    },
-
-    fill: {
-      opacity: 1,
-    },
-
-    colors: [CHART_COLORS.BASE, CHART_COLORS.DARK_2],
-  };
-
-  // ENERGÍA NO PRODUCTIVA
-  chartNoProductiva: ChartOptions = {
-    series: [22], // valor de energía no productiva del activo plegadora_1
-
-    chart: {
-      type: 'radialBar' as ChartType,
-      height: 250,
-    },
-
-    labels: ['Energía no productiva'],
-
-    colors: [CHART_COLORS.BASE],
-
-    plotOptions: {
-      radialBar: {
-        hollow: {
-          size: '65%', // mismo hollow que Utilización
-        },
-
-        track: {
-          background: '#E3F1FB', // mismo track
-        },
-
-        dataLabels: {
-          name: {
-            show: true,
-            fontSize: '14px',
-            offsetY: 10,
-          },
-
-          value: {
-            show: true,
-            fontSize: '14px',
-            fontWeight: 700,
-            formatter: (val: number) => `${Math.round(val)}%`,
-          },
-        },
-      },
-    },
-  };
-
-  // ACTOS INSEGUROS
-  chartActosInseguros: ChartOptions = {
-    series: [
-      {
-        name: 'Actos inseguros',
-        data: [1, 0, 2, 3, 1, 0, 2], // ejemplo
-      },
-    ] as ApexAxisChartSeries,
-
-    chart: {
-      type: 'bar' as ChartType,
-      height: 260,
-      width: '600px',
-      toolbar: {
-        show: false,
-      },
-    },
-
-    xaxis: {
-      categories: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
-    },
-
-    dataLabels: {
-      enabled: true,
-    },
-
-    colors: [CHART_COLORS.ERROR],
-  };
-
-  // PIEZAS PRODUCIDAS POR HORA
-  chartPiezasHora: ChartOptions = {
-    series: [
-      {
-        name: 'Piezas / hora',
-        data: [14, 16, 18, 17, 20, 19, 21], // ejemplo
-      },
-    ] as ApexAxisChartSeries,
-
-    chart: {
-      type: 'line' as ChartType,
-      height: 260,
-      width: '600px',
-      toolbar: {
-        show: false,
-      },
-    },
-
-    xaxis: {
-      categories: [
-        '08:00',
-        '09:00',
-        '10:00',
-        '11:00',
-        '12:00',
-        '13:00',
-        '14:00',
+  // Barra apilado
+  energiaConsumidaBarra = [
+    {
+      name: 'Plegadora 1',
+      data: [
+        { fecha: '14/01/2026 13:27:28', valor: 60 },
+        { fecha: '15/01/2026 13:27:28', valor: 70 },
+        { fecha: '16/01/2026 13:27:28', valor: 80 },
+        { fecha: '17/01/2026 13:27:28', valor: 75 },
+        { fecha: '18/01/2026 13:27:28', valor: 85 },
+        { fecha: '19/01/2026 13:27:28', valor: 95 },
+        { fecha: '20/01/2026 13:27:28', valor: 100 },
       ],
     },
-
-    stroke: {
-      width: 3,
-      curve: 'smooth',
+    {
+      name: 'Plegadora 2',
+      data: [
+        { fecha: '14/01/2026 13:27:28', valor: 40 },
+        { fecha: '15/01/2026 13:27:28', valor: 50 },
+        { fecha: '16/01/2026 13:27:28', valor: 60 },
+        { fecha: '17/01/2026 13:27:28', valor: 65 },
+        { fecha: '18/01/2026 13:27:28', valor: 70 },
+        { fecha: '19/01/2026 13:27:28', valor: 80 },
+        { fecha: '20/01/2026 13:27:28', valor: 85 },
+      ],
     },
+  ];
 
-    colors: [CHART_COLORS.WARNING],
-  };
-
-  // TIEMPO VS ESTADO (TIMELINE / GANTT)
-  chartTiempoEstado: ChartOptions = {
-    series: [
-      {
-        name: 'Plegadora 1',
-        data: [
-          {
-            x: 'Apagado',
-            y: [
-              new Date('2025-01-10T06:00:00').getTime(),
-              new Date('2025-01-10T07:30:00').getTime(),
-            ],
-          },
-          {
-            x: 'Operativo',
-            y: [
-              new Date('2025-01-10T07:30:00').getTime(),
-              new Date('2025-01-10T11:00:00').getTime(),
-            ],
-          },
-          {
-            x: 'Operativo en vacío',
-            y: [
-              new Date('2025-01-10T11:00:00').getTime(),
-              new Date('2025-01-10T12:00:00').getTime(),
-            ],
-          },
-          {
-            x: 'Mantenimiento',
-            y: [
-              new Date('2025-01-10T12:00:00').getTime(),
-              new Date('2025-01-10T13:00:00').getTime(),
-            ],
-          },
-          {
-            x: 'Operativo',
-            y: [
-              new Date('2025-01-10T13:00:00').getTime(),
-              new Date('2025-01-10T15:00:00').getTime(),
-            ],
-          },
-        ],
-      },
-    ] as ApexAxisChartSeries,
-
-    chart: {
-      type: 'rangeBar' as ChartType,
-      height: '100%',
-      width: '600px',
-      toolbar: {
-        show: false,
-      },
+  // Piezas producidas por hora
+  piezasPorHoraLinea = [
+    {
+      name: 'Piezas / hora',
+      data: [
+        { hora: '08:00', valor: 14 },
+        { hora: '09:00', valor: 16 },
+        { hora: '10:00', valor: 18 },
+        { hora: '11:00', valor: 17 },
+        { hora: '12:00', valor: 20 },
+        { hora: '13:00', valor: 19 },
+        { hora: '14:00', valor: 21 },
+      ],
     },
+  ];
 
-    plotOptions: {
-      bar: {
-        horizontal: true,
-        barHeight: '60%',
-        distributed: true, // 🔑 clave para colorear por estado
-      },
+  // Actos inseguros
+  actosInsegurosBarra = [
+    {
+      name: 'Actos inseguros',
+      data: [
+        { categoria: 'Lun', valor: 1 },
+        { categoria: 'Mar', valor: 0 },
+        { categoria: 'Mié', valor: 2 },
+        { categoria: 'Jue', valor: 3 },
+        { categoria: 'Vie', valor: 1 },
+        { categoria: 'Sáb', valor: 0 },
+        { categoria: 'Dom', valor: 2 },
+      ],
     },
-
-    xaxis: {
-      type: 'datetime',
-    },
-
-    dataLabels: {
-      enabled: false,
-    },
-
-    legend: {
-      position: 'top',
-    },
-
-    // colores en el mismo orden en que aparecen los estados
-    colors: [
-      CHART_COLORS.ERROR, // Apagado
-      CHART_COLORS.WARNING, // Operativo
-      CHART_COLORS.LIGHT_2, // Operativo en vacío
-      CHART_COLORS.DARK_2, // Mantenimiento
-      CHART_COLORS.WARNING, // Operativo (segunda aparición)
-    ],
-  };
+  ];
 
   // CONTADORES
   piezasTotales = 130;

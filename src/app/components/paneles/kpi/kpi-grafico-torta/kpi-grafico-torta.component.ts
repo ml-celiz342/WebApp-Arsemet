@@ -5,15 +5,17 @@ import {
   ApexLegend,
   ApexNonAxisChartSeries,
   ApexDataLabels,
+  ChartType,
 } from 'ng-apexcharts';
+import { CommonModule } from '@angular/common';
+import { CHART_COLORS } from '../../../../constants/chart-colors.constants';
 
-export interface KpiTortaItem {
-  label: string;
-  value: number;
-  color?: string;
+interface PieDataItem {
+  valor: number;
+  estado: string;
 }
 
-export type ChartOptions = {
+export type PieChartOptions = {
   series: ApexNonAxisChartSeries;
   chart: ApexChart;
   labels: string[];
@@ -25,30 +27,44 @@ export type ChartOptions = {
 @Component({
   selector: 'app-kpi-grafico-torta',
   standalone: true,
-  imports: [NgApexchartsModule],
+  imports: [NgApexchartsModule, CommonModule],
   templateUrl: './kpi-grafico-torta.component.html',
   styleUrl: './kpi-grafico-torta.component.css',
 })
 export class KpiGraficoTortaComponent implements OnChanges {
-  @Input() titulo = '';
-  @Input() data: KpiTortaItem[] = [];
+  @Input() data: PieDataItem[] = [];
 
-  chartOptions!: ChartOptions;
+  chartOptions!: PieChartOptions;
 
   ngOnChanges(): void {
-    if (!this.data?.length) return;
+    if (!this.data || this.data.length === 0) {
+      return;
+    }
+
+    const series = this.data.map((item) => item.valor);
+    const labels = this.data.map((item) => item.estado);
 
     this.chartOptions = {
-      series: this.data.map((d) => d.value),
-      labels: this.data.map((d) => d.label),
-      colors: this.data.map((d) => d.color ?? '#999'),
+      series,
+
       chart: {
-        type: 'pie',
-        height: 200,
+        type: 'pie' as ChartType,
+        height: 250,
       },
+
+      labels,
+
+      colors: [
+        CHART_COLORS.ERROR,
+        CHART_COLORS.WARNING,
+        CHART_COLORS.LIGHT_2,
+        CHART_COLORS.DARK_2,
+      ],
+
       dataLabels: {
         enabled: false,
       },
+
       legend: {
         position: 'bottom',
         fontSize: '10.5px',

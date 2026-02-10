@@ -1,1 +1,11 @@
-<p>kpi-grafico-gantt works!</p>
+<ng-container *ngIf="chartOptions">
+  <apx-chart
+    [series]="chartOptions.series"
+    [chart]="chartOptions.chart"
+    [plotOptions]="chartOptions.plotOptions"
+    [xaxis]="chartOptions.xaxis"
+    [dataLabels]="chartOptions.dataLabels"
+    [legend]="chartOptions.legend"
+    [colors]="chartOptions.colors!">
+  </apx-chart>
+ </ng-container>
