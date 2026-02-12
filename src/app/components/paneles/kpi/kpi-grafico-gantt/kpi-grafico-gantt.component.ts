@@ -12,11 +12,7 @@ import {
 } from 'ng-apexcharts';
 import { CHART_COLORS } from '../../../../constants/chart-colors.constants';
 import { CommonModule } from '@angular/common';
-
-type EstadoTiempo = {
-  estado: string;
-  fecha: string;
-};
+import { ZonasTareasEstado } from '../../../../models/kpi-temporales';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -37,7 +33,7 @@ export type ChartOptions = {
   styleUrl: './kpi-grafico-gantt.component.css',
 })
 export class KpiGraficoGanttComponent {
-  @Input() data: EstadoTiempo[] = [];
+  @Input() data: ZonasTareasEstado[] = [];
 
   chartOptions!: ChartOptions;
 
@@ -81,29 +77,35 @@ export class KpiGraficoGanttComponent {
   }
 
   // Transformacion
-  private buildSeries(data: EstadoTiempo[]) {
-    const result: any[] = [];
+  private buildSeries(data: ZonasTareasEstado[]) {
+    return data.map((item) => {
+      const labelEs = this.ESTADO_LABELS[item.state] ?? item.state;
 
-    for (let i = 0; i < data.length - 1; i += 2) {
-      const inicio = data[i];
-      const fin = data[i + 1];
-
-      if (inicio.estado !== fin.estado) continue;
-
-      result.push({
-        x: inicio.estado,
-        y: [new Date(inicio.fecha).getTime(), new Date(fin.fecha).getTime()],
-        fillColor: this.ESTADO_COLORS[inicio.estado] ?? '#999999',
-      });
-    }
-
-    return result;
+      return {
+        x: labelEs, // eje Y en español
+        y: [new Date(item.from).getTime(), new Date(item.to).getTime()],
+        fillColor: this.ESTADO_COLORS[item.state] ?? '#999999',
+      };
+    });
   }
 
   private ESTADO_COLORS: Record<string, string> = {
-    Apagado: CHART_COLORS.ERROR,
-    Operativo: CHART_COLORS.WARNING,
-    'Operativo en vacío': CHART_COLORS.LIGHT_2,
-    Mantenimiento: CHART_COLORS.DARK_2,
+    Planning: CHART_COLORS.BASE, // Ver que colores utilizar
+    Folding: CHART_COLORS.COMPLEMENTARY,
+    Work_Zone: CHART_COLORS.SUCCESS,
+    Mixed: CHART_COLORS.WARNING,
+    Measure: CHART_COLORS.DARK_1,
+    Undefined: CHART_COLORS.ERROR,
+    Tunning: CHART_COLORS.DARK_2,
+  };
+
+  private ESTADO_LABELS: Record<string, string> = {
+    Planning: 'Planificación',
+    Folding: 'Plegado',
+    Work_Zone: 'Zona de Trabajo',
+    Mixed: 'Mixto',
+    Measure: 'Medición',
+    Undefined: 'Indefinido',
+    Tunning: 'Ajuste',
   };
 }

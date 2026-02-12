@@ -5,7 +5,7 @@ import { MatIcon } from "@angular/material/icon";
 import { FiltroAssets } from '../../../models/filtro-assets';
 import { AssetsService } from '../../../services/assets.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -18,6 +18,9 @@ import { KpiGraficoBarraApiladoComponent } from "./kpi-grafico-barra-apilado/kpi
 import { KpiGraficoBarraComponent } from "./kpi-grafico-barra/kpi-grafico-barra.component";
 import { KpiGraficoLineaComponent } from "./kpi-grafico-linea/kpi-grafico-linea.component";
 import { BlockWheelScrollDirective } from '../../../directives/block-wheel-scroll.directive';
+import { KpiTemporalesService } from '../../../services/kpi-temporales.service';
+import { ZonasTareasEstado } from '../../../models/kpi-temporales';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-kpi',
@@ -38,8 +41,9 @@ import { BlockWheelScrollDirective } from '../../../directives/block-wheel-scrol
     KpiGraficoBarraApiladoComponent,
     KpiGraficoBarraComponent,
     KpiGraficoLineaComponent,
-    BlockWheelScrollDirective
+    BlockWheelScrollDirective,
   ],
+  providers: [DatePipe],
 })
 export class KpiComponent {
   private _snackBar = inject(MatSnackBar);
@@ -59,6 +63,8 @@ export class KpiComponent {
   constructor(
     private assetsService: AssetsService,
     private dialog: MatDialog,
+    private kpiTemporalesService: KpiTemporalesService,
+    private datePipe: DatePipe,
   ) {}
 
   // Cargar datos
@@ -87,6 +93,9 @@ export class KpiComponent {
     } else {
       this.perDay = false;
     }
+
+    await this.loadDataGantt(); // cargar datos para el gantt
+
     this.cdr.detectChanges();
   }
 
@@ -178,24 +187,35 @@ export class KpiComponent {
   };
 
   // Gantt
-  estadosGantt = [
-    { estado: 'Apagado', fecha: '2025-01-10T05:30:00' },
-    { estado: 'Apagado', fecha: '2025-01-10T07:00:00' },
-    { estado: 'Operativo', fecha: '2025-01-10T07:00:00' },
-    { estado: 'Operativo', fecha: '2025-01-10T10:30:00' },
-    { estado: 'Operativo en vacío', fecha: '2025-01-10T10:30:00' },
-    { estado: 'Operativo en vacío', fecha: '2025-01-10T11:15:00' },
-    { estado: 'Operativo', fecha: '2025-01-10T11:15:00' },
-    { estado: 'Operativo', fecha: '2025-01-10T13:00:00' },
-    { estado: 'Mantenimiento', fecha: '2025-01-10T13:00:00' },
-    { estado: 'Mantenimiento', fecha: '2025-01-10T13:45:00' },
-    { estado: 'Operativo', fecha: '2025-01-10T13:45:00' },
-    { estado: 'Operativo', fecha: '2025-01-10T17:30:00' },
-    { estado: 'Operativo en vacío', fecha: '2025-01-10T17:30:00' },
-    { estado: 'Operativo en vacío', fecha: '2025-01-10T18:00:00' },
-    { estado: 'Apagado', fecha: '2025-01-10T18:00:00' },
-    { estado: 'Apagado', fecha: '2025-01-10T20:00:00' },
-  ];
+  estadosGantt: ZonasTareasEstado[] = [];
+
+  private async loadDataGantt(): Promise<void> {
+
+    const idAsset = this.selectedAsset?.id ?? 0;
+
+    const formattedStart =
+      this.datePipe.transform(this.range.start, 'yyyy-MM-dd HH:mm:ss') ?? '';
+
+    const formattedEnd =
+      this.datePipe.transform(this.range.end, 'yyyy-MM-dd HH:mm:ss') ?? '';
+
+    try {
+      this.estadosGantt = await firstValueFrom(
+        this.kpiTemporalesService.getKpiTasksStates(
+          idAsset,
+          formattedStart,
+          formattedEnd
+        ),
+      );
+
+      console.log('Gantt real:', this.estadosGantt);
+    } catch (err) {
+      console.error(err);
+      this._snackBar.open('Error cargando gantt', 'Cerrar', {
+        duration: 3000,
+      });
+    }
+  }
 
   // Barra apilado
   energiaConsumidaBarra = [
