@@ -73,7 +73,7 @@ export class KpiGraficoTortaComponent implements OnChanges {
         },
         formatter: (seriesName: string, opts: any) => {
           const value = opts.w.globals.series[opts.seriesIndex];
-          return `${seriesName}: ${value}%`;
+          return `${seriesName}: ${value.toFixed(2)}%`;
         },
       },
     };

@@ -21,6 +21,8 @@ import { BlockWheelScrollDirective } from '../../../directives/block-wheel-scrol
 import { KpiTemporalesService } from '../../../services/kpi-temporales.service';
 import { ZonasTareasEstado } from '../../../models/kpi-temporales';
 import { firstValueFrom } from 'rxjs';
+import { KpiEstaticosService } from '../../../services/kpi-estaticos.service';
+import { DistribucionTareas, KpiStats } from '../../../models/kpi-estaticos';
 
 @Component({
   selector: 'app-kpi',
@@ -64,6 +66,7 @@ export class KpiComponent {
     private assetsService: AssetsService,
     private dialog: MatDialog,
     private kpiTemporalesService: KpiTemporalesService,
+    private kpiEstaticosService: KpiEstaticosService,
     private datePipe: DatePipe,
   ) {}
 
@@ -95,6 +98,10 @@ export class KpiComponent {
     }
 
     await this.loadDataGantt(); // cargar datos para el gantt
+    await this.loadDataTorta(); // cargar datos para el pie chart
+    await this.loadDataLinealBar(); // cargar datos para el radial bar + ...
+    await this.loadDataPiecesPerHour(); // cargar datos para el lineal chart
+
 
     this.cdr.detectChanges();
   }
@@ -173,24 +180,90 @@ export class KpiComponent {
   /* Data cruda para pasarle a charts */
 
   // Torta
-  estadosTorta = [
-    { valor: 40, estado: 'Apagado' },
-    { valor: 35, estado: 'Operativo' },
-    { valor: 15, estado: 'Operativo en vacío' },
-    { valor: 10, estado: 'Mantenimiento' },
-  ];
+  estadosTorta: { estado: string; valor: number }[] = [];
+
+  private async loadDataTorta(): Promise<void> {
+    const idAsset = this.selectedAsset?.id ?? 0;
+
+    const formattedStart =
+      this.datePipe.transform(this.range.start, 'yyyy-MM-dd HH:mm:ss') ?? '';
+
+    const formattedEnd =
+      this.datePipe.transform(this.range.end, 'yyyy-MM-dd HH:mm:ss') ?? '';
+
+    try {
+      const resp: DistribucionTareas = await firstValueFrom(
+        this.kpiEstaticosService.getKpiTasksDistribution(
+          idAsset,
+          formattedStart,
+          formattedEnd,
+        ),
+      );
+
+      // convertir segundos → porcentajes
+      const totalSeg = resp.estados.reduce((a, b) => a + b.valor, 0);
+
+      this.estadosTorta = resp.estados.map((e) => ({
+        estado: e.estado,
+        valor:
+          totalSeg > 0 ? Number(((e.valor / totalSeg) * 100).toFixed(2)) : 0,
+      }));
+
+      console.log('Torta real %:', this.estadosTorta);
+    } catch (err) {
+      console.error(err);
+      this._snackBar.open('Error cargando torta', 'Cerrar', {
+        duration: 3000,
+      });
+    }
+  }
 
   // Radial bar
   promediosRadial = {
-    tasa_de_utilizacion: 67,
-    energia_no_productiva: 22,
+    tasa_de_utilizacion: 0,
+    energia_no_productiva: 0,
   };
+
+  private async loadDataLinealBar(): Promise<void> {
+    const idAsset = this.selectedAsset?.id ?? 0;
+
+    const formattedStart =
+      this.datePipe.transform(this.range.start, 'yyyy-MM-dd HH:mm:ss') ?? '';
+
+    const formattedEnd =
+      this.datePipe.transform(this.range.end, 'yyyy-MM-dd HH:mm:ss') ?? '';
+
+    try {
+      const resp: KpiStats = await firstValueFrom(
+        this.kpiEstaticosService.getKpiStats(
+          idAsset,
+          formattedStart,
+          formattedEnd,
+        ),
+      );
+
+      this.promediosRadial = {
+        tasa_de_utilizacion: Number(
+          resp.linealbar.tasa_de_utilizacion.toFixed(2),
+        ),
+        energia_no_productiva: Number(
+          resp.linealbar.energia_no_productiva.toFixed(2),
+        ),
+      };
+
+      console.log('LinealBar real:', this.promediosRadial);
+    } catch (err) {
+      console.error(err);
+      this._snackBar.open('Error cargando radial', 'Cerrar', {
+        duration: 3000,
+      });
+    }
+  }
 
   // Gantt
   estadosGantt: ZonasTareasEstado[] = [];
 
   private async loadDataGantt(): Promise<void> {
-
     const idAsset = this.selectedAsset?.id ?? 0;
 
     const formattedStart =
@@ -204,7 +277,7 @@ export class KpiComponent {
         this.kpiTemporalesService.getKpiTasksStates(
           idAsset,
           formattedStart,
-          formattedEnd
+          formattedEnd,
         ),
       );
 
@@ -246,20 +319,55 @@ export class KpiComponent {
   ];
 
   // Piezas producidas por hora
-  piezasPorHoraLinea = [
-    {
-      name: 'Piezas / hora',
-      data: [
-        { hora: '08:00', valor: 14 },
-        { hora: '09:00', valor: 16 },
-        { hora: '10:00', valor: 18 },
-        { hora: '11:00', valor: 17 },
-        { hora: '12:00', valor: 20 },
-        { hora: '13:00', valor: 19 },
-        { hora: '14:00', valor: 21 },
-      ],
-    },
-  ];
+  piezasPorHoraLinea: {
+    name: string;
+    data: { hora: string; valor: number }[];
+  }[] = [];
+
+  private async loadDataPiecesPerHour(): Promise<void> {
+    const idAsset = this.selectedAsset?.id ?? 0;
+
+    const formattedStart =
+      this.datePipe.transform(this.range.start, 'yyyy-MM-dd HH:mm:ss') ?? '';
+
+    const formattedEnd =
+      this.datePipe.transform(this.range.end, 'yyyy-MM-dd HH:mm:ss') ?? '';
+
+    try {
+      const resp = await firstValueFrom(
+        this.kpiTemporalesService.getPiecesPerHour(
+          idAsset,
+          formattedStart,
+          formattedEnd,
+        ),
+      );
+
+      if (!resp || resp.length === 0) {
+        this.piezasPorHoraLinea = [];
+        return;
+      }
+
+      // solo un activo → una serie
+      const serie = resp[0];
+
+      this.piezasPorHoraLinea = [
+        {
+          name: 'Pieces / hour',
+          data: serie.data.map((p) => ({
+            hora: this.datePipe.transform(p.fecha, 'HH:mm') ?? '',
+            valor: Number(p.valor.toFixed(2)),
+          })),
+        },
+      ];
+
+      console.log('Pieces/hour real:', this.piezasPorHoraLinea);
+    } catch (err) {
+      console.error(err);
+      this._snackBar.open('Error cargando piezas por hora', 'Cerrar', {
+        duration: 3000,
+      });
+    }
+  }
 
   // Actos inseguros
   actosInsegurosBarra = [
