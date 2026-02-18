@@ -1,17 +1,18 @@
 /* --- GANT --- */
 export interface ZonasTareasEstado {
   state: string;
+  alias: string,
   from: Date;
   to: Date;
 }
 
 /* --- PIECES PER HOUR --- */
 export interface PiecesPerHourPoint {
-  fecha: Date;
-  valor: number;
+  hour: Date;
+  value: number;
 }
 
 export interface PiecesPerHourSerie {
-  id_activo: number;
+  id_asset: number;
   data: PiecesPerHourPoint[];
 }

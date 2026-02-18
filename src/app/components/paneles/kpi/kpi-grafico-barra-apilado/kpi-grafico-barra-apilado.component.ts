@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ChartComponent, ChartType, NgApexchartsModule } from 'ng-apexcharts';
 import {
   ApexAxisChartSeries,
@@ -8,14 +9,13 @@ import {
   ApexLegend,
   ApexFill,
 } from 'ng-apexcharts';
+
 import { CHART_COLORS } from '../../../../constants/chart-colors.constants';
-import { CommonModule } from '@angular/common';
-import { Input } from '@angular/core';
 
 type SeriePromedio = {
   name: string;
   data: {
-    fecha: string;
+    categoria: string;
     valor: number;
   }[];
 };
@@ -37,21 +37,24 @@ export type ChartOptions = {
   templateUrl: './kpi-grafico-barra-apilado.component.html',
   styleUrl: './kpi-grafico-barra-apilado.component.css',
 })
-export class KpiGraficoBarraApiladoComponent {
+export class KpiGraficoBarraApiladoComponent implements OnChanges {
+
   @Input() data: SeriePromedio[] = [];
 
   chartOptions!: ChartOptions;
 
   ngOnChanges(): void {
-    if (!this.data || this.data.length === 0) return;
+    if (!this.data || this.data.length === 0) {
+      return;
+    }
 
-    // Categorías → DD/MM
-    const categories = this.data[0].data.map((d) => this.formatFecha(d.fecha));
+    // categorías del eje X
+    const categories = this.data[0].data.map(d => d.categoria);
 
-    // Series
-    const series = this.data.map((serie) => ({
+    // series apiladas
+    const series = this.data.map(serie => ({
       name: serie.name,
-      data: serie.data.map((d) => d.valor),
+      data: serie.data.map(d => d.valor),
     }));
 
     this.chartOptions = {
@@ -59,7 +62,7 @@ export class KpiGraficoBarraApiladoComponent {
 
       chart: {
         type: 'bar' as ChartType,
-        height: 240,
+        height: 260,
         stacked: true,
         toolbar: { show: false },
       },
@@ -68,6 +71,7 @@ export class KpiGraficoBarraApiladoComponent {
         bar: {
           horizontal: false,
           borderRadius: 6,
+          columnWidth: '55%',
         },
       },
 
@@ -75,6 +79,9 @@ export class KpiGraficoBarraApiladoComponent {
         categories,
         labels: {
           rotate: -45,
+          rotateAlways: true,
+          hideOverlappingLabels: false,
+          trim: false,
           style: {
             fontSize: '11px',
           },
@@ -93,13 +100,11 @@ export class KpiGraficoBarraApiladoComponent {
         opacity: 1,
       },
 
-      colors: [CHART_COLORS.BASE, CHART_COLORS.DARK_2],
+      colors: [
+        CHART_COLORS.BASE, // kWh
+        CHART_COLORS.DARK_2, // kvarh
+      ],
     };
   }
-
-  private formatFecha(fecha: string): string {
-    const [datePart] = fecha.split(' ');
-    const [day, month] = datePart.split('/');
-    return `${day}/${month}`;
-  }
 }
+

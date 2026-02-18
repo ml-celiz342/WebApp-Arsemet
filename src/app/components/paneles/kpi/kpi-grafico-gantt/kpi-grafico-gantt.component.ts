@@ -79,10 +79,8 @@ export class KpiGraficoGanttComponent {
   // Transformacion
   private buildSeries(data: ZonasTareasEstado[]) {
     return data.map((item) => {
-      const labelEs = this.ESTADO_LABELS[item.state] ?? item.state;
-
       return {
-        x: labelEs, // eje Y en español
+        x: item.alias, // alias directo de la API
         y: [new Date(item.from).getTime(), new Date(item.to).getTime()],
         fillColor: this.ESTADO_COLORS[item.state] ?? '#999999',
       };
@@ -90,22 +88,12 @@ export class KpiGraficoGanttComponent {
   }
 
   private ESTADO_COLORS: Record<string, string> = {
-    Planning: CHART_COLORS.BASE, // Ver que colores utilizar
+    Planning: CHART_COLORS.BASE,
     Folding: CHART_COLORS.COMPLEMENTARY,
     Work_Zone: CHART_COLORS.SUCCESS,
     Mixed: CHART_COLORS.WARNING,
     Measure: CHART_COLORS.DARK_1,
     Undefined: CHART_COLORS.ERROR,
     Tunning: CHART_COLORS.DARK_2,
-  };
-
-  private ESTADO_LABELS: Record<string, string> = {
-    Planning: 'Planificación',
-    Folding: 'Plegado',
-    Work_Zone: 'Zona de Trabajo',
-    Mixed: 'Mixto',
-    Measure: 'Medición',
-    Undefined: 'Indefinido',
-    Tunning: 'Ajuste',
   };
 }

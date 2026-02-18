@@ -99,9 +99,9 @@ export class KpiComponent {
 
     await this.loadDataGantt(); // cargar datos para el gantt
     await this.loadDataTorta(); // cargar datos para el pie chart
-    await this.loadDataLinealBar(); // cargar datos para el radial bar + ...
-    await this.loadDataPiecesPerHour(); // cargar datos para el lineal chart
-
+    await this.loadDataStats(); // cargar datos para el radial bar + ...
+    await this.loadDataPiecesPerHour(); // cargar datos para radial bar chart + mantenimiento y confiabilidad
+    await this.loadDataEnergyPerShift(); // cargar datos para el barra apilado
 
     this.cdr.detectChanges();
   }
@@ -177,7 +177,7 @@ export class KpiComponent {
   }
 
   // GRAFICOS
-  /* Data cruda para pasarle a charts */
+  /* APIs para charts */
 
   // Torta
   estadosTorta: { estado: string; valor: number }[] = [];
@@ -201,15 +201,13 @@ export class KpiComponent {
       );
 
       // convertir segundos → porcentajes
-      const totalSeg = resp.estados.reduce((a, b) => a + b.valor, 0);
+      const totalSeg = resp.states.reduce((a, b) => a + b.value, 0);
 
-      this.estadosTorta = resp.estados.map((e) => ({
-        estado: e.estado,
+      this.estadosTorta = resp.states.map((e) => ({
+        estado: e.state,
         valor:
-          totalSeg > 0 ? Number(((e.valor / totalSeg) * 100).toFixed(2)) : 0,
+          totalSeg > 0 ? Number(((e.value / totalSeg) * 100).toFixed(2)) : 0,
       }));
-
-      console.log('Torta real %:', this.estadosTorta);
     } catch (err) {
       console.error(err);
       this._snackBar.open('Error cargando torta', 'Cerrar', {
@@ -224,7 +222,7 @@ export class KpiComponent {
     energia_no_productiva: 0,
   };
 
-  private async loadDataLinealBar(): Promise<void> {
+  private async loadDataStats(): Promise<void> {
     const idAsset = this.selectedAsset?.id ?? 0;
 
     const formattedStart =
@@ -243,15 +241,11 @@ export class KpiComponent {
       );
 
       this.promediosRadial = {
-        tasa_de_utilizacion: Number(
-          resp.linealbar.tasa_de_utilizacion.toFixed(2),
-        ),
+        tasa_de_utilizacion: Number(resp.radialbar.utilization_rate.toFixed(2)),
         energia_no_productiva: Number(
-          resp.linealbar.energia_no_productiva.toFixed(2),
+          resp.radialbar.non_productive_energy.toFixed(2),
         ),
       };
-
-      console.log('LinealBar real:', this.promediosRadial);
     } catch (err) {
       console.error(err);
       this._snackBar.open('Error cargando radial', 'Cerrar', {
@@ -280,8 +274,6 @@ export class KpiComponent {
           formattedEnd,
         ),
       );
-
-      console.log('Gantt real:', this.estadosGantt);
     } catch (err) {
       console.error(err);
       this._snackBar.open('Error cargando gantt', 'Cerrar', {
@@ -291,32 +283,58 @@ export class KpiComponent {
   }
 
   // Barra apilado
-  energiaConsumidaBarra = [
-    {
-      name: 'Plegadora 1',
-      data: [
-        { fecha: '14/01/2026 13:27:28', valor: 60 },
-        { fecha: '15/01/2026 13:27:28', valor: 70 },
-        { fecha: '16/01/2026 13:27:28', valor: 80 },
-        { fecha: '17/01/2026 13:27:28', valor: 75 },
-        { fecha: '18/01/2026 13:27:28', valor: 85 },
-        { fecha: '19/01/2026 13:27:28', valor: 95 },
-        { fecha: '20/01/2026 13:27:28', valor: 100 },
-      ],
-    },
-    {
-      name: 'Plegadora 2',
-      data: [
-        { fecha: '14/01/2026 13:27:28', valor: 40 },
-        { fecha: '15/01/2026 13:27:28', valor: 50 },
-        { fecha: '16/01/2026 13:27:28', valor: 60 },
-        { fecha: '17/01/2026 13:27:28', valor: 65 },
-        { fecha: '18/01/2026 13:27:28', valor: 70 },
-        { fecha: '19/01/2026 13:27:28', valor: 80 },
-        { fecha: '20/01/2026 13:27:28', valor: 85 },
-      ],
-    },
-  ];
+  energiaPorTurnoBarra: {
+    name: string;
+    data: { categoria: string; valor: number }[];
+  }[] = [];
+
+  private async loadDataEnergyPerShift(): Promise<void> {
+    const idAsset = this.selectedAsset?.id ?? 0;
+
+    const formattedStart =
+      this.datePipe.transform(this.range.start, 'yyyy-MM-dd HH:mm:ss') ?? '';
+
+    const formattedEnd =
+      this.datePipe.transform(this.range.end, 'yyyy-MM-dd HH:mm:ss') ?? '';
+
+    try {
+      const resp = await firstValueFrom(
+        this.kpiEstaticosService.getTotalEnergyPerShift(
+          idAsset,
+          formattedStart,
+          formattedEnd,
+        ),
+      );
+
+      if (!resp.energy_by_shift?.length) {
+        this.energiaPorTurnoBarra = [];
+        return;
+      }
+
+      this.energiaPorTurnoBarra = [
+        {
+          name: 'kWh',
+          data: resp.energy_by_shift.map((s) => ({
+            categoria: this.datePipe.transform(s.start, 'dd/MM/yy, HH:mm') ?? '',
+            valor: Number(s.kwh.toFixed(2)),
+          })),
+        },
+        {
+          name: 'kVArh',
+          data: resp.energy_by_shift.map((s) => ({
+            categoria: this.datePipe.transform(s.start, 'dd/MM/yy, HH:mm') ?? '',
+            valor: Number(s.kvarh.toFixed(2)),
+          })),
+        },
+      ];
+
+    } catch (err) {
+      console.error(err);
+      this._snackBar.open('Error cargando energía por turno', 'Cerrar', {
+        duration: 3000,
+      });
+    }
+  }
 
   // Piezas producidas por hora
   piezasPorHoraLinea: {
@@ -354,13 +372,11 @@ export class KpiComponent {
         {
           name: 'Pieces / hour',
           data: serie.data.map((p) => ({
-            hora: this.datePipe.transform(p.fecha, 'HH:mm') ?? '',
-            valor: Number(p.valor.toFixed(2)),
+            hora: this.datePipe.transform(p.hour, 'HH:mm') ?? '',
+            valor: Number(p.value.toFixed(2)),
           })),
         },
       ];
-
-      console.log('Pieces/hour real:', this.piezasPorHoraLinea);
     } catch (err) {
       console.error(err);
       this._snackBar.open('Error cargando piezas por hora', 'Cerrar', {

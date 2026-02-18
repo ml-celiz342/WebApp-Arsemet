@@ -47,7 +47,7 @@
 
     <!-- ENERGÍA NO PRODUCTIVA -->
     <mat-card class="card radial-chart">
-      <h3>Energía No Productiva (%)</h3>
+      <h3>Energía No Productiva de la Máquina (%)</h3>
       <app-kpi-grafico-radial-bar
         label="Utilización promedio"
         [valor]="this.promediosRadial.energia_no_productiva">
@@ -62,13 +62,13 @@
 
         <div class="kpi-row">
           <div class="totalizador-item">
-            <div class="titulo-totalizador">Tiempo Medio<br>de Falla</div>
+            <div class="titulo-totalizador">Hs Desde el Último<br>Mantenimiento</div>
             <div class="circulo-valor">
               {{ horasUltimoMantenimiento }} <span class="unidad">h</span>
             </div>
           </div>
         </div>
-        
+
       </mat-card>
 
       <mat-card class="kpi-subcard inferior">
@@ -84,7 +84,7 @@
           <div class="totalizador-item">
             <div class="titulo-totalizador">Tiempo de Ciclo<br>Promedio</div>
             <div class="circulo-valor">
-              {{ consumoAlambre }} <span class="unidad">s</span>
+              {{ consumoAlambre }} <span class="unidad">s/pieza</span>
             </div>
           </div>
         </div>
@@ -107,7 +107,7 @@
       <h3>Energía total consumida (kWh)</h3>
       <div class="chart-wrapper">
         <app-kpi-grafico-barra-apilado
-          [data]="energiaConsumidaBarra">
+          [data]="energiaPorTurnoBarra">
         </app-kpi-grafico-barra-apilado>
       </div>
     </mat-card>

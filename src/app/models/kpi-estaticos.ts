@@ -1,25 +1,39 @@
 /* --- PIE CHART --- */
 export interface EstadoTorta {
-  estado: string;
-  valor: number;
+  state: string;
+  value: number;
 }
 
 export interface DistribucionTareas {
-  estados: EstadoTorta[];
+  states: EstadoTorta[];
   from: Date;
   to: Date;
-  id_activo: number;
+  id_asset: number;
 }
 
-/* --- LINEAL BAR, +, + --- */
-export interface LinealBarValores {
-  energia_no_productiva: number;
-  tasa_de_utilizacion: number;
+/* --- RADIAL BAR, MANTENIMIENTO Y CONFIABILIDAD */
+export interface RadialBarValores {
+  non_productive_energy: number;
+  utilization_rate: number;
 }
 
 export interface KpiStats {
-  linealbar: LinealBarValores;
+  radialbar: RadialBarValores;
   from: Date;
   to: Date;
-  id_activo: number;
+  id_asset: number;
+}
+
+/* --- BARRA APILADO --- */
+export interface EnergyByShiftItem {
+  start: Date;
+  kwh: number;
+  kvarh: number;
+}
+
+export interface TotalEnergyPerShift {
+  id_asset: number;
+  from: Date;
+  to: Date;
+  energy_by_shift: EnergyByShiftItem[];
 }

@@ -64,6 +64,7 @@ export class KpiTemporalesService {
           const mappedData = response.data.map(
             (item: any): ZonasTareasEstado => ({
               state: item.state,
+              alias: item.alias,
               from: new Date(item.from),
               to: new Date(item.to),
             }),
@@ -100,11 +101,11 @@ export class KpiTemporalesService {
       map((response) =>
         response.map(
           (serie): PiecesPerHourSerie => ({
-            id_activo: serie.id_activo,
+            id_asset: serie.id_asset,
             data: serie.data.map(
               (p: any): PiecesPerHourPoint => ({
-                fecha: new Date(p.fecha),
-                valor: Number(p.valor),
+                hour: new Date(p.hour),
+                value: Number(p.value),
               }),
             ),
           }),
