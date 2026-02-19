@@ -20,6 +20,11 @@
   grid-column: span 2;
 }
 
+/* Tarjetas cuadruples */
+.card.cuadruple {
+  grid-column: span 4;
+}
+
 /* ================= TEXTOS ================= */
 .card h3 {
   font-size: 15px !important;

@@ -64,7 +64,7 @@
           <div class="totalizador-item">
             <div class="titulo-totalizador">Hs Desde el Último<br>Mantenimiento</div>
             <div class="circulo-valor">
-              {{ horasUltimoMantenimiento }} <span class="unidad">h</span>
+              {{ this.mantenimiento.tiempo_ultimo_mantenimiento }} <span class="unidad">h</span>
             </div>
           </div>
         </div>
@@ -76,7 +76,7 @@
           <div class="totalizador-item">
             <div class="titulo-totalizador">Consumo Espec.<br>de Energía</div>
             <div class="circulo-valor">
-              {{ consumoEspecifico }}<br>
+              {{ this.mantenimiento.consumo_esp_energia }}<br>
               <span class="unidad">kWh/pieza</span>
             </div>
           </div>
@@ -84,22 +84,12 @@
           <div class="totalizador-item">
             <div class="titulo-totalizador">Tiempo de Ciclo<br>Promedio</div>
             <div class="circulo-valor">
-              {{ consumoAlambre }} <span class="unidad">s/pieza</span>
+              {{ this.mantenimiento.tiempo_ciclo_promedio }} <span class="unidad">s/pieza</span>
             </div>
           </div>
         </div>
       </mat-card>
 
-    </mat-card>
-
-    <!-- TIEMPO VS ESTADO -->
-    <mat-card class="card doble">
-      <h3>Tiempo vs Estado</h3>
-      <div class="gantt-wrapper" appBlockWheelScroll>
-        <app-kpi-grafico-gantt
-          [data]="estadosGantt">
-        </app-kpi-grafico-gantt>
-      </div>
     </mat-card>
 
     <!-- ENERGÍA TOTAL -->
@@ -122,7 +112,17 @@
       </div>
     </mat-card>
 
-    <!--  ACTOS INSEGUROS -->
+    <!-- TIEMPO VS ESTADO -->
+    <mat-card class="card cuadruple">
+      <h3>Tiempo vs Estado</h3>
+      <div class="gantt-wrapper" appBlockWheelScroll>
+        <app-kpi-grafico-gantt
+          [data]="estadosGantt">
+        </app-kpi-grafico-gantt>
+      </div>
+    </mat-card>
+
+    <!--  ACTOS INSEGUROS
     <mat-card class="card doble">
       <h3>Actos inseguros</h3>
       <div class="chart-wrapper">
@@ -131,6 +131,7 @@
         </app-kpi-grafico-barra>
       </div>
     </mat-card>
+    -->
 
   </div>
 </div>

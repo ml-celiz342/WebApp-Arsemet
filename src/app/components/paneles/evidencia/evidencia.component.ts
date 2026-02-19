@@ -19,11 +19,12 @@ import { GraficoPotenciaComponent } from './grafico-potencia/grafico-potencia.co
 import { GraficoPotenciaPorDiaComponent } from './grafico-potencia-por-dia/grafico-potencia-por-dia.component';
 
 // Modelo
-import { Evidencia} from '../../../models/evidencia-potencia';
+import { Evidencia, ZonasIA} from '../../../models/evidencia-potencia';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { EvidenciaPotenciaService } from '../../../services/evidencia-potencia.service';
 import { lastValueFrom } from 'rxjs';
+import { EvidenciaTablaComponent } from "./evidencia-tabla/evidencia-tabla.component";
 
 @Component({
   selector: 'app-evidencia',
@@ -39,6 +40,7 @@ import { lastValueFrom } from 'rxjs';
     MatTooltipModule,
     GraficoPotenciaComponent,
     GraficoPotenciaPorDiaComponent,
+    EvidenciaTablaComponent,
   ],
   providers: [DatePipe],
   templateUrl: './evidencia.component.html',
@@ -60,6 +62,12 @@ export class EvidenciaComponent {
 
   // Evidencias separadas por tipo
   evidenciasPower: Evidencia[] = [];
+  //evidenciasZonasIA: ZonasIA[] = [];
+  evidenciasZonasIA: {
+    assetId: number;
+    code: string;
+    tareas: ZonasIA[];
+  }[] = [];
 
   // Data sources
   dataSourceEvidencias = new MatTableDataSource<Evidencia>([]);
@@ -74,7 +82,7 @@ export class EvidenciaComponent {
     private assetsService: AssetsService,
     private utilidades: UtilidadesService,
     private evidenciaPotenciaService: EvidenciaPotenciaService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
   ) {}
 
   // Cargar datos
@@ -92,13 +100,11 @@ export class EvidenciaComponent {
 
   // Load de evidencias por filtro
   async loadDataEvidenciasByFilter() {
-    // Resetear arreglos
     this.evidenciasPower = [];
+    this.evidenciasZonasIA = [];
     this.dataSourceEvidencias.data = [];
 
-    if (!this.selectedAsset || !this.selectedAsset.id) {
-      return;
-    }
+    if (!this.selectedAsset?.id) return;
 
     const formattedStart =
       this.datePipe.transform(this.range.start, 'yyyy-MM-dd HH:mm:ss') ?? '';
@@ -106,43 +112,93 @@ export class EvidenciaComponent {
     const formattedEnd =
       this.datePipe.transform(this.range.end, 'yyyy-MM-dd HH:mm:ss') ?? '';
 
-    // Decidir qué activos consultar
-    const assetsAConsultar =
-      this.selectedAsset.subAssets && this.selectedAsset.subAssets.length > 0
-        ? this.selectedAsset.subAssets
-        : [
-            {
-              id: this.selectedAsset.id,
-              type: 'tablero_electrico', // o el tipo que corresponda
-            },
-          ];
+    // ARRAY CON PADRE + SUBACTIVOS
+    const assetsAConsultar: { id: number; type: string }[] = [
+      {
+        id: this.selectedAsset.id,
+        type: 'tablero_electrico', // el padre siempre es tablero
+      },
+      ...(this.selectedAsset.subAssets ?? []),
+    ];
 
-    try {
-      const requests = assetsAConsultar.map((sa) => {
-        console.log(`→ Llamando API para subAsset ${sa.id} (${sa.type})`);
+    for (const sa of assetsAConsultar) {
+      console.log(`→ Llamando API asset ${sa.id} (${sa.type})`);
 
-        return lastValueFrom(
-          this.evidenciaPotenciaService.getEvidenciaPowerById(
-            sa.id,
-            formattedStart,
-            formattedEnd
-          )
+      try {
+        const result = await this.ejecutarSubAsset(
+          sa,
+          formattedStart,
+          formattedEnd,
         );
-      });
 
-      const responses = await Promise.all(requests);
+        if (!result.data) continue;
 
-      responses.forEach((res) => {
-        if (!res) return;
-        this.evidenciasPower.push(res);
-      });
-    } catch (error) {
-      console.error('Error filtrando evidencias', error);
-      this._snackBar.open('Error filtrando evidencias', 'Cerrar', {
-        duration: 3000,
-      });
+        if (result.tipo === 'tablero_electrico') {
+          this.evidenciasPower.push(result.data);
+        }
+
+        if (result.tipo === 'camara' && result.data?.length) {
+          this.evidenciasZonasIA.push({
+            assetId: sa.id,
+            code: result.data[0].code,
+            tareas: result.data,
+          });
+        }
+      } catch (e) {
+        console.error('Error inesperado procesando asset', sa, e);
+
+        this._snackBar.open('Error filtrando evidencias', 'Cerrar', {
+          duration: 3000,
+        });
+      }
     }
   }
+
+  // Helper para ejecutar una promesa por sub-activo
+  private async ejecutarSubAsset(
+    sa: { id: number; type: string },
+    desde: string,
+    hasta: string,
+  ): Promise<{ tipo: 'tablero_electrico' | 'camara'; data: any | null }> {
+    try {
+      // TABLERO ELECTRICO
+      if (sa.type === 'tablero_electrico') {
+        const res = await lastValueFrom(
+          this.evidenciaPotenciaService.getEvidenciaPowerById(
+            sa.id,
+            desde,
+            hasta,
+          ),
+        );
+
+        return { tipo: 'tablero_electrico', data: res };
+      }
+
+      // CAMARA
+      if (sa.type === 'camara') {
+        const res = await lastValueFrom(
+          this.evidenciaPotenciaService.getEvidenciaZonasIaById(
+            sa.id,
+            desde,
+            hasta,
+          ),
+        );
+
+        return { tipo: 'camara', data: res };
+      }
+
+      // Tipo desconocido
+      return { tipo: 'tablero_electrico', data: null };
+    } catch (err) {
+      console.warn(`SubAsset ${sa.id} (${sa.type}) falló`, err);
+
+      return {
+        tipo: sa.type === 'camara' ? 'camara' : 'tablero_electrico',
+        data: null,
+      };
+    }
+  }
+
 
   ngOnInit() {
     this.loadDataAssets();
@@ -182,13 +238,13 @@ export class EvidenciaComponent {
       this.range = result.dateRange;
 
       const selectedIds: number[] = result.selectedOptions.map((x: string) =>
-        Number(x)
+        Number(x),
       );
 
       this.selectedAssetIds = result.selectedOptions ?? [];
 
       const selectedAssets = this.assetsFiltro.filter((item) =>
-        selectedIds.includes(item.id)
+        selectedIds.includes(item.id),
       );
 
       if (selectedAssets.length > 0) {
@@ -197,7 +253,7 @@ export class EvidenciaComponent {
 
         // PASO NUEVO (ACÁ)
         const assetCompleto = await lastValueFrom(
-          this.assetsService.getAssetById(this.selectedAsset.id)
+          this.assetsService.getAssetById(this.selectedAsset.id),
         );
 
         this.selectedAsset.subAssets = assetCompleto.sub_asset.map((sa) => ({

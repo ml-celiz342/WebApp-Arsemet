@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { Observable, map } from 'rxjs';
-import { Evidencia} from '../models/evidencia-potencia';
+import { Evidencia, ZonasIA} from '../models/evidencia-potencia';
+import { EMPTY, expand, Observable, reduce, map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EvidenciaPotenciaService {
   private apiURLEvidenciaPower = environment.apiUrl + 'data/evidences/power';
+  private apiURLEvidenciaTasksIA =
+    environment.apiUrl + 'data/evidences/zones_ia';
 
   constructor(private http: HttpClient) {}
 
@@ -16,7 +18,7 @@ export class EvidenciaPotenciaService {
   getEvidenciaPowerById(
     id_activo: number,
     desde?: string,
-    hasta?: string
+    hasta?: string,
   ): Observable<Evidencia> {
     let params = new HttpParams();
 
@@ -73,5 +75,73 @@ export class EvidenciaPotenciaService {
           reactive_value: c.reactive_value,
         })) || [],
     };
+  }
+
+  // EVIDENCIA ZONAS IA
+  getEvidenciaZonasIaById(
+    id_activo: number,
+    desde: string,
+    hasta: string,
+  ): Observable<ZonasIA[]> {
+    let params = new HttpParams();
+
+    if (id_activo) {
+      params = params.set('idAsset', id_activo);
+    }
+
+    if (desde) {
+      params = params.set('from', desde);
+    }
+
+    if (hasta) {
+      params = params.set('to', hasta);
+    }
+
+    params = params.set('limit', 100);
+
+    return this.http.get<any>(this.apiURLEvidenciaTasksIA, { params }).pipe(
+      expand((response) => {
+        if (
+          response?.pagination?.current_page !== undefined &&
+          response?.pagination?.total_pages !== undefined &&
+          response?.pagination?.limit !== undefined &&
+          response.pagination.current_page < response.pagination.total_pages
+        ) {
+          const nextOffset =
+            response.pagination.current_page * response.pagination.limit;
+
+          const nextParams = params.set('offset', nextOffset.toString());
+
+          return this.http.get<any>(this.apiURLEvidenciaTasksIA, {
+            params: nextParams,
+          });
+        }
+
+        return EMPTY;
+      }),
+
+      reduce<ZonasIA[], any>((acc, response) => {
+        if (
+          response &&
+          typeof response === 'object' &&
+          'data' in response &&
+          Array.isArray(response.data)
+        ) {
+          const mappedData = response.data.map(
+            (item: any): ZonasIA => ({
+              code: item.code,
+              zone_name: item.zone_name,
+              start: new Date(item.from),
+              end: new Date(item.to),
+              workers: item.workers,
+            }),
+          );
+
+          acc.push(...mappedData);
+        }
+
+        return acc;
+      }, []),
+    );
   }
 }

@@ -98,9 +98,8 @@ export class KpiComponent {
     }
 
     await this.loadDataGantt(); // cargar datos para el gantt
-    await this.loadDataTorta(); // cargar datos para el pie chart
     await this.loadDataStats(); // cargar datos para el radial bar + ...
-    await this.loadDataPiecesPerHour(); // cargar datos para radial bar chart + mantenimiento y confiabilidad
+    await this.loadDataPiecesPerHour(); // cargar datos para radial bar chart + mantenimiento y confiabilidad + pie chart
     await this.loadDataEnergyPerShift(); // cargar datos para el barra apilado
 
     this.cdr.detectChanges();
@@ -125,102 +124,83 @@ export class KpiComponent {
 
       this.cargando = true;
 
-      this.range = result.dateRange;
+      try {
+        this.range = result.dateRange;
 
-      const selectedIds: number[] = result.selectedOptions.map((x: string) =>
-        Number(x),
-      );
+        const selectedIds: number[] = result.selectedOptions.map((x: string) =>
+          Number(x),
+        );
 
-      this.selectedAssetIds = result.selectedOptions ?? [];
+        this.selectedAssetIds = result.selectedOptions ?? [];
 
-      const selectedAssets = this.assetsFiltro.filter((item) =>
-        selectedIds.includes(item.id),
-      );
+        const selectedAssets = this.assetsFiltro.filter((item) =>
+          selectedIds.includes(item.id),
+        );
 
-      if (selectedAssets.length > 0) {
-        this.selectedAsset = selectedAssets[0];
-        this.nombreAssets = selectedAssets.map((a) => a.code);
-      }
-
-      // Ajustar horas
-      if (this.range.start && this.range.end) {
-        this.range.start.setHours(0, 0, 0, 0);
-
-        const endDate = new Date(this.range.end);
-        const hoy = new Date();
-
-        const mismaFecha =
-          endDate.getFullYear() === hoy.getFullYear() &&
-          endDate.getMonth() === hoy.getMonth() &&
-          endDate.getDate() === hoy.getDate();
-
-        if (mismaFecha) {
-          this.range.end = hoy;
-        } else {
-          endDate.setHours(23, 59, 59, 999);
-          this.range.end = endDate;
+        if (selectedAssets.length > 0) {
+          this.selectedAsset = selectedAssets[0];
+          this.nombreAssets = selectedAssets.map((a) => a.code);
         }
 
-        await this.cargarDatos();
-      }
+        if (this.range.start && this.range.end) {
+          this.range.start.setHours(0, 0, 0, 0);
 
-      this.cargando = false;
+          const endDate = new Date(this.range.end);
+          const hoy = new Date();
+
+          const mismaFecha =
+            endDate.getFullYear() === hoy.getFullYear() &&
+            endDate.getMonth() === hoy.getMonth() &&
+            endDate.getDate() === hoy.getDate();
+
+          if (mismaFecha) {
+            this.range.end = hoy;
+          } else {
+            endDate.setHours(23, 59, 59, 999);
+            this.range.end = endDate;
+          }
+
+          await this.cargarDatos();
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        this.cargando = false; // SIEMPRE se ejecuta
+      }
     });
+
   }
 
   async recargar() {
     this.cargando = true;
 
-    await this.cargarDatos();
-
-    this.cargando = false;
+    try {
+      await this.cargarDatos();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      this.cargando = false;
+    }
   }
 
   // GRAFICOS
   /* APIs para charts */
-
-  // Torta
-  estadosTorta: { estado: string; valor: number }[] = [];
-
-  private async loadDataTorta(): Promise<void> {
-    const idAsset = this.selectedAsset?.id ?? 0;
-
-    const formattedStart =
-      this.datePipe.transform(this.range.start, 'yyyy-MM-dd HH:mm:ss') ?? '';
-
-    const formattedEnd =
-      this.datePipe.transform(this.range.end, 'yyyy-MM-dd HH:mm:ss') ?? '';
-
-    try {
-      const resp: DistribucionTareas = await firstValueFrom(
-        this.kpiEstaticosService.getKpiTasksDistribution(
-          idAsset,
-          formattedStart,
-          formattedEnd,
-        ),
-      );
-
-      // convertir segundos → porcentajes
-      const totalSeg = resp.states.reduce((a, b) => a + b.value, 0);
-
-      this.estadosTorta = resp.states.map((e) => ({
-        estado: e.state,
-        valor:
-          totalSeg > 0 ? Number(((e.value / totalSeg) * 100).toFixed(2)) : 0,
-      }));
-    } catch (err) {
-      console.error(err);
-      this._snackBar.open('Error cargando torta', 'Cerrar', {
-        duration: 3000,
-      });
-    }
-  }
 
   // Radial bar
   promediosRadial = {
     tasa_de_utilizacion: 0,
     energia_no_productiva: 0,
   };
+
+  // Mantenimiento y confiabilidad
+  mantenimiento = {
+    tiempo_ultimo_mantenimiento: 0,
+    consumo_esp_energia: 0,
+    tiempo_ciclo_promedio: 0,
+  };
+
+  // Torta
+  estadosTorta: { estado: string; valor: number }[] = [];
 
   private async loadDataStats(): Promise<void> {
     const idAsset = this.selectedAsset?.id ?? 0;
@@ -240,12 +220,41 @@ export class KpiComponent {
         ),
       );
 
+      // -------------------------
+      // RADIAL BAR
+      // -------------------------
       this.promediosRadial = {
         tasa_de_utilizacion: Number(resp.radialbar.utilization_rate.toFixed(2)),
         energia_no_productiva: Number(
           resp.radialbar.non_productive_energy.toFixed(2),
         ),
       };
+
+      // -------------------------
+      // MANTENIMIENTO
+      // -------------------------
+      this.mantenimiento = {
+        tiempo_ultimo_mantenimiento: Math.round(
+          Math.abs(Number(resp.maintenance.last_maintenance_time)),
+        ),
+        consumo_esp_energia: Number(
+          Number(resp.maintenance.specific_energy_use).toFixed(1),
+        ),
+        tiempo_ciclo_promedio: Number(
+          Number(resp.maintenance.average_cycle_time).toFixed(1),
+        ),
+      };
+
+      // -------------------------
+      // TORTA (segundos → porcentaje)
+      // -------------------------
+      const totalSeg = resp.piechart.states.reduce((a, b) => a + b.value, 0);
+
+      this.estadosTorta = resp.piechart.states.map((e) => ({
+        estado: e.state,
+        valor:
+          totalSeg > 0 ? Number(((e.value / totalSeg) * 100).toFixed(2)) : 0,
+      }));
     } catch (err) {
       console.error(err);
       this._snackBar.open('Error cargando radial', 'Cerrar', {
@@ -315,19 +324,20 @@ export class KpiComponent {
         {
           name: 'kWh',
           data: resp.energy_by_shift.map((s) => ({
-            categoria: this.datePipe.transform(s.start, 'dd/MM/yy, HH:mm') ?? '',
+            categoria:
+              this.datePipe.transform(s.start, 'dd/MM/yy, HH:mm') ?? '',
             valor: Number(s.kwh.toFixed(2)),
           })),
         },
         {
           name: 'kVArh',
           data: resp.energy_by_shift.map((s) => ({
-            categoria: this.datePipe.transform(s.start, 'dd/MM/yy, HH:mm') ?? '',
+            categoria:
+              this.datePipe.transform(s.start, 'dd/MM/yy, HH:mm') ?? '',
             valor: Number(s.kvarh.toFixed(2)),
           })),
         },
       ];
-
     } catch (err) {
       console.error(err);
       this._snackBar.open('Error cargando energía por turno', 'Cerrar', {
@@ -365,7 +375,7 @@ export class KpiComponent {
         return;
       }
 
-      // solo un activo → una serie
+      // solo un activo - una serie
       const serie = resp[0];
 
       this.piezasPorHoraLinea = [
@@ -400,10 +410,4 @@ export class KpiComponent {
       ],
     },
   ];
-
-  // CONTADORES
-  piezasTotales = 130;
-  horasUltimoMantenimiento = 72;
-  consumoEspecifico = 1.8; // kWh/pieza
-  consumoAlambre = 12.5; // kg
 }

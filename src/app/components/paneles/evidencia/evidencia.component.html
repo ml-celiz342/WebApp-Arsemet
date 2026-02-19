@@ -102,5 +102,27 @@
 
   </div>
 
+  <!-- SE MUESTRA PARA EVIDENCIA TAREAS IA -->
+  <div *ngFor="let e of evidenciasZonasIA" class="fila-maquina">
+
+    <div class="columna-general">
+      <mat-card class="mat-card-custom mat-elevation-z4 grafico-maquina">
+
+        <div class="titulo-tareas">
+          {{ e.code }}
+        </div>
+
+        <div class="tabla-evidencia-container">
+          <app-evidencia-tabla
+            [data]="e.tareas">
+          </app-evidencia-tabla>
+        </div>
+
+      </mat-card>
+    </div>
+
+  </div>
+
+
 </div>
 

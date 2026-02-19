@@ -2,52 +2,16 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
-import { DistribucionTareas, KpiStats, TotalEnergyPerShift } from '../models/kpi-estaticos';
+import { KpiStats, TotalEnergyPerShift } from '../models/kpi-estaticos';
 
 @Injectable({
   providedIn: 'root',
 })
 export class KpiEstaticosService {
-  private apiURLKpiGantt = environment.apiUrl + 'data/kpi/state_distribution';
   private apiURLKpiStats = environment.apiUrl + 'data/kpi/stats';
-  private apiURLTotalEnergyPerShift =
-    environment.apiUrl + 'data/kpi/total_energy_per_shift';
+  private apiURLTotalEnergyPerShift = environment.apiUrl + 'data/kpi/total_energy_per_shift';
 
   constructor(private http: HttpClient) {}
-
-  getKpiTasksDistribution(
-    id_activo: number,
-    desde: string,
-    hasta: string,
-  ): Observable<DistribucionTareas> {
-    let params = new HttpParams();
-
-    if (id_activo) {
-      params = params.set('idAsset', id_activo);
-    }
-
-    if (desde) {
-      params = params.set('from', desde);
-    }
-
-    if (hasta) {
-      params = params.set('to', hasta);
-    }
-
-    return this.http.get<any>(this.apiURLKpiGantt, { params }).pipe(
-      map(
-        (response): DistribucionTareas => ({
-          id_asset: response.id_asset,
-          from: new Date(response.from),
-          to: new Date(response.to),
-          states: response.states.map((e: any) => ({
-            state: e.state,
-            value: e.value,
-          })),
-        }),
-      ),
-    );
-  }
 
   getKpiStats(
     id_activo: number,
@@ -77,6 +41,14 @@ export class KpiEstaticosService {
           radialbar: {
             non_productive_energy: response.radialbar.non_productive_energy,
             utilization_rate: response.radialbar.utilization_rate,
+          },
+          maintenance: {
+            average_cycle_time: response.maintenance.average_cycle_time,
+            last_maintenance_time: response.maintenance.last_maintenance_time,
+            specific_energy_use: response.maintenance.specific_energy_use,
+          },
+          piechart: {
+            states: response.piechart?.states ?? [],
           },
         }),
       ),

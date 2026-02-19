@@ -1,3 +1,17 @@
+/* --- RADIAL BAR, MANTENIMIENTO Y CONFIABILIDAD, TORTA */
+/* --- RADIAL BAR --- */
+export interface RadialBarValores {
+  non_productive_energy: number;
+  utilization_rate: number;
+}
+
+/* --- MANTENIMIENTO Y CONFIABILIDAD --- */
+export interface MaintenanceValores {
+  average_cycle_time: number;
+  last_maintenance_time: number;
+  specific_energy_use: number;
+}
+
 /* --- PIE CHART --- */
 export interface EstadoTorta {
   state: string;
@@ -6,19 +20,12 @@ export interface EstadoTorta {
 
 export interface DistribucionTareas {
   states: EstadoTorta[];
-  from: Date;
-  to: Date;
-  id_asset: number;
-}
-
-/* --- RADIAL BAR, MANTENIMIENTO Y CONFIABILIDAD */
-export interface RadialBarValores {
-  non_productive_energy: number;
-  utilization_rate: number;
 }
 
 export interface KpiStats {
   radialbar: RadialBarValores;
+  maintenance: MaintenanceValores;
+  piechart: DistribucionTareas;
   from: Date;
   to: Date;
   id_asset: number;
