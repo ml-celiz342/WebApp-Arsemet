@@ -10,6 +10,7 @@ import {
   ChartComponent,
   ChartType,
   NgApexchartsModule,
+  ApexAnnotations,
 } from 'ng-apexcharts';
 import { CHART_COLORS } from '../../../../constants/chart-colors.constants';
 import { CommonModule } from '@angular/common';
@@ -24,22 +25,37 @@ export type ChartOptions = {
   legend: ApexLegend;
   tooltip: ApexTooltip;
   colors?: string[];
+  annotations?: ApexAnnotations;
 };
 
 @Component({
-  selector: 'app-kpi-grafico-gantt',
+  selector: 'app-tareas-grafico-gantt',
   standalone: true,
   imports: [ChartComponent, NgApexchartsModule, CommonModule],
-  templateUrl: './kpi-grafico-gantt.component.html',
-  styleUrl: './kpi-grafico-gantt.component.css',
+  templateUrl: './tareas-grafico-gantt.component.html',
+  styleUrl: './tareas-grafico-gantt.component.css',
 })
-export class KpiGraficoGanttComponent implements OnChanges {
+export class TareasGraficoGanttComponent implements OnChanges {
   @Input() data: ZonasTareasEstado[] = [];
+  @Input() cycleStart!: string;
+  @Input() cycleEnd!: string;
+  @Input() rangeStart!: Date;
+  @Input() rangeEnd!: Date;
 
   chartOptions!: ChartOptions;
 
   ngOnChanges(): void {
     if (!this.data || this.data.length === 0) return;
+
+    // Lineas verticales para marcar el ciclo
+    const startTimestamp = new Date(this.cycleStart).getTime();
+    const endTimestamp = new Date(this.cycleEnd).getTime();
+
+    // Rango para dibujar el grafico
+    const rangeStartTimestamp = new Date(this.rangeStart).getTime();
+    const rangeEndTimestamp = new Date(this.rangeEnd).getTime();
+
+    console.log(this.rangeStart, this.rangeEnd);
 
     const seriesData = this.buildSeries(this.data);
 
@@ -65,6 +81,8 @@ export class KpiGraficoGanttComponent implements OnChanges {
 
       xaxis: {
         type: 'datetime',
+        //min: rangeStartTimestamp,
+        //max: rangeEndTimestamp,
         labels: {
           datetimeUTC: false,
         },
@@ -107,6 +125,21 @@ export class KpiGraficoGanttComponent implements OnChanges {
             </div>
           `;
         },
+      },
+
+      annotations: {
+        xaxis: [
+          {
+            x: startTimestamp,
+            borderColor: '#000',
+            strokeDashArray: 4,
+          },
+          {
+            x: endTimestamp,
+            borderColor: '#000',
+            strokeDashArray: 4,
+          },
+        ],
       },
     };
   }

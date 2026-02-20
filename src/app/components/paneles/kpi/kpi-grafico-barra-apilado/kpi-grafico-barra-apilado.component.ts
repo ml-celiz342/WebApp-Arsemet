@@ -64,7 +64,7 @@ export class KpiGraficoBarraApiladoComponent implements OnChanges {
         type: 'bar' as ChartType,
         height: 260,
         stacked: true,
-        toolbar: { show: false },
+        toolbar: { show: true },
       },
 
       plotOptions: {

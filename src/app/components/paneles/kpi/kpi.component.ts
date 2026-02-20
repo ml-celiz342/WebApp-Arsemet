@@ -283,6 +283,7 @@ export class KpiComponent {
           formattedEnd,
         ),
       );
+
     } catch (err) {
       console.error(err);
       this._snackBar.open('Error cargando gantt', 'Cerrar', {
@@ -290,6 +291,7 @@ export class KpiComponent {
       });
     }
   }
+
 
   // Barra apilado
   energiaPorTurnoBarra: {

@@ -28,6 +28,7 @@ import { CsvService } from '../../../services/csv.service';
 import { TareasCargarCsvComponent } from './tareas-cargar-csv/tareas-cargar-csv.component';
 import { TareasDetalleComponent } from './tareas-detalle/tareas-detalle.component';
 import { MatSort, MatSortHeader, MatSortModule } from '@angular/material/sort';
+import { TareasInstanciaGanttComponent } from './tareas-instancia-gantt/tareas-instancia-gantt.component';
 
 @Component({
   selector: 'app-tareas',
@@ -81,12 +82,13 @@ export class TareasComponent {
     'codigo_activo',
     'codigo_articulo',
     'ciclo_fecha_fin',
-    'ciclo_fecha_inicio_est',
+    //'ciclo_fecha_inicio_est',
     'ciclo_fecha_inicio_medida',
     'pza_cant_prog',
-    'pza_cant_buenas',
-    'pza_cant_malas',
+    //'pza_cant_buenas',
+    //'pza_cant_malas',
     'pza_cant_usuario',
+    'estadia',
     'detalle',
   ];
   dataSourceTasks = new MatTableDataSource<Tarea>([]);
@@ -105,7 +107,7 @@ export class TareasComponent {
     private csvService: CsvService,
     public authService: AuthService,
     private dialogDescripcion: MatDialog,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
   ) {}
 
   ngOnInit(): void {
@@ -139,7 +141,7 @@ export class TareasComponent {
 
     try {
       const response = await lastValueFrom(
-        this.tasksService.getTasks(formattedStart, formattedEnd, this.activos)
+        this.tasksService.getTasks(formattedStart, formattedEnd, this.activos),
       );
       if (response.length !== 0) {
         this.dataSourceTasks.data = response;
@@ -158,7 +160,7 @@ export class TareasComponent {
   async loadDataAssets() {
     try {
       const response = await lastValueFrom(
-        this.assetsService.getFiltroAssets(true)
+        this.assetsService.getFiltroAssets(true),
       );
       if (response.length !== 0) {
         this.assetsFiltro = response;
@@ -259,6 +261,58 @@ export class TareasComponent {
   // Obtener codigo de activo por id
   getAssetCode(idActivo: number): string {
     return this.assetCodeMap.get(idActivo) ?? '-';
+  }
+
+  /* Obtener la duracion total en segundos */
+  getTotalCycleSeconds(element: Tarea): number {
+    if (!element.cycle_start_est || !element.cycle_end) return 0;
+
+    const start = new Date(element.cycle_start_est).getTime();
+    const end = new Date(element.cycle_end).getTime();
+
+    return Math.max((end - start) / 1000, 0);
+  }
+
+  /* Obtener porcentaje de una zona respecto al ciclo total */
+  getZonePercentage(element: Tarea, zoneTotal: number): number {
+    if (!element.cycle_start_est || !element.cycle_end) return 0;
+
+    const start = new Date(element.cycle_start_est).getTime();
+    const end = new Date(element.cycle_end).getTime();
+
+    const totalSegundos = (end - start) / 1000;
+    if (!totalSegundos || totalSegundos <= 0) return 0;
+
+    return Math.round((zoneTotal / totalSegundos) * 100);
+  }
+
+  /* Obtener abreviatura de zona */
+  getZoneAbbreviation(name: string): string {
+    const map: Record<string, string> = {
+      Plegado: 'PLE',
+      Medición: 'MED',
+      Mixto: 'MIX',
+      Planificación: 'PLA',
+      Ajuste: 'AJU',
+      Indefinido: 'IND',
+    };
+
+    return map[name] ?? name.slice(0, 3).toUpperCase();
+  }
+
+  /* Llamada al gráfico de Gantt */
+  async onInstanciaClick(row: Tarea) {
+    this.dialog.open(TareasInstanciaGanttComponent, {
+      width: '900px',
+      maxWidth: '95vw',
+      data: {
+        idAsset: row.id_asset,
+        from: this.range.start,
+        to: this.range.end,
+        cicleStart: row.cycle_start_est,
+        cicleEnd: row.cycle_end,
+      },
+    });
   }
 
   async recargar() {

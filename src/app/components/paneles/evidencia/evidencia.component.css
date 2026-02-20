@@ -57,6 +57,19 @@
   display: flex;
 }
 
+/* Graficos inferiores */
+.columna-izquierda-2 {
+  flex: 1;
+  display: flex;
+  width: 50%;
+}
+
+.columna-derecha-2 {
+  flex: 1;
+  display: flex;
+  width: 50%;
+}
+
 /* PRUEBA */
 .columna-general {
   flex: 1;

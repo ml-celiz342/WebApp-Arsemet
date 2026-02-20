@@ -102,7 +102,15 @@ export class TasksService {
               people_count: item.people_count ?? null,
               hits_count: item.hits_count ?? null,
               tool_change_count: item.tool_change_count ?? null,
-            })
+
+              // Zonas
+              zones: Array.isArray(item.zones)
+                ? item.zones.map((z: any) => ({
+                    zone_name: z.zone_name,
+                    total: Number(z.total),
+                  }))
+                : [],
+            }),
           );
 
           acc.push(...mappedData);

@@ -55,7 +55,7 @@ export class KpiGraficoLineaComponent implements OnChanges {
       chart: {
         type: 'line' as ChartType,
         height: 260,
-        toolbar: { show: false },
+        toolbar: { show: true },
       },
 
       xaxis: {

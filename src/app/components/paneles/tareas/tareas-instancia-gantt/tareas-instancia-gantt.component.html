@@ -1,0 +1,43 @@
+<h2
+  style="
+    font-size: 18px;
+    color: #333;
+    text-align: center;
+    margin-top: 15px;
+  "
+>
+  Diagrama de Gantt
+</h2>
+
+<div mat-dialog-content>
+
+  <div *ngIf="cargando" style="display:flex; justify-content:center; padding:40px">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <app-tareas-grafico-gantt
+    *ngIf="!cargando && estadosGantt.length"
+    [data]="estadosGantt"
+    [rangeStart]="data.from"
+    [rangeEnd]="data.to"
+    [cycleStart]="data.cicleStart"
+    [cycleEnd]="data.cicleEnd">
+  </app-tareas-grafico-gantt>
+
+  <!-- Leyenda -->
+  <div *ngIf="!cargando && estadosGantt.length"
+      style="
+        margin-top: 12px;
+        font-size: 15px;
+        color: #9e9e9e;
+        text-align: center;
+      ">
+    Las líneas punteadas verticales indican el tramo que representa la tarea.
+  </div>
+
+  <div *ngIf="!cargando && !estadosGantt.length"
+       style="text-align:center; padding:30px; color:#777">
+    Sin datos para mostrar
+  </div>
+
+</div>
