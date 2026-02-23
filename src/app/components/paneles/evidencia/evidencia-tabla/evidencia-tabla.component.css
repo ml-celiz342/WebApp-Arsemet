@@ -1,0 +1,58 @@
+/* ===== CONTENEDOR PRINCIPAL ===== */
+
+.contenedor-tabla {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  /* ocupa los 400px del padre */
+  width: 100%;
+  overflow: hidden;
+  /* evita desbordes externos */
+}
+
+/* ===== WRAPPER SCROLLABLE ===== */
+
+.table-wrapper {
+  flex: 1 1 auto;
+  /* ocupa el espacio disponible */
+  min-height: 0;
+  /* 🔥 CLAVE para que funcione el scroll en flex */
+  overflow-y: auto;
+  overflow-x: auto;
+  overscroll-behavior: contain;
+  width: 100%;
+}
+
+/* ===== TABLA ===== */
+
+.table {
+  width: 100%;
+  background: transparent;
+  min-width: max-content;
+}
+
+/* ===== HEADER STICKY ===== */
+
+.table-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: #d8d8d8;
+}
+
+/* ===== SCROLL HORIZONTAL EXTRA ===== */
+
+.scroll-x {
+  overflow-x: auto !important;
+  overflow-y: auto;
+  width: 100%;
+}
+
+/* ===== PAGINADOR ===== */
+
+.table-paginator {
+  flex-shrink: 0;
+  /* evita que se comprima */
+  margin-top: 8px;
+  background: transparent;
+}

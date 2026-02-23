@@ -1,8 +1,5 @@
-<div class="kpi-grafico-torta">
-  <h3 class="titulo">{{ titulo }}</h3>
-
+<ng-container *ngIf="chartOptions">
   <apx-chart
-    *ngIf="chartOptions"
     [series]="chartOptions.series"
     [chart]="chartOptions.chart"
     [labels]="chartOptions.labels"
@@ -10,6 +7,6 @@
     [dataLabels]="chartOptions.dataLabels"
     [legend]="chartOptions.legend">
   </apx-chart>
-</div>
+</ng-container>
 
 

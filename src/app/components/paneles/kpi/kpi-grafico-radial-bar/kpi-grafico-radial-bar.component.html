@@ -1,1 +1,9 @@
-<p>kpi-grafico-radial-bar works!</p>
+<ng-container *ngIf="chartOptions">
+  <apx-chart
+    [series]="chartOptions.series"
+    [chart]="chartOptions.chart"
+    [labels]="chartOptions.labels"
+    [colors]="chartOptions.colors"
+    [plotOptions]="chartOptions.plotOptions">
+  </apx-chart>
+</ng-container>

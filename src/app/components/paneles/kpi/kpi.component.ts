@@ -1,47 +1,28 @@
-// IMPORTANTE: EN ESTE PANEL SE VA A TENER QUE CREAR UN COMPONENTE POR GRAFICO
 import {Component, inject } from '@angular/core';
-import {
-  ApexChart,
-  ApexNonAxisChartSeries,
-  ApexAxisChartSeries,
-  ApexResponsive,
-  ApexPlotOptions,
-  ApexStroke,
-  ApexXAxis,
-  ApexYAxis,
-  ApexDataLabels,
-  ApexFill,
-  ChartType,
-  ChartComponent,
-} from 'ng-apexcharts';
 import { MatCard } from '@angular/material/card';
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { MatIcon } from "@angular/material/icon";
 import { FiltroAssets } from '../../../models/filtro-assets';
 import { AssetsService } from '../../../services/assets.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { KpiFiltroComponent } from './kpi-filtro/kpi-filtro.component';
 import { MatDialog } from '@angular/material/dialog';
-import { CHART_COLORS } from '../../../constants/chart-colors.constants';
-
-export type ChartOptions = {
-  series?: ApexAxisChartSeries | ApexNonAxisChartSeries;
-  chart?: ApexChart;
-  labels?: string[];
-  responsive?: ApexResponsive[];
-  plotOptions?: ApexPlotOptions;
-  stroke?: ApexStroke;
-  dataLabels?: ApexDataLabels;
-  fill?: ApexFill;
-  xaxis?: ApexXAxis;
-  yaxis?: ApexYAxis;
-  colors?: string[];
-  legend?: ApexLegend;
-};
+import { KpiGraficoTortaComponent } from "./kpi-grafico-torta/kpi-grafico-torta.component";
+import { KpiGraficoRadialBarComponent } from "./kpi-grafico-radial-bar/kpi-grafico-radial-bar.component";
+import { KpiGraficoGanttComponent } from "./kpi-grafico-gantt/kpi-grafico-gantt.component";
+import { KpiGraficoBarraApiladoComponent } from "./kpi-grafico-barra-apilado/kpi-grafico-barra-apilado.component";
+import { KpiGraficoBarraComponent } from "./kpi-grafico-barra/kpi-grafico-barra.component";
+import { KpiGraficoLineaComponent } from "./kpi-grafico-linea/kpi-grafico-linea.component";
+import { BlockWheelScrollDirective } from '../../../directives/block-wheel-scroll.directive';
+import { KpiTemporalesService } from '../../../services/kpi-temporales.service';
+import { ZonasTareasEstado } from '../../../models/kpi-temporales';
+import { firstValueFrom } from 'rxjs';
+import { KpiEstaticosService } from '../../../services/kpi-estaticos.service';
+import { DistribucionTareas, KpiStats } from '../../../models/kpi-estaticos';
 
 @Component({
   selector: 'app-kpi',
@@ -51,13 +32,20 @@ export type ChartOptions = {
   imports: [
     CommonModule,
     MatCard,
-    ChartComponent,
     MatProgressSpinner,
     MatIcon,
     MatTooltipModule,
     MatButtonModule,
     MatProgressSpinnerModule,
+    KpiGraficoTortaComponent,
+    KpiGraficoRadialBarComponent,
+    KpiGraficoGanttComponent,
+    KpiGraficoBarraApiladoComponent,
+    KpiGraficoBarraComponent,
+    KpiGraficoLineaComponent,
+    BlockWheelScrollDirective,
   ],
+  providers: [DatePipe],
 })
 export class KpiComponent {
   private _snackBar = inject(MatSnackBar);
@@ -76,7 +64,10 @@ export class KpiComponent {
 
   constructor(
     private assetsService: AssetsService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private kpiTemporalesService: KpiTemporalesService,
+    private kpiEstaticosService: KpiEstaticosService,
+    private datePipe: DatePipe,
   ) {}
 
   // Cargar datos
@@ -105,6 +96,12 @@ export class KpiComponent {
     } else {
       this.perDay = false;
     }
+
+    await this.loadDataGantt(); // cargar datos para el gantt
+    await this.loadDataStats(); // cargar datos para el radial bar + ...
+    await this.loadDataPiecesPerHour(); // cargar datos para radial bar chart + mantenimiento y confiabilidad + pie chart
+    await this.loadDataEnergyPerShift(); // cargar datos para el barra apilado
+
     this.cdr.detectChanges();
   }
 
@@ -127,375 +124,292 @@ export class KpiComponent {
 
       this.cargando = true;
 
-      this.range = result.dateRange;
+      try {
+        this.range = result.dateRange;
 
-      const selectedIds: number[] = result.selectedOptions.map((x: string) =>
-        Number(x)
-      );
+        const selectedIds: number[] = result.selectedOptions.map((x: string) =>
+          Number(x),
+        );
 
-      this.selectedAssetIds = result.selectedOptions ?? [];
+        this.selectedAssetIds = result.selectedOptions ?? [];
 
-      const selectedAssets = this.assetsFiltro.filter((item) =>
-        selectedIds.includes(item.id)
-      );
+        const selectedAssets = this.assetsFiltro.filter((item) =>
+          selectedIds.includes(item.id),
+        );
 
-      if (selectedAssets.length > 0) {
-        this.selectedAsset = selectedAssets[0];
-        this.nombreAssets = selectedAssets.map((a) => a.code);
-      }
-
-      // Ajustar horas
-      if (this.range.start && this.range.end) {
-        this.range.start.setHours(0, 0, 0, 0);
-
-        const endDate = new Date(this.range.end);
-        const hoy = new Date();
-
-        const mismaFecha =
-          endDate.getFullYear() === hoy.getFullYear() &&
-          endDate.getMonth() === hoy.getMonth() &&
-          endDate.getDate() === hoy.getDate();
-
-        if (mismaFecha) {
-          this.range.end = hoy;
-        } else {
-          endDate.setHours(23, 59, 59, 999);
-          this.range.end = endDate;
+        if (selectedAssets.length > 0) {
+          this.selectedAsset = selectedAssets[0];
+          this.nombreAssets = selectedAssets.map((a) => a.code);
         }
 
-        await this.cargarDatos();
-      }
+        if (this.range.start && this.range.end) {
+          this.range.start.setHours(0, 0, 0, 0);
 
-      this.cargando = false;
+          const endDate = new Date(this.range.end);
+          const hoy = new Date();
+
+          const mismaFecha =
+            endDate.getFullYear() === hoy.getFullYear() &&
+            endDate.getMonth() === hoy.getMonth() &&
+            endDate.getDate() === hoy.getDate();
+
+          if (mismaFecha) {
+            this.range.end = hoy;
+          } else {
+            endDate.setHours(23, 59, 59, 999);
+            this.range.end = endDate;
+          }
+
+          await this.cargarDatos();
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        this.cargando = false; // SIEMPRE se ejecuta
+      }
     });
+
   }
 
   async recargar() {
     this.cargando = true;
 
-    await this.cargarDatos();
-
-    this.cargando = false;
+    try {
+      await this.cargarDatos();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      this.cargando = false;
+    }
   }
 
   // GRAFICOS
-  // DISTRIBUCIÓN DE ESTADOS
-  /* Data cruda para pasarle a chartEstados
-  estadosTareas = [
-    { label: 'Apagado', value: 40, color: CHART_COLORS.ERROR },
-    { label: 'Operativo', value: 35, color: CHART_COLORS.WARNING },
-    { label: 'Operativo en vacío', value: 15, color: CHART_COLORS.LIGHT_2 },
-    { label: 'Mantenimiento', value: 10, color: CHART_COLORS.DARK_2 },
-  ];
-  */
-  chartEstados: ChartOptions = {
-    series: [40, 35, 15, 10],
-    chart: {
-      type: 'pie' as ChartType,
-      height: 200,
-    },
-    labels: ['Apagado', 'Operativo', 'Operativo en vacío', 'Mantenimiento'],
-    colors: [
-      CHART_COLORS.ERROR,
-      CHART_COLORS.WARNING,
-      CHART_COLORS.LIGHT_2,
-      CHART_COLORS.DARK_2,
-    ],
-    dataLabels: {
-      enabled: false,
-    },
-    legend: {
-      position: 'bottom',
-      fontSize: '10.5px',
-      itemMargin: {
-        horizontal: 8,
-      },
-      formatter: (seriesName: string, opts: any) => {
-        const value = opts.w.globals.series[opts.seriesIndex];
-        return `${seriesName}: ${value}%`;
-      },
-    },
+  /* APIs para charts */
+
+  // Radial bar
+  promediosRadial = {
+    tasa_de_utilizacion: 0,
+    energia_no_productiva: 0,
   };
 
-  // TASA DE UTILIZACIÓN
-  chartUtilizacion: ChartOptions = {
-    series: [67],
-    chart: {
-      type: 'radialBar' as ChartType,
-      height: 250,
-    },
-    labels: ['Utilización promedio'],
-    colors: [CHART_COLORS.BASE],
-    plotOptions: {
-      radialBar: {
-        hollow: {
-          size: '65%',
-        },
-        track: {
-          background: '#E3F1FB',
-        },
-        dataLabels: {
-          name: {
-            show: true,
-            fontSize: '14px',
-            offsetY: 10,
-          },
-          value: {
-            show: true,
-            fontSize: '14px',
-            fontWeight: 700,
-            formatter: (val: number) => `${Math.round(val)}%`,
-          },
-        },
-      },
-    },
+  // Mantenimiento y confiabilidad
+  mantenimiento = {
+    tiempo_ultimo_mantenimiento: 0,
+    consumo_esp_energia: 0,
+    tiempo_ciclo_promedio: 0,
   };
 
-  // ENERGÍA TOTAL CONSUMIDA
-  chartEnergia: ChartOptions = {
-    series: [
-      {
-        name: 'Plegadora 1',
-        data: [60, 70, 80, 75, 85, 95, 100],
-      },
-      {
-        name: 'Plegadora 2',
-        data: [40, 50, 60, 65, 70, 80, 85],
-      },
-    ] as ApexAxisChartSeries,
+  // Torta
+  estadosTorta: { estado: string; valor: number }[] = [];
 
-    chart: {
-      type: 'bar',
-      height: '100%',
-      width: '600px',
-      stacked: true,
-      toolbar: {
-        show: false,
-      },
-    },
+  private async loadDataStats(): Promise<void> {
+    const idAsset = this.selectedAsset?.id ?? 0;
 
-    plotOptions: {
-      bar: {
-        horizontal: false,
-        borderRadius: 6,
-      },
-    },
+    const formattedStart =
+      this.datePipe.transform(this.range.start, 'yyyy-MM-dd HH:mm:ss') ?? '';
 
-    xaxis: {
-      categories: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
-    },
+    const formattedEnd =
+      this.datePipe.transform(this.range.end, 'yyyy-MM-dd HH:mm:ss') ?? '';
 
-    legend: {
-      position: 'top',
-      horizontalAlign: 'center',
-      markers: {
-        shape: 'circle',
-        size: 8,
-      },
-    },
+    try {
+      const resp: KpiStats = await firstValueFrom(
+        this.kpiEstaticosService.getKpiStats(
+          idAsset,
+          formattedStart,
+          formattedEnd,
+        ),
+      );
 
-    fill: {
-      opacity: 1,
-    },
+      // -------------------------
+      // RADIAL BAR
+      // -------------------------
+      this.promediosRadial = {
+        tasa_de_utilizacion: Number(resp.radialbar.utilization_rate.toFixed(2)),
+        energia_no_productiva: Number(
+          resp.radialbar.non_productive_energy.toFixed(2),
+        ),
+      };
 
-    colors: [CHART_COLORS.BASE, CHART_COLORS.DARK_2],
-  };
+      // -------------------------
+      // MANTENIMIENTO
+      // -------------------------
+      this.mantenimiento = {
+        tiempo_ultimo_mantenimiento: Math.round(
+          Math.abs(Number(resp.maintenance.last_maintenance_time)),
+        ),
+        consumo_esp_energia: Number(
+          Number(resp.maintenance.specific_energy_use).toFixed(1),
+        ),
+        tiempo_ciclo_promedio: Number(
+          Number(resp.maintenance.average_cycle_time).toFixed(1),
+        ),
+      };
 
-  // ENERGÍA NO PRODUCTIVA
-  chartNoProductiva: ChartOptions = {
-    series: [22], // valor de energía no productiva del activo plegadora_1
+      // -------------------------
+      // TORTA (segundos → porcentaje)
+      // -------------------------
+      const totalSeg = resp.piechart.states.reduce((a, b) => a + b.value, 0);
 
-    chart: {
-      type: 'radialBar' as ChartType,
-      height: 250,
-    },
+      this.estadosTorta = resp.piechart.states.map((e) => ({
+        estado: e.state,
+        valor:
+          totalSeg > 0 ? Number(((e.value / totalSeg) * 100).toFixed(2)) : 0,
+      }));
+    } catch (err) {
+      console.error(err);
+      this._snackBar.open('Error cargando radial', 'Cerrar', {
+        duration: 3000,
+      });
+    }
+  }
 
-    labels: ['Energía no productiva'],
+  // Gantt
+  estadosGantt: ZonasTareasEstado[] = [];
 
-    colors: [CHART_COLORS.BASE],
+  private async loadDataGantt(): Promise<void> {
+    const idAsset = this.selectedAsset?.id ?? 0;
 
-    plotOptions: {
-      radialBar: {
-        hollow: {
-          size: '65%', // mismo hollow que Utilización
+    const formattedStart =
+      this.datePipe.transform(this.range.start, 'yyyy-MM-dd HH:mm:ss') ?? '';
+
+    const formattedEnd =
+      this.datePipe.transform(this.range.end, 'yyyy-MM-dd HH:mm:ss') ?? '';
+
+    try {
+      this.estadosGantt = await firstValueFrom(
+        this.kpiTemporalesService.getKpiTasksStates(
+          idAsset,
+          formattedStart,
+          formattedEnd,
+        ),
+      );
+
+    } catch (err) {
+      console.error(err);
+      this._snackBar.open('Error cargando gantt', 'Cerrar', {
+        duration: 3000,
+      });
+    }
+  }
+
+
+  // Barra apilado
+  energiaPorTurnoBarra: {
+    name: string;
+    data: { categoria: string; valor: number }[];
+  }[] = [];
+
+  private async loadDataEnergyPerShift(): Promise<void> {
+    const idAsset = this.selectedAsset?.id ?? 0;
+
+    const formattedStart =
+      this.datePipe.transform(this.range.start, 'yyyy-MM-dd HH:mm:ss') ?? '';
+
+    const formattedEnd =
+      this.datePipe.transform(this.range.end, 'yyyy-MM-dd HH:mm:ss') ?? '';
+
+    try {
+      const resp = await firstValueFrom(
+        this.kpiEstaticosService.getTotalEnergyPerShift(
+          idAsset,
+          formattedStart,
+          formattedEnd,
+        ),
+      );
+
+      if (!resp.energy_by_shift?.length) {
+        this.energiaPorTurnoBarra = [];
+        return;
+      }
+
+      this.energiaPorTurnoBarra = [
+        {
+          name: 'kWh',
+          data: resp.energy_by_shift.map((s) => ({
+            categoria:
+              this.datePipe.transform(s.start, 'dd/MM/yy, HH:mm') ?? '',
+            valor: Number(s.kwh.toFixed(2)),
+          })),
         },
-
-        track: {
-          background: '#E3F1FB', // mismo track
+        {
+          name: 'kVArh',
+          data: resp.energy_by_shift.map((s) => ({
+            categoria:
+              this.datePipe.transform(s.start, 'dd/MM/yy, HH:mm') ?? '',
+            valor: Number(s.kvarh.toFixed(2)),
+          })),
         },
+      ];
+    } catch (err) {
+      console.error(err);
+      this._snackBar.open('Error cargando energía por turno', 'Cerrar', {
+        duration: 3000,
+      });
+    }
+  }
 
-        dataLabels: {
-          name: {
-            show: true,
-            fontSize: '14px',
-            offsetY: 10,
-          },
+  // Piezas producidas por hora
+  piezasPorHoraLinea: {
+    name: string;
+    data: { hora: string; valor: number }[];
+  }[] = [];
 
-          value: {
-            show: true,
-            fontSize: '14px',
-            fontWeight: 700,
-            formatter: (val: number) => `${Math.round(val)}%`,
-          },
+  private async loadDataPiecesPerHour(): Promise<void> {
+    const idAsset = this.selectedAsset?.id ?? 0;
+
+    const formattedStart =
+      this.datePipe.transform(this.range.start, 'yyyy-MM-dd HH:mm:ss') ?? '';
+
+    const formattedEnd =
+      this.datePipe.transform(this.range.end, 'yyyy-MM-dd HH:mm:ss') ?? '';
+
+    try {
+      const resp = await firstValueFrom(
+        this.kpiTemporalesService.getPiecesPerHour(
+          idAsset,
+          formattedStart,
+          formattedEnd,
+        ),
+      );
+
+      if (!resp || resp.length === 0) {
+        this.piezasPorHoraLinea = [];
+        return;
+      }
+
+      // solo un activo - una serie
+      const serie = resp[0];
+
+      this.piezasPorHoraLinea = [
+        {
+          name: 'Pieces / hour',
+          data: serie.data.map((p) => ({
+            hora: this.datePipe.transform(p.hour, 'HH:mm') ?? '',
+            valor: Number(p.value.toFixed(2)),
+          })),
         },
-      },
-    },
-  };
+      ];
+    } catch (err) {
+      console.error(err);
+      this._snackBar.open('Error cargando piezas por hora', 'Cerrar', {
+        duration: 3000,
+      });
+    }
+  }
 
-  // ACTOS INSEGUROS
-  chartActosInseguros: ChartOptions = {
-    series: [
-      {
-        name: 'Actos inseguros',
-        data: [1, 0, 2, 3, 1, 0, 2], // ejemplo
-      },
-    ] as ApexAxisChartSeries,
-
-    chart: {
-      type: 'bar' as ChartType,
-      height: 260,
-      width: '600px',
-      toolbar: {
-        show: false,
-      },
-    },
-
-    xaxis: {
-      categories: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
-    },
-
-    dataLabels: {
-      enabled: true,
-    },
-
-    colors: [CHART_COLORS.ERROR],
-  };
-
-  // PIEZAS PRODUCIDAS POR HORA
-  chartPiezasHora: ChartOptions = {
-    series: [
-      {
-        name: 'Piezas / hora',
-        data: [14, 16, 18, 17, 20, 19, 21], // ejemplo
-      },
-    ] as ApexAxisChartSeries,
-
-    chart: {
-      type: 'line' as ChartType,
-      height: 260,
-      width: '600px',
-      toolbar: {
-        show: false,
-      },
-    },
-
-    xaxis: {
-      categories: [
-        '08:00',
-        '09:00',
-        '10:00',
-        '11:00',
-        '12:00',
-        '13:00',
-        '14:00',
+  // Actos inseguros
+  actosInsegurosBarra = [
+    {
+      name: 'Actos inseguros',
+      data: [
+        { categoria: 'Lun', valor: 1 },
+        { categoria: 'Mar', valor: 0 },
+        { categoria: 'Mié', valor: 2 },
+        { categoria: 'Jue', valor: 3 },
+        { categoria: 'Vie', valor: 1 },
+        { categoria: 'Sáb', valor: 0 },
+        { categoria: 'Dom', valor: 2 },
       ],
     },
-
-    stroke: {
-      width: 3,
-      curve: 'smooth',
-    },
-
-    colors: [CHART_COLORS.WARNING],
-  };
-
-  // TIEMPO VS ESTADO (TIMELINE / GANTT)
-  chartTiempoEstado: ChartOptions = {
-    series: [
-      {
-        name: 'Plegadora 1',
-        data: [
-          {
-            x: 'Apagado',
-            y: [
-              new Date('2025-01-10T06:00:00').getTime(),
-              new Date('2025-01-10T07:30:00').getTime(),
-            ],
-          },
-          {
-            x: 'Operativo',
-            y: [
-              new Date('2025-01-10T07:30:00').getTime(),
-              new Date('2025-01-10T11:00:00').getTime(),
-            ],
-          },
-          {
-            x: 'Operativo en vacío',
-            y: [
-              new Date('2025-01-10T11:00:00').getTime(),
-              new Date('2025-01-10T12:00:00').getTime(),
-            ],
-          },
-          {
-            x: 'Mantenimiento',
-            y: [
-              new Date('2025-01-10T12:00:00').getTime(),
-              new Date('2025-01-10T13:00:00').getTime(),
-            ],
-          },
-          {
-            x: 'Operativo',
-            y: [
-              new Date('2025-01-10T13:00:00').getTime(),
-              new Date('2025-01-10T15:00:00').getTime(),
-            ],
-          },
-        ],
-      },
-    ] as ApexAxisChartSeries,
-
-    chart: {
-      type: 'rangeBar' as ChartType,
-      height: '100%',
-      width: '600px',
-      toolbar: {
-        show: false,
-      },
-    },
-
-    plotOptions: {
-      bar: {
-        horizontal: true,
-        barHeight: '60%',
-        distributed: true, // 🔑 clave para colorear por estado
-      },
-    },
-
-    xaxis: {
-      type: 'datetime',
-    },
-
-    dataLabels: {
-      enabled: false,
-    },
-
-    legend: {
-      position: 'top',
-    },
-
-    // colores en el mismo orden en que aparecen los estados
-    colors: [
-      CHART_COLORS.ERROR, // Apagado
-      CHART_COLORS.WARNING, // Operativo
-      CHART_COLORS.LIGHT_2, // Operativo en vacío
-      CHART_COLORS.DARK_2, // Mantenimiento
-      CHART_COLORS.WARNING, // Operativo (segunda aparición)
-    ],
-  };
-
-  // CONTADORES
-  piezasTotales = 130;
-  horasUltimoMantenimiento = 72;
-  consumoEspecifico = 1.8; // kWh/pieza
-  consumoAlambre = 12.5; // kg
+  ];
 }
