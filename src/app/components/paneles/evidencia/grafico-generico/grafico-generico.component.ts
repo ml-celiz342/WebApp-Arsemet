@@ -19,7 +19,7 @@ import {
   ApexLegend,
   ApexTooltip,
 } from 'ng-apexcharts';
-import { Evidencia } from '../../../../models/evidencia-potencia';
+import { EvidenciaGenerico } from '../../../../models/evidencia-generico';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -35,13 +35,13 @@ export type ChartOptions = {
 };
 
 @Component({
-  selector: 'app-grafico-potencia',
-  templateUrl: './grafico-potencia.component.html',
-  styleUrls: ['./grafico-potencia.component.css'],
+  selector: 'app-grafico-generico',
   imports: [ChartComponent],
+  templateUrl: './grafico-generico.component.html',
+  styleUrl: './grafico-generico.component.css',
 })
-export class GraficoPotenciaComponent implements OnChanges, AfterViewInit {
-  @Input() evidencia!: Evidencia;
+export class GraficoGenericoComponent implements OnChanges, AfterViewInit {
+  @Input() evidencia!: EvidenciaGenerico;
   @Input() unidad: string = 'KWh';
   @Input() titulo: string = '';
   @Input() yAxisLabel: string = 'Potencia instantánea';
@@ -60,12 +60,12 @@ export class GraficoPotenciaComponent implements OnChanges, AfterViewInit {
   }
 
   private initChart() {
-    if (!this.evidencia || !this.evidencia.power) return;
+    if (!this.evidencia || !this.evidencia.generic) return;
 
     const colores = ['#A9D0F0', '#2F6DA4', '#1E4D75'];
 
     // ---- 1) Ordenar datos por hora ----
-    const powerSorted = [...this.evidencia.power].sort(
+    const powerSorted = [...this.evidencia.generic].sort(
       (a, b) => new Date(a.hour).getTime() - new Date(b.hour).getTime(),
     );
 

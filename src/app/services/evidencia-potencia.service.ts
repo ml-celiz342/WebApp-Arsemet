@@ -3,12 +3,17 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Evidencia, ZonasIA} from '../models/evidencia-potencia';
 import { EMPTY, expand, Observable, reduce, map } from 'rxjs';
+import { EvidenciaGenerico } from '../models/evidencia-generico';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EvidenciaPotenciaService {
   private apiURLEvidenciaPower = environment.apiUrl + 'data/evidences/power';
+  private apiURLEvidenciaCurrent =
+    environment.apiUrl + 'data/evidences/current';
+  private apiURLEvidenciaTension =
+    environment.apiUrl + 'data/evidences/voltage';
   private apiURLEvidenciaTasksIA =
     environment.apiUrl + 'data/evidences/zones_ia';
 
@@ -41,7 +46,7 @@ export class EvidenciaPotenciaService {
       .pipe(map((res) => this.mapEvidencia(res)));
   }
 
-  // MAPEO / ADAPTADOR DE RESPUESTA
+  // MAPEO POWER
   private mapEvidencia(response: any): Evidencia {
     if (!response || !response.data) {
       return {
@@ -73,6 +78,83 @@ export class EvidenciaPotenciaService {
           hour: new Date(c.hour),
           value: c.value,
           reactive_value: c.reactive_value,
+        })) || [],
+    };
+  }
+
+  // EVIDENCIA CURRENT
+  getEvidenciaCurrentById(
+    id_activo: number,
+    desde?: string,
+    hasta?: string,
+  ): Observable<EvidenciaGenerico> {
+    let params = new HttpParams();
+
+    if (id_activo) {
+      params = params.set('idAsset', id_activo);
+    }
+
+    if (desde) {
+      params = params.set('from', desde);
+    }
+
+    if (hasta) {
+      params = params.set('to', hasta);
+    }
+
+    params = params.set('limit', 100);
+
+    return this.http
+      .get<any>(this.apiURLEvidenciaCurrent, { params })
+      .pipe(map((res) => this.mapEvidenciaGenerico(res)));
+  }
+
+  // EVIDENCIA TENSION
+  getEvidenciaTensionById(
+    id_activo: number,
+    desde?: string,
+    hasta?: string,
+  ): Observable<EvidenciaGenerico> {
+    let params = new HttpParams();
+
+    if (id_activo) {
+      params = params.set('idAsset', id_activo);
+    }
+
+    if (desde) {
+      params = params.set('from', desde);
+    }
+
+    if (hasta) {
+      params = params.set('to', hasta);
+    }
+
+    params = params.set('limit', 100);
+
+    return this.http
+      .get<any>(this.apiURLEvidenciaTension, { params })
+      .pipe(map((res) => this.mapEvidenciaGenerico(res)));
+  }
+
+  // MAPEO CURRENT + TENSION
+  private mapEvidenciaGenerico(response: any): EvidenciaGenerico {
+    if (!response || !response.data) {
+      return {
+        code: '',
+        generic: [],
+      };
+    }
+
+    const data = response.data;
+
+    return {
+      code: data.code,
+      generic:
+        data.power?.map((p: any) => ({
+          hour: new Date(p.hour),
+          r: p.r,
+          s: p.s,
+          t: p.t,
         })) || [],
     };
   }

@@ -23,8 +23,10 @@ import { Evidencia, ZonasIA} from '../../../models/evidencia-potencia';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { EvidenciaPotenciaService } from '../../../services/evidencia-potencia.service';
-import { lastValueFrom } from 'rxjs';
+import { lastValueFrom, forkJoin } from 'rxjs';
 import { EvidenciaTablaComponent } from "./evidencia-tabla/evidencia-tabla.component";
+import { EvidenciaGenerico } from '../../../models/evidencia-generico';
+import { GraficoGenericoComponent } from "./grafico-generico/grafico-generico.component";
 
 @Component({
   selector: 'app-evidencia',
@@ -41,7 +43,8 @@ import { EvidenciaTablaComponent } from "./evidencia-tabla/evidencia-tabla.compo
     GraficoPotenciaComponent,
     GraficoPotenciaPorDiaComponent,
     EvidenciaTablaComponent,
-  ],
+    GraficoGenericoComponent
+],
   providers: [DatePipe],
   templateUrl: './evidencia.component.html',
   styleUrl: './evidencia.component.css',
@@ -62,7 +65,8 @@ export class EvidenciaComponent {
 
   // Evidencias separadas por tipo
   evidenciasPower: Evidencia[] = [];
-  //evidenciasZonasIA: ZonasIA[] = [];
+  evidenciasCurrent: EvidenciaGenerico[] = [];
+  evidenciasTension: EvidenciaGenerico[] = [];
   evidenciasZonasIA: {
     assetId: number;
     code: string;
@@ -80,7 +84,6 @@ export class EvidenciaComponent {
     private cdr: ChangeDetectorRef,
     private dialog: MatDialog,
     private assetsService: AssetsService,
-    private utilidades: UtilidadesService,
     private evidenciaPotenciaService: EvidenciaPotenciaService,
     private datePipe: DatePipe,
   ) {}
@@ -101,6 +104,8 @@ export class EvidenciaComponent {
   // Load de evidencias por filtro
   async loadDataEvidenciasByFilter() {
     this.evidenciasPower = [];
+    this.evidenciasCurrent = [];
+    this.evidenciasTension = [];
     this.evidenciasZonasIA = [];
     this.dataSourceEvidencias.data = [];
 
@@ -122,7 +127,6 @@ export class EvidenciaComponent {
     ];
 
     for (const sa of assetsAConsultar) {
-      console.log(`→ Llamando API asset ${sa.id} (${sa.type})`);
 
       try {
         const result = await this.ejecutarSubAsset(
@@ -134,7 +138,9 @@ export class EvidenciaComponent {
         if (!result.data) continue;
 
         if (result.tipo === 'tablero_electrico') {
-          this.evidenciasPower.push(result.data);
+          this.evidenciasPower.push(result.data.power);
+          this.evidenciasCurrent.push(result.data.current);
+          this.evidenciasTension.push(result.data.tension);
         }
 
         if (result.tipo === 'camara' && result.data?.length) {
@@ -164,11 +170,23 @@ export class EvidenciaComponent {
       // TABLERO ELECTRICO
       if (sa.type === 'tablero_electrico') {
         const res = await lastValueFrom(
-          this.evidenciaPotenciaService.getEvidenciaPowerById(
-            sa.id,
-            desde,
-            hasta,
-          ),
+          forkJoin({
+            power: this.evidenciaPotenciaService.getEvidenciaPowerById(
+              sa.id,
+              desde,
+              hasta,
+            ),
+            current: this.evidenciaPotenciaService.getEvidenciaCurrentById(
+              sa.id,
+              desde,
+              hasta,
+            ),
+            tension: this.evidenciaPotenciaService.getEvidenciaTensionById(
+              sa.id,
+              desde,
+              hasta,
+            ),
+          }),
         );
 
         return { tipo: 'tablero_electrico', data: res };
@@ -198,7 +216,6 @@ export class EvidenciaComponent {
       };
     }
   }
-
 
   ngOnInit() {
     this.loadDataAssets();
