@@ -1,11 +1,11 @@
-/* GRID GENERAL */
+/* ================= GRID GENERAL ================= */
 .kpi-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 15px;
 }
 
-/* TARJETAS */
+/* ================= TARJETAS BASE ================= */
 .card {
   padding: 10px;
   border-radius: 18px;
@@ -13,34 +13,27 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  align-items: center;
 }
 
-/* Tarjetas radiales (centrado perfecto) */
-.radial-chart apx-chart {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* Tarjetas dobles */
+.card.doble {
+  grid-column: span 2;
 }
 
-/* TEXTOS (máximo 15px) */
+/* Tarjetas cuadruples */
+.card.cuadruple {
+  grid-column: span 4;
+}
+
+/* ================= TEXTOS ================= */
 .card h3 {
   font-size: 15px !important;
   font-weight: 600;
   margin-bottom: 6px;
   text-align: center;
-  flex-shrink: 0;
 }
 
-.contador {
-  font-size: 22px;
-  font-weight: 700;
-  color: #1e3a5f;
-  margin-bottom: 10px;
-  text-align: center;
-}
-
-/* GRÁFICOS — CENTRAR PIE CHART */
+/* ================= GRÁFICOS ================= */
 apx-chart {
   width: 100%;
   height: 100%;
@@ -49,47 +42,11 @@ apx-chart {
   align-items: center !important;
 }
 
-/* Centrado adicional específico para pie chart */
-.card:first-child apx-chart svg {
-  margin-left: 20px;
+/* Pie chart más grande (primer card) */
+.card:first-child {
+  overflow: visible !important;
 }
 
-/* TARJETA DE CONTADORES -- REDISEÑO VISUAL */
-.card.kpi-contadores {
-  min-height: auto;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 10px;
-}
-
-/* Bloque de cada ítem */
-.kpi-item {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-/* Títulos */
-.kpi-item h3 {
-  font-size: 15px !important;
-  font-weight: 600;
-  color: #000000;
-  margin: 0;
-}
-
-/* Valores */
-.kpi-value {
-  font-size: 30px;
-  font-weight: 800;
-  color: #12375b;
-  letter-spacing: -0.5px;
-  margin: 0;
-}
-
-/* --- HACER EL PIE CHART MÁS GRANDE SIN CAMBIAR LA TARJETA --- */
 .card:first-child apx-chart {
   height: 260px !important;
   max-height: 260px !important;
@@ -97,99 +54,51 @@ apx-chart {
   transform-origin: center;
 }
 
-/* Evitar que el chart quede cortado */
-.card:first-child {
-  overflow: visible !important;
+.card:first-child apx-chart svg {
+  margin-left: 20px;
 }
 
-/* TARJETA GENERAL */
-.card.kpi-contadores.totalizadores-grid {
-  padding: 14px;
+/* Radial centrado */
+.radial-chart apx-chart {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: stretch;
-}
-
-/* CADA BLOQUE */
-.totalizador-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  justify-content: center;
-}
-
-/* BLOQUE INDIVIDUAL KPI */
-.totalizador-item,
-.kpi-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  text-align: center;
-}
-
-/* TÍTULOS DE KPI */
-.titulo-totalizador {
-  font-size: 15px;
-  color: #000000;
-  text-align: center;
-}
-
-.titulo-totalizador,
-.kpi-item h3 {
-  font-size: 14px;
-  font-weight: 600;
-  margin: 0;
-  color: #000;
-}
-
-/* CÍRCULO VALOR */
-.circulo-valor {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  background: #2F6DA4;
-  display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  font-size: 22px;
-  font-weight: 700;
-  color: #fff;
-  line-height: 1.05;
 }
 
-/* Unidades más pequeñas */
-.circulo-valor .unidad {
-  font-size: 12px;
-  font-weight: 500;
-  opacity: 0.9;
-  color: #fff;
+/* Wrapper de gráficos grandes */
+.chart-wrapper {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
-/* Contenedor general */
+.chart-wrapper apx-chart {
+  width: 100%;
+  height: 100%;
+  max-height: 260px;
+}
+
+/* ================= CONTENEDOR GENERAL ================= */
 .kpi-contenedor {
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 20px;
-  max-width: 100%;
 }
 
-/* Contenedor filtro */
+/* ================= FILTRO ================= */
 .kpi-contenedor-filtro {
   width: 100%;
   display: flex;
   justify-content: center;
-  align-items: center;
   flex-wrap: wrap;
 }
 
 .kpi-contenedor-filtro .mat-card-custom {
   width: 100% !important;
-  box-sizing: border-box;
 }
 
 .filtro-header {
@@ -205,8 +114,6 @@ apx-chart {
   margin-left: 10px;
   color: #333;
   flex-grow: 1;
-  text-align: left;
-  word-break: break-word;
 }
 
 .filtro-botones {
@@ -216,23 +123,29 @@ apx-chart {
   margin-right: 10px;
 }
 
-/* SUB-CARDS INTERNAS (SUPERIOR / INFERIOR) */
+/* ================= KPI CONTADORES ================= */
+.card.kpi-contadores {
+  min-height: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .kpi-subcard {
   border-radius: 16px;
   background: transparent;
   box-shadow: none;
 }
 
-/* TÍTULO GENERAL SUPERIOR */
 .kpi-subtitulo {
   font-size: 15px;
   font-weight: 600;
   text-align: center;
-  color: #000;
-  margin: 14px 0 12px 0;
+  margin: 14px 0 12px;
 }
 
-/* FILA DE ACTIVOS */
+/* Fila superior */
 .kpi-row {
   display: flex;
   justify-content: space-evenly;
@@ -240,83 +153,129 @@ apx-chart {
   gap: 55px;
 }
 
-/* TEXTO TM */
-.kpi-extra {
-  font-size: 12px;
-  font-weight: 400;
-  color: #4c4c4c;
-  margin-top: 3px;
-}
-
-/* GRID INFERIOR (igual al diseño original) */
+/* Grid inferior */
 .kpi-grid-inferior {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
 }
 
-.piezas-totales {
-  font-size: 12px;
-  margin: 4px 0 6px 0;
-  width: 100%;
+/* ================= BLOQUES KPI ================= */
+.totalizador-item,
+.kpi-item {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.titulo-totalizador {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+  color: #000;
+}
+
+/* Círculo valor */
+.circulo-valor {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: var(--color-dark-1);
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.05;
+}
+
+.circulo-valor .unidad {
+  font-size: 12px;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+/* ================= ENERGÍA TOTAL (CARDS CHICAS) ================= */
+.kpi-container {
+  padding: 10px;
+  border-radius: 18px;
+}
+
+.kpi-title {
+  margin-bottom: 20px;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.kpi-cards {
+  display: flex;
+  flex-direction: column;
   gap: 6px;
 }
 
-/* Círculo */
-.piezas-totales::before {
-  content: "";
-  width: 16px;
-  height: 16px;
+.kpi-card {
+  background: rgba(255, 255, 255, 0.33);
+  border-radius: 12px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+}
+
+.kpi-icon {
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  background-color: #3784c5;
-  flex-shrink: 0;
-}
-
-/* Texto "Piezas totales:" */
-.piezas-totales .label {
-  font-weight: 400;
-  color: #4c4c4c;
-}
-
-/* Valor */
-.piezas-totales .valor {
-  font-weight: 600;
-  color: #000000;
-}
-
-/* AJUSTAR MARGENES DE GRAFICOS */
-.chart-wrapper {
-  width: 100%;
-  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  font-size: 22px;
+  color: #fff;
+  flex-shrink: 0;
 }
 
-/* El chart ocupa el wrapper */
-.chart-wrapper apx-chart {
-  width: 100%;
-  height: 100%;
-  max-height: 260px;
+.kpi-icon.activo {
+  background: var(--color-base);
 }
 
-/* tarjeta doble */
-.card.doble {
-  grid-column: span 2;
+.kpi-icon.reactivo {
+  background: var(--color-success);
 }
 
-/* TESTS */
+.kpi-icon.corriente {
+  background: var(--color-warning);
+}
+
+.kpi-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.kpi-label {
+  font-size: 14.5px;
+  color: var(--text-light-dark);
+}
+
+.kpi-value {
+  font-size: 20px;
+  font-weight: 600;
+  color: #000;
+}
+
+/* ================= RESPONSIVE ================= */
 @media (max-width: 48em) {
-
-  /* 48em ≈ 768px */
-  .card.doble {
-    grid-column: span 1;
-  }
-
   .kpi-grid {
     grid-template-columns: 1fr;
   }
@@ -324,13 +283,14 @@ apx-chart {
   .card {
     min-height: auto;
   }
-}
 
-@media (max-width: 48em) {
+  .card.doble {
+    grid-column: span 1;
+  }
+
   .filtro-texto {
     text-align: center;
     font-size: 0.85rem;
-    word-wrap: break-word;
   }
 
   .filtro-botones {
@@ -341,8 +301,6 @@ apx-chart {
 }
 
 @media (min-width: 90em) {
-
-  /* monitores grandes */
   .kpi-grid {
     grid-template-columns: repeat(auto-fill, minmax(22rem, 1fr));
   }

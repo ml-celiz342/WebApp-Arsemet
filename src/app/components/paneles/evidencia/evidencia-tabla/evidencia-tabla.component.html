@@ -1,0 +1,82 @@
+<div class="contenedor-tabla">
+
+  <div class="table-wrapper scroll-x">
+
+    <table mat-table
+           [dataSource]="dataSource"
+           matSort
+           class="table table-tareas">
+
+      <!-- Activo
+      <ng-container matColumnDef="code">
+        <th mat-header-cell *matHeaderCellDef>
+          Activo
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.code }}
+        </td>
+      </ng-container>
+      -->
+
+      <!-- Zona -->
+      <ng-container matColumnDef="alias">
+        <th mat-header-cell *matHeaderCellDef>
+          Zona
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.zone_name }}
+        </td>
+      </ng-container>
+
+      <!-- Desde -->
+      <ng-container matColumnDef="from">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          Desde
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.start | date:'dd/MM/yyyy HH:mm:ss' }}
+        </td>
+      </ng-container>
+
+      <!-- Hasta -->
+      <ng-container matColumnDef="to">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          Hasta
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.end | date:'dd/MM/yyyy HH:mm:ss' }}
+        </td>
+      </ng-container>
+
+      <!-- Trabajadores -->
+      <ng-container matColumnDef="workers">
+        <th mat-header-cell *matHeaderCellDef>
+          Trabajadores
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.workers }}
+        </td>
+      </ng-container>
+
+      <tr mat-header-row
+          *matHeaderRowDef="displayedColumns"
+          class="table-header">
+      </tr>
+
+      <tr mat-row
+          *matRowDef="let row; columns: displayedColumns">
+      </tr>
+
+    </table>
+
+  </div>
+
+  <mat-paginator
+    [pageSize]="10"
+    [pageSizeOptions]="[10, 20]"
+    showFirstLastButtons
+    class="table-paginator">
+  </mat-paginator>
+
+</div>
+

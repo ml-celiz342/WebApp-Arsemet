@@ -142,7 +142,12 @@ export class ProduccionInfoComponent implements OnInit, OnDestroy {
   /* ================= CONFIG ================= */
 
   private resetearEstado(): void {
-    this.rawDetailActual = { ...this.rawDetail };
+    this.rawDetailActual = {
+      state: '',
+      turned_on: -1,
+      current_power: -1,
+      total_consumption: -1,
+    };
   }
 
   private reiniciarSubscripciones(): void {

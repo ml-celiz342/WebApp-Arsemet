@@ -44,6 +44,7 @@ export class GraficoPotenciaComponent implements OnChanges, AfterViewInit {
   @Input() evidencia!: Evidencia;
   @Input() unidad: string = 'KWh';
   @Input() titulo: string = '';
+  @Input() yAxisLabel: string = 'Potencia instantánea';
 
   @ViewChild('chart') chart!: ChartComponent;
   public chartOptions!: Partial<ChartOptions>;
@@ -65,7 +66,7 @@ export class GraficoPotenciaComponent implements OnChanges, AfterViewInit {
 
     // ---- 1) Ordenar datos por hora ----
     const powerSorted = [...this.evidencia.power].sort(
-      (a, b) => new Date(a.hour).getTime() - new Date(b.hour).getTime()
+      (a, b) => new Date(a.hour).getTime() - new Date(b.hour).getTime(),
     );
 
     // ---- 2) Series con DATETIME ----
@@ -131,7 +132,7 @@ export class GraficoPotenciaComponent implements OnChanges, AfterViewInit {
         title: { text: 'Hora' },
       },
       yaxis: {
-        title: { text: `Potencia instantánea (${this.unidad})` },
+        title: { text: `${this.yAxisLabel} (${this.unidad})` },
         labels: {
           formatter: (value) => Number(value).toFixed(2), // 2 decimales
         },

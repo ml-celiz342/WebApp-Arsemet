@@ -57,6 +57,19 @@
   display: flex;
 }
 
+/* Graficos inferiores */
+.columna-izquierda-2 {
+  flex: 1;
+  display: flex;
+  width: 50%;
+}
+
+.columna-derecha-2 {
+  flex: 1;
+  display: flex;
+  width: 50%;
+}
+
 /* PRUEBA */
 .columna-general {
   flex: 1;
@@ -87,12 +100,33 @@
   color: #1A1B1F;
 }
 
+.titulo-tareas {
+  font-size: 15px;
+  font-weight: bold;
+  padding: 6px;
+  margin-bottom: 10px;
+  color: #1A1B1F;
+}
+
 .kpi-potencia-grafico-element {
   width: 100%;
   height: calc(100% - 30px);
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.tabla-evidencia-container {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+}
+
+.tabla-evidencia-container app-evidencia-tabla {
+  flex: 1;
+  display: flex;
+  min-height: 0;
 }
 
 /* ===== TOTALIZADORES ===== */

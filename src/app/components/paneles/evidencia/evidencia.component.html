@@ -46,7 +46,8 @@
             <app-grafico-potencia
               [evidencia]="e"
               [unidad]="'W'"
-              [titulo]="'Potencia por fases'">
+              [titulo]="'Potencia por fases'"
+              [yAxisLabel]="'Potencia instantánea'">
             </app-grafico-potencia>
           </div>
         </mat-card>
@@ -101,6 +102,69 @@
     </div>
 
   </div>
+
+  <!-- SE MUESTRA PARA EVIDENCIA CURRENT + TENSION -->
+  <div *ngFor="let eCurrent of evidenciasCurrent; let i = index" class="fila-maquina">
+
+    <!-- IZQUIERDA - CORRIENTE -->
+    <div class="columna-izquierda-2">
+      <mat-card class="mat-card-custom mat-elevation-z4 grafico-maquina">
+        <div class="titulo-maquina">
+          {{ eCurrent.code }}
+        </div>
+
+        <div class="kpi-potencia-grafico-element">
+          <app-grafico-generico
+            [evidencia]="eCurrent"
+            [unidad]="'A'"
+            [titulo]="'Corriente por fases'"
+            [yAxisLabel]="'Corriente instantánea'">
+          </app-grafico-generico>
+        </div>
+      </mat-card>
+    </div>
+
+    <!-- DERECHA - TENSIÓN -->
+    <div class="columna-derecha-2" *ngIf="evidenciasTension[i]">
+      <mat-card class="mat-card-custom mat-elevation-z4 grafico-maquina">
+        <div class="titulo-maquina">
+          {{ evidenciasTension[i].code }}
+        </div>
+
+        <div class="kpi-potencia-grafico-element">
+          <app-grafico-generico
+            [evidencia]="evidenciasTension[i]"
+            [unidad]="'V'"
+            [titulo]="'Tensión por fases'"
+            [yAxisLabel]="'Tensión instantánea'">
+          </app-grafico-generico>
+        </div>
+      </mat-card>
+    </div>
+
+  </div>
+
+  <!-- SE MUESTRA PARA EVIDENCIA TAREAS IA -->
+  <div *ngFor="let e of evidenciasZonasIA" class="fila-maquina">
+
+    <div class="columna-general">
+      <mat-card class="mat-card-custom mat-elevation-z4 grafico-maquina">
+
+        <div class="titulo-tareas">
+          {{ e.code }}
+        </div>
+
+        <div class="tabla-evidencia-container">
+          <app-evidencia-tabla
+            [data]="e.tareas">
+          </app-evidencia-tabla>
+        </div>
+
+      </mat-card>
+    </div>
+
+  </div>
+
 
 </div>
 

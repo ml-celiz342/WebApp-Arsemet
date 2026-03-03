@@ -18,3 +18,11 @@ export interface GenericoConsumoHora {
   value: number;
   reactive_value: number;
 }
+
+export interface ZonasIA {
+  code: string;
+  zone_name: string;
+  start: Date;
+  end: Date;
+  workers: number;
+}

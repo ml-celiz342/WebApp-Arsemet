@@ -1,1 +1,10 @@
-<p>kpi-grafico-barra works!</p>
+<ng-container *ngIf="chartOptions">
+  <apx-chart
+    [series]="chartOptions.series"
+    [chart]="chartOptions.chart"
+    [xaxis]="chartOptions.xaxis"
+    [dataLabels]="chartOptions.dataLabels"
+    [colors]="chartOptions.colors">
+  </apx-chart>
+</ng-container>
+

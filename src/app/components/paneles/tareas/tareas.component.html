@@ -73,13 +73,14 @@
               </td>
             </ng-container>
 
-            <!-- COLUMNA: Inicio Estimado -->
+            <!-- COLUMNA: Inicio Estimado
             <ng-container matColumnDef="ciclo_fecha_inicio_est">
               <th mat-header-cell *matHeaderCellDef>Fecha Inicio Estimado</th>
               <td mat-cell *matCellDef="let element">
                 {{ element.cycle_start_est | date:'dd/MM/yyyy HH:mm:ss' }}
               </td>
             </ng-container>
+            -->
 
             <!-- COLUMNA: Inicio Medido -->
             <ng-container matColumnDef="ciclo_fecha_inicio_medida">
@@ -97,21 +98,23 @@
               </td>
             </ng-container>
 
-            <!-- COLUMNA: Cantidad Buenas -->
+            <!-- COLUMNA: Cantidad Buenas
             <ng-container matColumnDef="pza_cant_buenas">
               <th mat-header-cell *matHeaderCellDef>Cant Buena</th>
               <td mat-cell *matCellDef="let element">
                 {{ element.good_qty }}
               </td>
             </ng-container>
+            -->
 
-            <!-- COLUMNA: Cantidad Malas -->
+            <!-- COLUMNA: Cantidad Malas
             <ng-container matColumnDef="pza_cant_malas">
               <th mat-header-cell *matHeaderCellDef>Cant Mala</th>
               <td mat-cell *matCellDef="let element">
                 {{ element.bad_qty }}
               </td>
             </ng-container>
+            -->
 
             <!-- COLUMNA: Cantidad Usuario -->
             <ng-container matColumnDef="pza_cant_usuario">
@@ -121,18 +124,67 @@
               </td>
             </ng-container>
 
+            <!-- COLUMNA: Estadia -->
+            <ng-container matColumnDef="estadia">
+              <th mat-header-cell *matHeaderCellDef>Estadia</th>
+
+              <td mat-cell *matCellDef="let element">
+                <div class="bobina-p" *ngIf="element.zones?.length">
+
+                  <div
+                    class="bobina-item"
+                    *ngFor="let zone of element.zones"
+                  >
+                    <!-- % arriba -->
+                    <div class="numero">
+                      {{ getZonePercentage(element, zone.total) }}%
+                    </div>
+
+                    <!-- Barra -->
+                    <div
+                      class="bobina-px"
+                      [ngClass]="{
+                        'color-rojo': getZonePercentage(element, zone.total) < 33,
+                        'color-naranja': getZonePercentage(element, zone.total) >= 33 && getZonePercentage(element, zone.total) < 66,
+                        'color-verde': getZonePercentage(element, zone.total) >= 66
+                      }"
+                    ></div>
+
+                    <!-- Nombre abajo -->
+                    <div class="zona-nombre">
+                      {{ getZoneAbbreviation(zone.zone_name) }}
+                    </div>
+
+                  </div>
+
+                </div>
+              </td>
+            </ng-container>
+
             <!-- COLUMNA: Detalle -->
             <ng-container matColumnDef="detalle">
               <th mat-header-cell *matHeaderCellDef>Detalle</th>
+
               <td mat-cell *matCellDef="let element">
-                  <button mat-icon-button (click)="onDetalleClick(element)"
-                    [disabled]="element.low_date"
-                    *ngIf=" (authService.hasPermission('roles','read') &&authService.hasPermission('modules','read'))"
-                    matTooltip="Ver detalle"
-                    >
-                    <mat-icon class="description-icon">description</mat-icon>
-                  </button>
+
+                <button mat-icon-button (click)="onDetalleClick(element)"
+                  [disabled]="element.low_date"
+                  *ngIf=" (authService.hasPermission('roles','read') &&authService.hasPermission('modules','read'))"
+                  matTooltip="Ver detalle"
+                  >
+                  <mat-icon class="description-icon">description</mat-icon>
+                </button>
+
+                <button mat-icon-button (click)="onInstanciaClick(element)"
+                  [disabled]="element.low_date"
+                  *ngIf=" (authService.hasPermission('roles','read') &&authService.hasPermission('modules','read'))"
+                  matTooltip="Ver instancia"
+                  >
+                  <mat-icon class="description-icon">timer</mat-icon>
+                </button>
+
               </td>
+
             </ng-container>
 
             <tr

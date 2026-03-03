@@ -1,5 +1,10 @@
+export interface Zone {
+  zone_name: string;
+  total: number;
+}
+
 export interface Tarea {
-  id: number
+  id: number;
 
   // Relaciones
   id_asset: number;
@@ -36,5 +41,6 @@ export interface Tarea {
   people_count?: number | null;
   hits_count?: number | null;
   tool_change_count?: number | null;
-}
 
+  zones?: Zone[];
+}
