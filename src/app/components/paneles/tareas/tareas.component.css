@@ -225,16 +225,3 @@ mat-spinner.mostrar {
   word-wrap: break-word;
   color: #555;
 }
-
-/* Colores */
-.color-rojo {
-  background-color: var(--color-error);
-}
-
-.color-naranja {
-  background-color: var(--color-complementary);
-}
-
-.color-verde {
-  background-color: var(--color-success);
-}

@@ -183,6 +183,8 @@ export class EvidenciaPotenciaService {
 
     return this.http.get<any>(this.apiURLEvidenciaTasksIA, { params }).pipe(
       expand((response) => {
+        console.log('PAGE', response.pagination.current_page);
+        
         if (
           response?.pagination?.current_page !== undefined &&
           response?.pagination?.total_pages !== undefined &&

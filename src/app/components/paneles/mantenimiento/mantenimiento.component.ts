@@ -80,9 +80,15 @@ export class MantenimientoComponent {
   }
 
   async loadDataAssets() {
+
+    const types: string[] = ['tablero_electrico', 'tandem'];
+
     try {
       const response = await lastValueFrom(
-        this.assetsService.getFiltroAssets(true)
+        this.assetsService.getFiltroAssets(
+          true,
+          types
+        )
       );
       if (response.length !== 0) {
         this.assetsFiltro = response;
@@ -289,7 +295,7 @@ export class MantenimientoComponent {
 
   async recargar() {
     this.cargando = true;
-    
+
     await this.loadDataMaintenance();
 
     this.cargando = false;

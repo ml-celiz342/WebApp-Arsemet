@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { FiltroAssets } from '../models/filtro-assets';
@@ -18,49 +18,62 @@ export class AssetsService {
 
   constructor(private http: HttpClient) {}
 
-  getFiltroAssets(modeActive?: boolean): Observable<FiltroAssets[]> {
-    // URL base segun el parametro modeActive
-    const baseUrl = modeActive
-      ? `${this.apiURLAssets}?limit=100` // true -> sin mode
-      : `${this.apiURLAssets}?mode=1&limit=100`; // false o null -> con mode = 1
+  getFiltroAssets(
+    modeActive?: boolean,
+    types?: string[]
+  ): Observable<FiltroAssets[]> {
 
-    return this.http.get<any>(baseUrl).pipe(
-      expand((response, index) => {
-        if (
-          response?.pagination?.current_page !== undefined &&
-          response?.pagination?.total_pages !== undefined &&
-          response?.pagination?.limit !== undefined &&
-          response.pagination.current_page < response.pagination.total_pages
-        ) {
-          const nextPageUrl = `${baseUrl}&offset=${
-            response.pagination.current_page * response.pagination.limit
-          }`;
-          return this.http.get<any>(nextPageUrl);
-        }
-        return EMPTY;
-      }),
-      reduce<FiltroAssets[], any>((acc, response) => {
-        if (
-          response &&
-          typeof response === 'object' &&
-          'data' in response &&
-          Array.isArray(response.data)
-        ) {
-          const mappedData = response.data.map((item) => ({
-            id: item.id_asset,
-            code: item.code,
-            type: item.assettype.name,
-            // sub activos
-            subAssets: (item.sub_asset ?? []).map((sa: any) => ({
-              id: sa.id_asset,
-              type: sa.assettype,
-            })),
-          }));
-          acc.push(...mappedData);
-        }
-        return acc;
-      }, [])
-    );
+  let params = new HttpParams();
+
+  if (!modeActive) {
+    params = params.set('mode', '1');
+  }
+
+  if (types && types.length > 0) {
+    types.forEach((type) => {
+      params = params.append('type', type);
+    });
+  }
+
+  params = params.set('limit', 100);
+
+  return this.http.get<any>(this.apiURLAssets, { params }).pipe(
+    expand((response, index) => {
+      if (
+        response?.pagination?.current_page !== undefined &&
+        response?.pagination?.total_pages !== undefined &&
+        response?.pagination?.limit !== undefined &&
+        response.pagination.current_page < response.pagination.total_pages
+      ) {
+        const nextPageUrl = `${this.apiURLAssets}&offset=${
+          response.pagination.current_page * response.pagination.limit
+        }`;
+        return this.http.get<any>(nextPageUrl);
+      }
+      return EMPTY;
+    }),
+    reduce<FiltroAssets[], any>((acc, response) => {
+      if (
+        response &&
+        typeof response === 'object' &&
+        'data' in response &&
+        Array.isArray(response.data)
+      ) {
+        const mappedData = response.data.map((item) => ({
+          id: item.id_asset,
+          code: item.code,
+          type: item.assettype.name,
+          // sub activos
+          subAssets: (item.sub_asset ?? []).map((sa: any) => ({
+            id: sa.id_asset,
+            type: sa.assettype,
+          })),
+        }));
+        acc.push(...mappedData);
+      }
+      return acc;
+    }, []),
+  );
   }
 
   // Get nueva estructura asset by id

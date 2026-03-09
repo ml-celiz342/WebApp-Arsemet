@@ -153,9 +153,9 @@ export class TareasGraficoGanttComponent implements OnChanges {
   }
 
   private ESTADO_COLORS: Record<string, string> = {
-    Planning: CHART_COLORS.BASE,
+    Planing: CHART_COLORS.SUCCESS,
     Folding: CHART_COLORS.COMPLEMENTARY,
-    Work_Zone: CHART_COLORS.SUCCESS,
+    //Work_Zone: CHART_COLORS.BASE,
     Mixed: CHART_COLORS.WARNING,
     Measure: CHART_COLORS.DARK_1,
     Undefined: CHART_COLORS.ERROR,

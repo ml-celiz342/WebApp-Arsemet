@@ -9,12 +9,13 @@ import { SessionsDevices } from '../../../models/sessions-devices';
 import { forkJoin, interval, Observable, Subscription, switchMap, tap } from 'rxjs';
 
 import { MatTableModule } from '@angular/material/table';
+import { SesionesResumenComponent } from "./sesiones-resumen/sesiones-resumen.component";
 
 
 @Component({
   selector: 'app-sesiones',
   standalone: true,
-  imports: [CommonModule, SesionesInfoComponent, MatCardModule, MatTableModule],
+  imports: [CommonModule, SesionesInfoComponent, MatCardModule, MatTableModule, SesionesResumenComponent],
   templateUrl: './sesiones.component.html',
   styleUrl: './sesiones.component.css',
 })

@@ -39,7 +39,10 @@ export class KpiGraficoGanttComponent implements OnChanges {
   chartOptions!: ChartOptions;
 
   ngOnChanges(): void {
-    if (!this.data || this.data.length === 0) return;
+    if (!this.data || this.data.length === 0) {
+      this.chartOptions = undefined as any;
+      return;
+    }
 
     const seriesData = this.buildSeries(this.data);
 
@@ -120,9 +123,9 @@ export class KpiGraficoGanttComponent implements OnChanges {
   }
 
   private ESTADO_COLORS: Record<string, string> = {
-    Planning: CHART_COLORS.BASE,
+    Planing: CHART_COLORS.SUCCESS,
     Folding: CHART_COLORS.COMPLEMENTARY,
-    Work_Zone: CHART_COLORS.SUCCESS,
+    //Work_Zone: CHART_COLORS.SUCCESS,
     Mixed: CHART_COLORS.WARNING,
     Measure: CHART_COLORS.DARK_1,
     Undefined: CHART_COLORS.ERROR,

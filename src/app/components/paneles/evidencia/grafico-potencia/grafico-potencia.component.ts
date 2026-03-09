@@ -109,17 +109,17 @@ export class GraficoPotenciaComponent implements OnChanges, AfterViewInit {
         fontFamily: 'Roboto, sans-serif',
       },
       stroke: {
-        curve: 'smooth',
+        curve: 'straight', // ANTES smooth
         width: 2,
       },
       markers: {
-        size: 3,
+        size: 0, // ANTES 3
         colors: colores,
         strokeColors: colores,
       },
       xaxis: {
         type: 'datetime', // IMPORTANTE
-        tickAmount: 12, // menos labels (cada ~2 horas)
+        tickAmount: 6, // menos labels (cada ~4 horas) // ANTES: 12
         labels: {
           datetimeUTC: false,
           datetimeFormatter: {

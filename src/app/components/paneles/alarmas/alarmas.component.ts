@@ -106,9 +106,15 @@ export class AlarmasComponent implements OnDestroy {
   }
 
   async loadDataAssets() {
+
+    const types: string[] = ['tablero_electrico', 'tandem'];
+
     try {
       const response = await lastValueFrom(
-        this.assetsService.getFiltroAssets(true)
+        this.assetsService.getFiltroAssets(
+          true,
+          types
+        )
       );
       if (response.length !== 0) {
         this.assetsFiltro = response;
