@@ -86,7 +86,7 @@ export class TareasComponent {
     'ciclo_fecha_inicio_est',
     'pza_cant_prog',
     'pza_cant_usuario',
-    'estadia',
+    'estadio',
     'detalle',
   ];
   dataSourceTasks = new MatTableDataSource<Tarea>([]);
