@@ -29,6 +29,7 @@ import { TareasCargarCsvComponent } from './tareas-cargar-csv/tareas-cargar-csv.
 import { TareasDetalleComponent } from './tareas-detalle/tareas-detalle.component';
 import { MatSort, MatSortHeader, MatSortModule } from '@angular/material/sort';
 import { TareasInstanciaGanttComponent } from './tareas-instancia-gantt/tareas-instancia-gantt.component';
+import { CHART_COLORS } from '../../../constants/chart-colors.constants';
 
 @Component({
   selector: 'app-tareas',
@@ -82,13 +83,10 @@ export class TareasComponent {
     'codigo_activo',
     'codigo_articulo',
     'ciclo_fecha_fin',
-    //'ciclo_fecha_inicio_est',
-    'ciclo_fecha_inicio_medida',
+    'ciclo_fecha_inicio_est',
     'pza_cant_prog',
-    //'pza_cant_buenas',
-    //'pza_cant_malas',
     'pza_cant_usuario',
-    'estadia',
+    'estadio',
     'detalle',
   ];
   dataSourceTasks = new MatTableDataSource<Tarea>([]);
@@ -158,9 +156,11 @@ export class TareasComponent {
 
   // Carga de datos de activos
   async loadDataAssets() {
+    const types: string[] = ['tablero_electrico', 'tandem'];
+
     try {
       const response = await lastValueFrom(
-        this.assetsService.getFiltroAssets(true),
+        this.assetsService.getFiltroAssets(true, types),
       );
       if (response.length !== 0) {
         this.assetsFiltro = response;
@@ -298,6 +298,22 @@ export class TareasComponent {
     };
 
     return map[name] ?? name.slice(0, 3).toUpperCase();
+  }
+
+  /* Colores segun la abreviacion */
+  getZoneColor(zoneName: string): string {
+    const abbr = this.getZoneAbbreviation(zoneName);
+
+    const colorMap: Record<string, string> = {
+      PLE: CHART_COLORS.COMPLEMENTARY,
+      MED: CHART_COLORS.DARK_1,
+      MIX: CHART_COLORS.WARNING,
+      PLA: CHART_COLORS.SUCCESS,
+      AJU: CHART_COLORS.DARK_2,
+      IND: CHART_COLORS.ERROR,
+    };
+
+    return colorMap[abbr] ?? '#BDBDBD';
   }
 
   /* Llamada al gráfico de Gantt */

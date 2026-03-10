@@ -109,17 +109,17 @@ export class GraficoGenericoComponent implements OnChanges, AfterViewInit {
         fontFamily: 'Roboto, sans-serif',
       },
       stroke: {
-        curve: 'smooth',
+        curve: 'straight',
         width: 2,
       },
       markers: {
-        size: 3,
+        size: 0,
         colors: colores,
         strokeColors: colores,
       },
       xaxis: {
         type: 'datetime', // IMPORTANTE
-        tickAmount: 12, // menos labels (cada ~2 horas)
+        tickAmount: 6, // menos labels (cada ~2 horas)
         labels: {
           datetimeUTC: false,
           datetimeFormatter: {

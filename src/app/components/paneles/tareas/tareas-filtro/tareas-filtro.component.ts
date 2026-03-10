@@ -20,7 +20,8 @@ import {
   FormGroup,
   FormControl,
 } from '@angular/forms';
-import { TareasComponent } from '../tareas.component';
+import { map, Observable, startWith } from 'rxjs';
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
 
 @Component({
   selector: 'app-tareas-filtro',
@@ -35,6 +36,8 @@ import { TareasComponent } from '../tareas.component';
     MatButtonModule,
     ReactiveFormsModule,
     FormsModule,
+    MatAutocompleteModule,
+    MatOptionModule,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './tareas-filtro.component.html',
@@ -46,22 +49,55 @@ export class TareasFiltroComponent {
     end: new FormControl(),
   });
 
-  activos = new FormControl('');
-  activosList: string[] = [];
+  activosCtrl = new FormControl(''); // Control del input para autocomplete
+  activosList: string[] = []; // Lista completa de activos
+  activosSelected: string[] = []; // Activos seleccionados
+  filteredActivos!: Observable<string[]>; // Lista filtrada para autocomplete
 
   constructor(
     public dialogRef: MatDialogRef<TareasFiltroComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
   ) {}
 
   ngOnInit() {
     if (this.data) {
-      this.activosList = this.data.activosList;
-      this.activos.setValue(this.data.activos);
+      this.activosList = this.data.activosList || [];
+      this.activosSelected = this.data.activos || [];
       this.range.patchValue({
         start: new Date(this.data.start),
         end: new Date(this.data.end),
       });
+    }
+
+    // Filtrado de autocomplete
+    this.filteredActivos = this.activosCtrl.valueChanges.pipe(
+      startWith(''),
+      map((value: string | null) =>
+        value ? this._filter(value) : this.activosList.slice(),
+      ),
+    );
+  }
+
+  private _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.activosList.filter(
+      (activo) =>
+        activo.toLowerCase().includes(filterValue) &&
+        !this.activosSelected.includes(activo),
+    );
+  }
+
+  addActivo(activo: string) {
+    if (activo && !this.activosSelected.includes(activo)) {
+      this.activosSelected.push(activo);
+    }
+    this.activosCtrl.setValue('');
+  }
+
+  removeActivo(activo: string) {
+    const index = this.activosSelected.indexOf(activo);
+    if (index >= 0) {
+      this.activosSelected.splice(index, 1);
     }
   }
 
@@ -72,8 +108,7 @@ export class TareasFiltroComponent {
   applyFilters(): void {
     this.dialogRef.close({
       dateRange: this.range.value,
-      activos: this.activos.value,
+      activos: this.activosSelected,
     });
   }
 }
-

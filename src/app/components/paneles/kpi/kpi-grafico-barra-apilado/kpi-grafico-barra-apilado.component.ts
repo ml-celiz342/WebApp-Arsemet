@@ -41,10 +41,12 @@ export class KpiGraficoBarraApiladoComponent implements OnChanges {
 
   @Input() data: SeriePromedio[] = [];
 
-  chartOptions!: ChartOptions;
+  chartOptions?: ChartOptions;
 
   ngOnChanges(): void {
+    
     if (!this.data || this.data.length === 0) {
+      this.chartOptions = undefined;
       return;
     }
 

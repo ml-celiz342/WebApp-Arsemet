@@ -37,10 +37,14 @@ export type ChartOptions = {
 export class KpiGraficoBarraComponent implements OnChanges {
   @Input() data: SerieBarraSimple[] = [];
 
-  chartOptions!: ChartOptions;
+  chartOptions?: ChartOptions;
 
   ngOnChanges(): void {
-    if (!this.data || this.data.length === 0) return;
+
+    if (!this.data || this.data.length === 0) {
+      this.chartOptions = undefined;
+      return;
+    }
 
     const categorias = this.data[0].data.map((d) => d.categoria);
 

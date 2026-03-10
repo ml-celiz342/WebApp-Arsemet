@@ -27,9 +27,15 @@ export class KpiGraficoRadialBarComponent implements OnChanges {
   @Input() valor = 0;
   @Input() label = '';
 
-  chartOptions!: RadialChartOptions;
+  chartOptions?: RadialChartOptions;
 
   ngOnChanges(): void {
+
+    if (this.valor === null || this.valor === undefined || !this.label) {
+      this.chartOptions = undefined;
+      return;
+    }
+
     this.chartOptions = {
       series: [this.valor],
 

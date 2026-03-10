@@ -11,6 +11,7 @@
   width: 100%;
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 /* ===== FILTRO SUPERIOR ===== */
@@ -33,6 +34,7 @@
 
 .filtro-botones {
   display: flex;
+  align-items: center;
   gap: 10px;
   margin-right: 10px;
 }
@@ -61,13 +63,11 @@
 .columna-izquierda-2 {
   flex: 1;
   display: flex;
-  width: 50%;
 }
 
 .columna-derecha-2 {
   flex: 1;
   display: flex;
-  width: 50%;
 }
 
 /* PRUEBA */
@@ -190,8 +190,8 @@
 }
 
 .circulo-valor {
-  width: 70px;
-  height: 70px;
+  width: 80px;
+  height: 80px;
   background: #2F6DA4;
   border-radius: 50%;
 
@@ -200,7 +200,7 @@
   align-items: center;
 
   color: white;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
 
   margin-bottom: 16px;
@@ -320,6 +320,15 @@
   }
 }
 
+@media (max-width: 992px) {
+
+  .columna-izquierda-2,
+  .columna-derecha-2 {
+    flex: 1 1 100%;
+  }
+
+}
+
 .titulo-maquina-general-derecha {
   font-size: 15px;
   font-weight: bold;
@@ -343,22 +352,12 @@
   align-self: center;
 }
 
-/* SPINNER MINI */
-.spinner-wrapper {
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 0;
+/* SPINNER */
+mat-spinner {
+  width: 30px !important;
+  height: 30px !important;
 }
 
-.spinner-mini {
-  width: 20px !important;
-  height: 20px !important;
-}
-
-.spinner-mini svg {
-  width: 20px !important;
-  height: 20px !important;
+mat-spinner.mostrar {
+  display: inline-block;
 }

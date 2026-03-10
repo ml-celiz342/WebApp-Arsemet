@@ -11,7 +11,6 @@ import {
   NewAlarmaList,
   UpdateAlarmLevel,
 } from '../models/alarmas';
-import { state } from '@angular/animations';
 
 @Injectable({
   providedIn: 'root',

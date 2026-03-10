@@ -14,7 +14,7 @@ import { CHART_COLORS } from '../../../../constants/chart-colors.constants';
 type SerieLinea = {
   name: string;
   data: {
-    hora: string;
+    hora: Date;
     valor: number;
   }[];
 };
@@ -37,29 +37,43 @@ export type ChartOptions = {
 export class KpiGraficoLineaComponent implements OnChanges {
   @Input() data: SerieLinea[] = [];
 
-  chartOptions!: ChartOptions;
+  chartOptions?: ChartOptions;
 
   ngOnChanges(): void {
-    if (!this.data || this.data.length === 0) return;
 
-    const categorias = this.data[0].data.map((d) => d.hora);
+    if (!this.data || this.data.length === 0) {
+      this.chartOptions = undefined;
+      return;
+    }
 
-    const series = this.data.map((serie) => ({
-      name: serie.name,
-      data: serie.data.map((d) => d.valor),
+    const series: ApexAxisChartSeries = this.data.map((serie) => ({
+      name: 'Piezas/Hora',
+      data: serie.data.map((d) => ({
+        x: new Date(d.hora).getTime(),
+        y: d.valor,
+      })),
     }));
 
     this.chartOptions = {
       series,
 
       chart: {
-        type: 'line' as ChartType,
+        type: 'line',
         height: 260,
         toolbar: { show: true },
       },
 
       xaxis: {
-        categories: categorias,
+        type: 'datetime',
+        tickAmount: 10,
+        labels: {
+          datetimeFormatter: {
+            year: 'yyyy',
+            month: 'dd MMM',
+            day: 'dd MMM',
+            hour: 'HH:mm',
+          },
+        },
       },
 
       stroke: {
