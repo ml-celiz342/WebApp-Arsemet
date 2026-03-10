@@ -6,6 +6,7 @@ import {
   ApexNonAxisChartSeries,
   ApexDataLabels,
   ChartType,
+  ApexTooltip,
 } from 'ng-apexcharts';
 import { CommonModule } from '@angular/common';
 import { CHART_COLORS } from '../../../../constants/chart-colors.constants';
@@ -22,6 +23,7 @@ export type PieChartOptions = {
   colors: string[];
   dataLabels: ApexDataLabels;
   legend: ApexLegend;
+  tooltip: ApexTooltip;
 };
 
 @Component({
@@ -34,10 +36,11 @@ export type PieChartOptions = {
 export class KpiGraficoTortaComponent implements OnChanges {
   @Input() data: PieDataItem[] = [];
 
-  chartOptions!: PieChartOptions;
+  chartOptions?: PieChartOptions;
 
   ngOnChanges(): void {
     if (!this.data || this.data.length === 0) {
+      this.chartOptions = undefined;
       return;
     }
 
@@ -74,6 +77,12 @@ export class KpiGraficoTortaComponent implements OnChanges {
         formatter: (seriesName: string, opts: any) => {
           const value = opts.w.globals.series[opts.seriesIndex];
           return `${seriesName}: ${value.toFixed(2)}%`;
+        },
+      },
+
+      tooltip: {
+        y: {
+          formatter: (val: number) => `${val.toFixed(2)}%`,
         },
       },
     };

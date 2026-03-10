@@ -1,4 +1,4 @@
-import {Component, inject } from '@angular/core';
+import {ChangeDetectorRef, Component, inject } from '@angular/core';
 import { MatCard } from '@angular/material/card';
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { MatIcon } from "@angular/material/icon";
@@ -22,7 +22,7 @@ import { KpiTemporalesService } from '../../../services/kpi-temporales.service';
 import { ZonasTareasEstado } from '../../../models/kpi-temporales';
 import { firstValueFrom } from 'rxjs';
 import { KpiEstaticosService } from '../../../services/kpi-estaticos.service';
-import { DistribucionTareas, KpiStats } from '../../../models/kpi-estaticos';
+import { KpiStats } from '../../../models/kpi-estaticos';
 
 @Component({
   selector: 'app-kpi',
@@ -60,7 +60,6 @@ export class KpiComponent {
 
   cargando = false;
   perDay = false;
-  cdr: any;
 
   constructor(
     private assetsService: AssetsService,
@@ -68,6 +67,7 @@ export class KpiComponent {
     private kpiTemporalesService: KpiTemporalesService,
     private kpiEstaticosService: KpiEstaticosService,
     private datePipe: DatePipe,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   // Cargar datos
@@ -168,7 +168,6 @@ export class KpiComponent {
         this.cargando = false; // SIEMPRE se ejecuta
       }
     });
-
   }
 
   async recargar() {
@@ -257,6 +256,19 @@ export class KpiComponent {
       }));
     } catch (err) {
       console.error(err);
+
+      // si api falla = 0
+      this.estadosTorta = [];
+      this.promediosRadial = {
+        tasa_de_utilizacion: 0,
+        energia_no_productiva: 0,
+      };
+      this.mantenimiento = {
+        tiempo_ultimo_mantenimiento: 0,
+        consumo_esp_energia: 0,
+        tiempo_ciclo_promedio: 0,
+      };
+
       this._snackBar.open('Error cargando radial', 'Cerrar', {
         duration: 3000,
       });
@@ -283,7 +295,6 @@ export class KpiComponent {
           formattedEnd,
         ),
       );
-
     } catch (err) {
       console.error(err);
       this._snackBar.open('Error cargando gantt', 'Cerrar', {
@@ -291,7 +302,6 @@ export class KpiComponent {
       });
     }
   }
-
 
   // Barra apilado
   energiaPorTurnoBarra: {
@@ -342,6 +352,10 @@ export class KpiComponent {
       ];
     } catch (err) {
       console.error(err);
+
+      // Si api falla = 0
+      this.energiaPorTurnoBarra = [];
+
       this._snackBar.open('Error cargando energía por turno', 'Cerrar', {
         duration: 3000,
       });
@@ -351,7 +365,7 @@ export class KpiComponent {
   // Piezas producidas por hora
   piezasPorHoraLinea: {
     name: string;
-    data: { hora: string; valor: number }[];
+    data: { hora: Date; valor: number }[];
   }[] = [];
 
   private async loadDataPiecesPerHour(): Promise<void> {
@@ -384,32 +398,21 @@ export class KpiComponent {
         {
           name: 'Pieces / hour',
           data: serie.data.map((p) => ({
-            hora: this.datePipe.transform(p.hour, 'HH:mm') ?? '',
+            hora: p.hour,
             valor: Number(p.value.toFixed(2)),
           })),
         },
       ];
     } catch (err) {
       console.error(err);
+
+      // si api falla = 0
+      this.piezasPorHoraLinea = [];
+
       this._snackBar.open('Error cargando piezas por hora', 'Cerrar', {
         duration: 3000,
       });
     }
   }
 
-  // Actos inseguros
-  actosInsegurosBarra = [
-    {
-      name: 'Actos inseguros',
-      data: [
-        { categoria: 'Lun', valor: 1 },
-        { categoria: 'Mar', valor: 0 },
-        { categoria: 'Mié', valor: 2 },
-        { categoria: 'Jue', valor: 3 },
-        { categoria: 'Vie', valor: 1 },
-        { categoria: 'Sáb', valor: 0 },
-        { categoria: 'Dom', valor: 2 },
-      ],
-    },
-  ];
 }

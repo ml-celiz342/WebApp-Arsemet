@@ -189,7 +189,7 @@ mat-spinner.mostrar {
   min-width: max-content;
 }
 
-/* Estilos para columna estadia */
+/* Estilos para columna estadio */
 .bobina-p {
   display: flex;
   gap: 14px;
@@ -224,17 +224,4 @@ mat-spinner.mostrar {
   max-width: 70px;
   word-wrap: break-word;
   color: #555;
-}
-
-/* Colores */
-.color-rojo {
-  background-color: var(--color-error);
-}
-
-.color-naranja {
-  background-color: var(--color-complementary);
-}
-
-.color-verde {
-  background-color: var(--color-success);
 }

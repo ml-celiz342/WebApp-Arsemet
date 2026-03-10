@@ -1,0 +1,35 @@
+/* CHECKBOXES */
+
+.checkbox-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  /* 2 columnas */
+  gap: 6px 16px;
+  margin-top: 10px;
+}
+
+/* fuente mas chica */
+
+.checkbox-container mat-checkbox {
+  font-size: 13px;
+}
+
+/* WARNING BOX */
+
+.warning-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  margin-top: 10px;
+
+  font-size: 14px;
+  color: #6b6b6b;
+}
+
+/* ICONO WARNING */
+
+.warning-icon {
+  color: #fbc02d;
+  font-size: 18px;
+}

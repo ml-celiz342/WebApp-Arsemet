@@ -9,7 +9,7 @@
 .support-requests-header {
   display: flex;
   justify-content: space-between;
-  padding: 24px 24px 0px;
+  padding: 24px 24px 8px;
   margin-bottom: 0;
 }
 
@@ -87,3 +87,18 @@
   text-transform: uppercase;
 }
 
+.text-connected {
+  color: var(--color-success);
+}
+
+.text-timeout {
+  color: var(--color-complementary);
+}
+
+.text-disconnected {
+  color: var(--color-error);
+}
+
+.text-idle {
+  color: var(--color-dark-1);
+}

@@ -12,7 +12,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DatePipe } from '@angular/common';
 import { AssetsService } from '../../../services/assets.service';
-import { UtilidadesService } from '../../../services/utilidades.service';
 import { FiltroAssets } from '../../../models/filtro-assets';
 import { EvidenciaFiltroComponent } from './evidencia-filtro/evidencia-filtro.component';
 import { GraficoPotenciaComponent } from './grafico-potencia/grafico-potencia.component';
@@ -43,8 +42,8 @@ import { GraficoGenericoComponent } from "./grafico-generico/grafico-generico.co
     GraficoPotenciaComponent,
     GraficoPotenciaPorDiaComponent,
     EvidenciaTablaComponent,
-    GraficoGenericoComponent
-],
+    GraficoGenericoComponent,
+  ],
   providers: [DatePipe],
   templateUrl: './evidencia.component.html',
   styleUrl: './evidencia.component.css',
@@ -57,8 +56,13 @@ export class EvidenciaComponent {
   range = { start: new Date(), end: new Date() };
   selectedAsset: FiltroAssets = { id: 0, code: '' };
   assetsFiltro: FiltroAssets[] = [];
-
   selectedAssetIds: number[] = [];
+
+  // Tipos para mostrar graficos
+  mostrarPotencia = false;
+  mostrarCorriente = false;
+  mostrarTension = false;
+  mostrarIA = false;
 
   cargando = false;
   perDay = false;
@@ -126,8 +130,8 @@ export class EvidenciaComponent {
       ...(this.selectedAsset.subAssets ?? []),
     ];
 
-    for (const sa of assetsAConsultar) {
 
+    for (const sa of assetsAConsultar) {
       try {
         const result = await this.ejecutarSubAsset(
           sa,
@@ -138,9 +142,17 @@ export class EvidenciaComponent {
         if (!result.data) continue;
 
         if (result.tipo === 'tablero_electrico') {
-          this.evidenciasPower.push(result.data.power);
-          this.evidenciasCurrent.push(result.data.current);
-          this.evidenciasTension.push(result.data.tension);
+          if (result.data.power) {
+            this.evidenciasPower.push(result.data.power);
+          }
+
+          if (result.data.current) {
+            this.evidenciasCurrent.push(result.data.current);
+          }
+
+          if (result.data.tension) {
+            this.evidenciasTension.push(result.data.tension);
+          }
         }
 
         if (result.tipo === 'camara' && result.data?.length) {
@@ -167,33 +179,46 @@ export class EvidenciaComponent {
     hasta: string,
   ): Promise<{ tipo: 'tablero_electrico' | 'camara'; data: any | null }> {
     try {
-      // TABLERO ELECTRICO
+      // ================= TABLERO ELECTRICO =================
       if (sa.type === 'tablero_electrico') {
-        const res = await lastValueFrom(
-          forkJoin({
-            power: this.evidenciaPotenciaService.getEvidenciaPowerById(
-              sa.id,
-              desde,
-              hasta,
-            ),
-            current: this.evidenciaPotenciaService.getEvidenciaCurrentById(
-              sa.id,
-              desde,
-              hasta,
-            ),
-            tension: this.evidenciaPotenciaService.getEvidenciaTensionById(
-              sa.id,
-              desde,
-              hasta,
-            ),
-          }),
-        );
+        const calls: any = {};
+
+        if (this.mostrarPotencia) {
+          calls.power = this.evidenciaPotenciaService.getEvidenciaPowerById(
+            sa.id,
+            desde,
+            hasta,
+          );
+        }
+
+        if (this.mostrarCorriente) {
+          calls.current = this.evidenciaPotenciaService.getEvidenciaCurrentById(
+            sa.id,
+            desde,
+            hasta,
+          );
+        }
+
+        if (this.mostrarTension) {
+          calls.tension = this.evidenciaPotenciaService.getEvidenciaTensionById(
+            sa.id,
+            desde,
+            hasta,
+          );
+        }
+
+        // si no hay nada seleccionado
+        if (Object.keys(calls).length === 0) {
+          return { tipo: 'tablero_electrico', data: null };
+        }
+
+        const res = await lastValueFrom(forkJoin(calls));
 
         return { tipo: 'tablero_electrico', data: res };
       }
 
-      // CAMARA
-      if (sa.type === 'camara') {
+      // ================= CAMARA =================
+      if (sa.type === 'camara' && this.mostrarIA) {
         const res = await lastValueFrom(
           this.evidenciaPotenciaService.getEvidenciaZonasIaById(
             sa.id,
@@ -205,8 +230,10 @@ export class EvidenciaComponent {
         return { tipo: 'camara', data: res };
       }
 
-      // Tipo desconocido
-      return { tipo: 'tablero_electrico', data: null };
+      return {
+        tipo: sa.type === 'camara' ? 'camara' : 'tablero_electrico',
+        data: null,
+      };
     } catch (err) {
       console.warn(`SubAsset ${sa.id} (${sa.type}) falló`, err);
 
@@ -245,11 +272,24 @@ export class EvidenciaComponent {
           viewValue: item.code,
         })),
         selectedAssets: this.selectedAssetIds,
+        // FILTROS
+        dataTypes: {
+          potencia: this.mostrarPotencia,
+          corriente: this.mostrarCorriente,
+          tension: this.mostrarTension,
+          tareasIA: this.mostrarIA,
+        },
       },
     });
 
     dialogRef.afterClosed().subscribe(async (result) => {
       if (!result) return;
+
+      // Tipos seleccionados
+      this.mostrarPotencia = result.dataTypes?.potencia ?? true;
+      this.mostrarCorriente = result.dataTypes?.corriente ?? false;
+      this.mostrarTension = result.dataTypes?.tension ?? false;
+      this.mostrarIA = result.dataTypes?.tareasIA ?? false;
 
       this.cargando = true;
       this.range = result.dateRange;
@@ -301,8 +341,44 @@ export class EvidenciaComponent {
         await this.loadDataEvidenciasByFilter();
       }
 
+      // VALIDACION DE 2 DIAS MAXIMO
+      if (
+        (this.mostrarPotencia ||
+          this.mostrarCorriente ||
+          this.mostrarTension) &&
+        this.range.start &&
+        this.range.end
+      ) {
+        const start = new Date(this.range.start);
+        const end = new Date(this.range.end);
+
+        start.setHours(0, 0, 0, 0);
+        end.setHours(0, 0, 0, 0);
+
+        const diffDays = Math.floor(
+          (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24),
+        );
+
+        if (diffDays > 2) {
+          this._snackBar.open(
+            'Potencia, Corriente y Tensión permiten máximo 2 días',
+            'Cerrar',
+            { duration: 3000 },
+          );
+
+          this.cargando = false;
+          return;
+        }
+      }
+
       this.cargando = false;
     });
+  }
+
+  get evidenciasElectricas() {
+    if (this.mostrarCorriente) return this.evidenciasCurrent;
+    if (this.mostrarTension) return this.evidenciasTension;
+    return [];
   }
 
   async recargar() {

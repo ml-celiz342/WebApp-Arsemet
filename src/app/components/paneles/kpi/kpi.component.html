@@ -12,7 +12,7 @@
         </span>
 
         <div class="filtro-botones">
-          <mat-spinner *ngIf="cargando" diameter="30"></mat-spinner>
+          <mat-spinner *ngIf="cargando"></mat-spinner>
 
           <button mat-icon-button matTooltip="Recargar" (click)="recargar()">
             <mat-icon>refresh</mat-icon>
@@ -84,7 +84,7 @@
           <div class="totalizador-item">
             <div class="titulo-totalizador">Tiempo de Ciclo<br>Promedio</div>
             <div class="circulo-valor">
-              {{ this.mantenimiento.tiempo_ciclo_promedio }} <span class="unidad">s/pieza</span>
+              {{ mantenimiento.tiempo_ciclo_promedio / 60 | number:'1.2-2' }} <span class="unidad">min/pieza</span>
             </div>
           </div>
         </div>

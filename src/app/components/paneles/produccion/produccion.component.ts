@@ -105,8 +105,13 @@ export class ProduccionComponent implements AfterViewInit {
 
   // Load de state
   async loadDataStates() {
+
+    const types: string[] = ['tablero_electrico', 'tandem'];
+
     try {
-      const response = await lastValueFrom(this.stateService.getStates());
+      const response = await lastValueFrom(this.stateService.getStates(
+        types
+      ));
 
       if (response.length !== 0) {
         this.dataSourceStates.data = response;
@@ -140,14 +145,15 @@ export class ProduccionComponent implements AfterViewInit {
 
   // Actualizacion automatica de estados
   iniciarActualizacionEstados(): void {
+    const types: string[] = ['tablero_electrico', 'tandem'];
     // Llamada inmediata
-    this.stateService.getStates().subscribe((response) => {
+    this.stateService.getStates(types).subscribe((response) => {
       this.procesarEstados(response);
     });
 
     // Repeticion cada 2 minutos
     this.stateSubscription = interval(120000)
-      .pipe(switchMap(() => this.stateService.getStates()))
+      .pipe(switchMap(() => this.stateService.getStates(types)))
       .subscribe((response) => {
         this.procesarEstados(response);
       });

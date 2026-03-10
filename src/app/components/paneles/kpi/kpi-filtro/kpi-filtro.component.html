@@ -17,11 +17,23 @@
   <mat-form-field appearance="outline">
     <mat-label>Activos</mat-label>
 
-    <mat-select [(ngModel)]="selectedValue">
-      <mat-option *ngFor="let option of options" [value]="option.value">
+    <input
+      matInput
+      [formControl]="control"
+      [matAutocomplete]="auto"
+      placeholder="Escribí el nombre del activo..."
+    />
+
+    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+
+      <mat-option
+        *ngFor="let option of filteredOptions | async"
+        [value]="option"
+      >
         {{ option.viewValue }}
       </mat-option>
-    </mat-select>
+
+    </mat-autocomplete>
   </mat-form-field>
 
 </mat-dialog-content>
