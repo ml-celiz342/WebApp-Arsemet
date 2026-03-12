@@ -3,22 +3,56 @@
 
       <!-- Turno -->
       <mat-form-field appearance="fill" class="full-width">
+
         <mat-label>Turno</mat-label>
-        <mat-select [(ngModel)]="selectTurno" name="selectTurno" required>
-          <mat-option *ngFor="let t of turnos" [value]="t.id_shift">
+
+        <input
+          type="text"
+          matInput
+          [formControl]="turnoControl"
+          [matAutocomplete]="autoTurno"
+          placeholder="Buscar turno"
+        />
+
+        <mat-autocomplete
+          #autoTurno="matAutocomplete"
+          autoActiveFirstOption
+          (optionSelected)="selectTurnoFromAutocomplete($event.option.value)"
+        >
+          <mat-option
+            *ngFor="let t of turnosFiltrados | async"
+            [value]="t"
+          >
             {{ t.name }}
           </mat-option>
-        </mat-select>
+        </mat-autocomplete>
+
       </mat-form-field>
 
       <!-- Activo -->
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>Activo</mat-label>
-        <mat-select [(ngModel)]="selectActivo" name="selectActivo" required>
-          <mat-option *ngFor="let a of activos" [value]="a.id">
+
+        <input
+          type="text"
+          matInput
+          [formControl]="activoControl"
+          [matAutocomplete]="autoActivo"
+          placeholder="Buscar activo"
+        />
+
+        <mat-autocomplete
+          #autoActivo="matAutocomplete"
+          (optionSelected)="selectActivoFromAutocomplete($event.option.value)"
+        >
+          <mat-option
+            *ngFor="let a of activosFiltrados | async"
+            [value]="a"
+          >
             {{ a.code }}
           </mat-option>
-        </mat-select>
+        </mat-autocomplete>
+
       </mat-form-field>
 
 </mat-dialog-content>
@@ -27,3 +61,4 @@
   <button mat-button (click)="close()">Cancelar</button>
   <button mat-flat-button color="primary" (click)="guardarVinculacion()">Guardar</button>
 </mat-dialog-actions>
+

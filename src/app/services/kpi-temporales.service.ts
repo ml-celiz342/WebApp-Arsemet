@@ -10,6 +10,7 @@ import { PiecesPerHourPoint, PiecesPerHourSerie, ZonasTareasEstado } from '../mo
 })
 export class KpiTemporalesService {
   private apiURLKpiGantt = environment.apiUrl + 'data/kpi/state_timeline'; // Grafico: Tiempo vs Estado
+  private apiURLKpiGanttSummary = environment.apiUrl + 'data/kpi/state_summary'; // Grafico: Tiempo vs Estado
   private apiURLPiecesPerHour = environment.apiUrl + 'data/kpi/pieces_per_hour'; // Grafico: Piezas producidas por hora
 
   constructor(private http: HttpClient) {}
@@ -49,6 +50,69 @@ export class KpiTemporalesService {
             response.pagination.current_page * response.pagination.limit;
           const nextParams = params.set('offset', nextOffset.toString());
           return this.http.get<any>(this.apiURLKpiGantt, {
+            params: nextParams,
+          });
+        }
+        return EMPTY;
+      }),
+      reduce<ZonasTareasEstado[], any>((acc, response) => {
+        if (
+          response &&
+          typeof response === 'object' &&
+          'data' in response &&
+          Array.isArray(response.data)
+        ) {
+          const mappedData = response.data.map(
+            (item: any): ZonasTareasEstado => ({
+              state: item.state,
+              alias: item.alias,
+              from: new Date(item.from),
+              to: new Date(item.to),
+            }),
+          );
+
+          acc.push(...mappedData);
+        }
+        return acc;
+      }, []),
+    );
+  }
+
+  /* --- GANT RESUMEN --- */
+  // Operativo: folding, planning, measure, tuning - Operativo en vacio: undefinex, mixed
+  getKpiTasksStatesSummary(
+    id_activo: number,
+    desde: string,
+    hasta: string,
+  ): Observable<ZonasTareasEstado[]> {
+    let params = new HttpParams();
+
+    if (id_activo) {
+      params = params.set('idAsset', id_activo);
+    }
+
+    if (desde) {
+      params = params.set('from', desde);
+    }
+
+    if (hasta) {
+      params = params.set('to', hasta);
+    }
+
+    params = params.set('limit', 100);
+
+    return this.http.get<any>(this.apiURLKpiGanttSummary, { params }).pipe(
+      expand((response) => {
+        if (
+          response?.pagination?.current_page !== undefined &&
+          response?.pagination?.total_pages !== undefined &&
+          response?.pagination?.limit !== undefined &&
+          response.pagination.current_page < response.pagination.total_pages
+        ) {
+          const nextOffset =
+            response.pagination.current_page * response.pagination.limit;
+          const nextParams = params.set('offset', nextOffset.toString());
+          return this.http.get<any>(this.apiURLKpiGanttSummary, {
             params: nextParams,
           });
         }

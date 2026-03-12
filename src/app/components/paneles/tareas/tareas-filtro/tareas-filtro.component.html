@@ -22,7 +22,7 @@
       [matAutocomplete]="auto"
       placeholder="Buscar activo"
     />
-    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="addActivo($event.option.value)">
+    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="addActivo($event)">
       <mat-option *ngFor="let activo of filteredActivos | async" [value]="activo">
         {{ activo }}
       </mat-option>

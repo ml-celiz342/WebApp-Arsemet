@@ -1,25 +1,59 @@
 <h2 class="titulo">Vincular dispositivo con analítica</h2>
+
 <mat-dialog-content>
 
-      <!-- Dispositivo -->
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Dispositivo</mat-label>
-        <mat-select [(ngModel)]="selectDispositivo" name="selectDispositivo" required>
-          <mat-option *ngFor="let dispositivo of dispositivos" [value]="dispositivo.id">
-            {{ dispositivo.numero_serie }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+  <!-- Dispositivo -->
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Dispositivo</mat-label>
 
-      <!-- Analitica -->
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Analítica</mat-label>
-        <mat-select [(ngModel)]="selectAnalitica" name="selectAnalitica" required>
-          <mat-option *ngFor="let analitica of analiticas" [value]="analitica.id">
-            {{ analitica.nombre }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+    <input
+      type="text"
+      matInput
+      [formControl]="dispositivoControl"
+      [matAutocomplete]="autoDispositivo"
+      placeholder="Buscar dispositivo"
+    />
+
+    <mat-autocomplete
+      #autoDispositivo="matAutocomplete"
+      (optionSelected)="selectDispositivoFromAutocomplete($event.option.value)"
+    >
+      <mat-option
+        *ngFor="let d of dispositivosFiltrados | async"
+        [value]="d"
+      >
+        {{ d.numero_serie }}
+      </mat-option>
+    </mat-autocomplete>
+
+  </mat-form-field>
+
+  <!-- Analítica -->
+  <mat-form-field appearance="fill" class="full-width">
+
+    <mat-label>Analítica</mat-label>
+
+    <input
+      type="text"
+      matInput
+      [formControl]="analiticaControl"
+      [matAutocomplete]="autoAnalitica"
+      placeholder="Buscar analítica"
+    />
+
+    <mat-autocomplete
+      #autoAnalitica="matAutocomplete"
+      (optionSelected)="selectAnaliticaFromAutocomplete($event.option.value)"
+    >
+      <mat-option
+        *ngFor="let a of analiticasFiltradas | async"
+        [value]="a"
+      >
+        {{ a.nombre }}
+      </mat-option>
+    </mat-autocomplete>
+
+  </mat-form-field>
 
 </mat-dialog-content>
 

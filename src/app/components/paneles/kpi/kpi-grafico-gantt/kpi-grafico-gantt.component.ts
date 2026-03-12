@@ -116,19 +116,19 @@ export class KpiGraficoGanttComponent implements OnChanges {
 
   private buildSeries(data: ZonasTareasEstado[]) {
     return data.map((item) => ({
-      x: item.alias,
+      x: this.ESTADO_LABELS[item.state] ?? item.alias,
       y: [new Date(item.from).getTime(), new Date(item.to).getTime()],
       fillColor: this.ESTADO_COLORS[item.state] ?? '#999999',
     }));
   }
 
   private ESTADO_COLORS: Record<string, string> = {
-    Planing: CHART_COLORS.SUCCESS,
-    Folding: CHART_COLORS.COMPLEMENTARY,
-    //Work_Zone: CHART_COLORS.SUCCESS,
-    Mixed: CHART_COLORS.WARNING,
-    Measure: CHART_COLORS.DARK_1,
-    Undefined: CHART_COLORS.ERROR,
-    Tunning: CHART_COLORS.DARK_2,
+    operativo: CHART_COLORS.ERROR,
+    operativo_en_vacio: CHART_COLORS.WARNING,
+  };
+
+  private ESTADO_LABELS: Record<string, string> = {
+    operativo: 'Operativo',
+    operativo_en_vacio: 'Operativo en vacío',
   };
 }
