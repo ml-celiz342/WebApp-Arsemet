@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Inject } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import {
@@ -12,6 +13,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { map, Observable, startWith } from 'rxjs';
 
 
 @Component({
@@ -27,6 +29,7 @@ import { MatSelectModule } from '@angular/material/select';
     MatDialogModule,
     MatSelectModule,
     ReactiveFormsModule,
+    MatAutocompleteModule,
   ],
   templateUrl: './dispositivos-analiticas-vincular.component.html',
   styleUrl: './dispositivos-analiticas-vincular.component.css',
@@ -38,12 +41,46 @@ export class DispositivosAnaliticasVincularComponent {
   selectAnalitica: number = -1;
   selectDispositivo: number = -1;
 
+  dispositivoControl = new FormControl('');
+  analiticaControl = new FormControl('');
+
+  dispositivosFiltrados!: Observable<any[]>;
+  analiticasFiltradas!: Observable<any[]>;
+
   constructor(
     public dialogRef: MatDialogRef<DispositivosAnaliticasVincularComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
     this.analiticas = data.analiticas;
     this.dispositivos = data.dispositivos;
+
+    this.dispositivosFiltrados = this.dispositivoControl.valueChanges.pipe(
+      startWith(''),
+      map((value) => {
+        const filtro = (value || '').toLowerCase();
+        return this.dispositivos.filter((d) =>
+          d.numero_serie.toLowerCase().includes(filtro),
+        );
+      }),
+    );
+
+    this.analiticasFiltradas = this.analiticaControl.valueChanges.pipe(
+      startWith(''),
+      map((value) => {
+        const filtro = (value || '').toLowerCase();
+        return this.analiticas.filter((a) =>
+          a.nombre.toLowerCase().includes(filtro),
+        );
+      }),
+    );
+  }
+
+  selectDispositivoFromAutocomplete(dispositivo: any) {
+    this.selectDispositivo = dispositivo.id;
+  }
+
+  selectAnaliticaFromAutocomplete(analitica: any) {
+    this.selectAnalitica = analitica.id;
   }
 
   close(): void {

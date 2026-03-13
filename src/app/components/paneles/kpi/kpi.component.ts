@@ -98,8 +98,8 @@ export class KpiComponent {
     }
 
     await this.loadDataGantt(); // cargar datos para el gantt
-    await this.loadDataStats(); // cargar datos para el radial bar + ...
-    await this.loadDataPiecesPerHour(); // cargar datos para radial bar chart + mantenimiento y confiabilidad + pie chart
+    await this.loadDataStats(); // cargar datos para radial bar chart + mantenimiento y confiabilidad + pie chart
+    await this.loadDataPiecesPerHour(); // cargar datos para el lineal
     await this.loadDataEnergyPerShift(); // cargar datos para el barra apilado
 
     this.cdr.detectChanges();
@@ -289,7 +289,7 @@ export class KpiComponent {
 
     try {
       this.estadosGantt = await firstValueFrom(
-        this.kpiTemporalesService.getKpiTasksStates(
+        this.kpiTemporalesService.getKpiTasksStatesSummary(
           idAsset,
           formattedStart,
           formattedEnd,
