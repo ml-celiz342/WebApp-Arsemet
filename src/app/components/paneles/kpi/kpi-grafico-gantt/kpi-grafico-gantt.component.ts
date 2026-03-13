@@ -115,7 +115,14 @@ export class KpiGraficoGanttComponent implements OnChanges {
   }
 
   private buildSeries(data: ZonasTareasEstado[]) {
-    return data.map((item) => ({
+    const sorted = [...data].sort((a, b) => {
+      if (a.state === 'Start_end' && b.state !== 'Start_end') return 1;
+      if (b.state === 'Start_end' && a.state !== 'Start_end') return -1;
+
+      return new Date(a.from).getTime() - new Date(b.from).getTime();
+    });
+
+    return sorted.map((item) => ({
       x: this.ESTADO_LABELS[item.state] ?? item.alias,
       y: [new Date(item.from).getTime(), new Date(item.to).getTime()],
       fillColor: this.ESTADO_COLORS[item.state] ?? '#999999',
@@ -125,10 +132,12 @@ export class KpiGraficoGanttComponent implements OnChanges {
   private ESTADO_COLORS: Record<string, string> = {
     operativo: CHART_COLORS.ERROR,
     operativo_en_vacio: CHART_COLORS.WARNING,
+    Start_end: CHART_COLORS.DARK_2,
   };
 
   private ESTADO_LABELS: Record<string, string> = {
     operativo: 'Operativo',
     operativo_en_vacio: 'Operativo en vacío',
+    Start_end: 'Inicio/ Fin de Turno',
   };
 }
