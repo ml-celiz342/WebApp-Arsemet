@@ -15,7 +15,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { map, Observable, startWith } from 'rxjs';
 
-
 @Component({
   selector: 'app-dispositivos-analiticas-vincular',
   imports: [
@@ -81,6 +80,14 @@ export class DispositivosAnaliticasVincularComponent {
 
   selectAnaliticaFromAutocomplete(analitica: any) {
     this.selectAnalitica = analitica.id;
+  }
+
+  displayDispositivo(dispositivo: any): string {
+    return dispositivo ? dispositivo.numero_serie : '';
+  }
+
+  displayAnalitica(analitica: any): string {
+    return analitica ? analitica.nombre : '';
   }
 
   close(): void {

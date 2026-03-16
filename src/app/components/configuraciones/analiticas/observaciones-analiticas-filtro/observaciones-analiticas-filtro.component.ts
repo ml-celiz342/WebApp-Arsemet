@@ -76,6 +76,10 @@ export class ObservacionesAnaliticasFiltroComponent {
     this.selectedValue = option.value;
   }
 
+  displayAnalitica(analitica: any): string {
+    return analitica ? analitica.viewValue : '';
+  }
+
   close(): void {
     this.dialogRef.close();
   }

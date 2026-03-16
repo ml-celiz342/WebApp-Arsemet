@@ -15,6 +15,7 @@
 
         <mat-autocomplete
           #autoActivo="matAutocomplete"
+          [displayWith]="displayActivo"
           (optionSelected)="selectActivoFromAutocomplete($event.option.value)"
         >
           <mat-option
@@ -41,6 +42,7 @@
 
         <mat-autocomplete
           #autoSubActivo="matAutocomplete"
+          [displayWith]="displaySubActivo"
           (optionSelected)="selectSubActivoFromAutocomplete($event.option.value)"
         >
           <mat-option
@@ -59,6 +61,5 @@
   <button mat-button (click)="close()">Cancelar</button>
   <button mat-flat-button color="primary" (click)="guardarVinculacion()">Guardar</button>
 </mat-dialog-actions>
-
 
 

@@ -81,6 +81,14 @@ export class ActivosDispositivosVincularComponent {
     this.selectDispositivo = dispositivo.id;
   }
 
+  displayActivo(activo: any): string {
+    return activo ? activo.code : '';
+  }
+
+  displayDispositivo(dispositivo: any): string {
+    return dispositivo ? dispositivo.numero_serie : '';
+  }
+
   close(): void {
     this.dialogRef.close();
   }

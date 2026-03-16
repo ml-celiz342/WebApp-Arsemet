@@ -16,6 +16,7 @@
 
     <mat-autocomplete
       #autoDispositivo="matAutocomplete"
+      [displayWith]="displayDispositivo"
       (optionSelected)="selectDispositivoFromAutocomplete($event.option.value)"
     >
       <mat-option
@@ -43,6 +44,7 @@
 
     <mat-autocomplete
       #autoAnalitica="matAutocomplete"
+      [displayWith]="displayAnalitica"
       (optionSelected)="selectAnaliticaFromAutocomplete($event.option.value)"
     >
       <mat-option
@@ -61,3 +63,5 @@
   <button mat-button (click)="close()">Cancelar</button>
   <button mat-flat-button color="primary" (click)="guardarVinculacion()">Guardar</button>
 </mat-dialog-actions>
+
+

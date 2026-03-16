@@ -79,6 +79,14 @@ export class TurnosActivosVincularComponent {
     this.selectActivo = activo.id;
   }
 
+  displayTurno(turno: any): string {
+    return turno ? turno.name : '';
+  }
+
+  displayActivo(activo: any): string {
+    return activo ? activo.code : '';
+  }
+
   close(): void {
     this.dialogRef.close();
   }

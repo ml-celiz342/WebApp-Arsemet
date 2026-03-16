@@ -24,7 +24,7 @@
 
     <mat-autocomplete
       #autoAnalitica="matAutocomplete"
-      autoActiveFirstOption
+      [displayWith]="displayAnalitica"
       (optionSelected)="selectAnalitica($event.option.value)"
     >
       <mat-option

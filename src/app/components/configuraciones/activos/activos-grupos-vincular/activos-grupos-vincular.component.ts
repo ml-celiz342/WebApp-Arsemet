@@ -82,6 +82,14 @@ export class ActivosGruposVincularComponent {
     this.selectSubActivo = subActivo.id;
   }
 
+  displayActivo(activo: any): string {
+    return activo ? activo.code : '';
+  }
+
+  displaySubActivo(activo: any): string {
+    return activo ? activo.code : '';
+  }
+
   close(): void {
     this.dialogRef.close();
   }
