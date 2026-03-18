@@ -62,9 +62,10 @@
 
         <div class="kpi-row">
           <div class="totalizador-item">
-            <div class="titulo-totalizador">Hs Desde el Último<br>Mantenimiento</div>
+            <div class="titulo-totalizador">Tiempo desde Último<br>Mantenimiento</div>
             <div class="circulo-valor">
-              {{ this.mantenimiento.tiempo_ultimo_mantenimiento }} <span class="unidad">h</span>
+              {{ lastMaintenanceDisplayValue }}
+              <span class="unidad">{{ lastMaintenanceUnidad }}</span>
             </div>
           </div>
         </div>

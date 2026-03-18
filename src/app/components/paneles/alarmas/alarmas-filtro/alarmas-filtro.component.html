@@ -22,23 +22,6 @@
   </mat-form-field>
 
   <mat-form-field>
-    <mat-label>Activos</mat-label>
-    <mat-select [formControl]="activos" multiple>
-      <mat-select-trigger>
-        {{activos.value?.[0] || ''}}
-        @if ((activos.value?.length || 0) > 1) {
-        <span class="seleccion">
-          (+{{ (activos.value?.length || 0) - 1 }} más)
-        </span>
-        }
-      </mat-select-trigger>
-      @for (activo of activosList; track activo) {
-      <mat-option [value]="activo">{{ activo }}</mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
-
-  <mat-form-field>
     <mat-label>Niveles de alarma</mat-label>
     <mat-select [formControl]="niveles" multiple>
       <mat-select-trigger>
@@ -88,6 +71,33 @@
       }
     </mat-select>
   </mat-form-field>
+
+  <!-- Autocomplete de activos -->
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Activos</mat-label>
+    <input
+      matInput
+      [formControl]="activosCtrl"
+      [matAutocomplete]="auto"
+      placeholder="Buscar activo"
+    />
+    <mat-autocomplete
+      #auto="matAutocomplete"
+      (optionSelected)="addActivo($event)">
+      <mat-option *ngFor="let activo of filteredActivos | async" [value]="activo">
+        {{ activo }}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+
+  <!-- Activos seleccionados -->
+  <div class="activos-selected">
+    <div *ngFor="let activo of activosSelected" class="activo-item">
+      {{ activo }}
+      <button type="button" (click)="removeActivo(activo)">✕</button>
+    </div>
+  </div>
+
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
@@ -96,3 +106,4 @@
     Aplicar
   </button>
 </mat-dialog-actions>
+

@@ -288,9 +288,13 @@ export class AnaliticasComponent {
     const dialogRef = this.dialog.open(ObservacionesAnaliticasFiltroComponent, {
       width: '400px',
       data: {
-        opciones: this.dataSourceAnalytics.data.map((item) => {
-          return { value: item.id, viewValue: item.nombre };
-        }),
+        opciones: this.dataSourceAnalytics.data.map((item) => ({
+          value: item.id,
+          viewValue: item.nombre,
+        })),
+        start: this.range.start,
+        end: this.range.end,
+        selectedOption: this.selectedAnalitica?.id || null,
       },
     });
 
