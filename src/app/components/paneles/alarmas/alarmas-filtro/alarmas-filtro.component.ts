@@ -1,14 +1,28 @@
 import { CommonModule } from '@angular/common';
 import { Component, Inject } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatOptionModule, provideNativeDateAdapter } from '@angular/material/core';
+import {
+  MatOptionModule,
+  provideNativeDateAdapter,
+} from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogModule,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { map, Observable, startWith } from 'rxjs';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @Component({
   selector: 'app-alarmas-filtro',
@@ -24,6 +38,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     MatSlideToggleModule,
     ReactiveFormsModule,
     FormsModule,
+    MatAutocompleteModule,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './alarmas-filtro.component.html',
@@ -37,8 +52,10 @@ export class AlarmasFiltroComponent {
     end: new FormControl(),
   });
 
-  activos = new FormControl('');
+  activosCtrl = new FormControl('');
   activosList: string[] = [];
+  activosSelected: string[] = [];
+  filteredActivos!: Observable<string[]>;
 
   niveles = new FormControl('');
   nivelesList: string[] = [];
@@ -51,13 +68,14 @@ export class AlarmasFiltroComponent {
 
   constructor(
     public dialogRef: MatDialogRef<AlarmasFiltroComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
   ) {}
 
   ngOnInit() {
     if (this.data) {
-      this.activosList = this.data.activosList;
-      this.activos.setValue(this.data.activos);
+      this.activosList = this.data.activosList || [];
+      this.activosSelected = this.data.activos || [];
+
       this.niveles.setValue(this.data.niveles);
       this.estados.setValue(this.data.estados);
       this.origenes.setValue(this.data.origenes);
@@ -70,6 +88,40 @@ export class AlarmasFiltroComponent {
       this.origenesList = this.data.origenesList;
       this.isActualizar = this.data.automatico;
     }
+
+    this.filteredActivos = this.activosCtrl.valueChanges.pipe(
+      startWith(''),
+      map((value: string | null) =>
+        value ? this._filter(value) : this.activosList.slice(),
+      ),
+    );
+  }
+
+  private _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.activosList.filter(
+      (activo) =>
+        activo.toLowerCase().includes(filterValue) &&
+        !this.activosSelected.includes(activo),
+    );
+  }
+
+  addActivo(event: any) {
+    const activo = event.option.value;
+
+    if (activo && !this.activosSelected.includes(activo)) {
+      this.activosSelected.push(activo);
+    }
+
+    this.activosCtrl.setValue('');
+    event.option.deselect();
+  }
+
+  removeActivo(activo: string) {
+    const index = this.activosSelected.indexOf(activo);
+    if (index >= 0) {
+      this.activosSelected.splice(index, 1);
+    }
   }
 
   close(): void {
@@ -79,7 +131,7 @@ export class AlarmasFiltroComponent {
   applyFilters(): void {
     this.dialogRef.close({
       dateRange: this.range.value,
-      activos: this.activos.value,
+      activos: this.activosSelected,
       niveles: this.niveles.value,
       estados: this.estados.value,
       origenes: this.origenes.value,

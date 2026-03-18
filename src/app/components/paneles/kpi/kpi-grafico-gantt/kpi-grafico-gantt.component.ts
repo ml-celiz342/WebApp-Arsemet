@@ -116,8 +116,19 @@ export class KpiGraficoGanttComponent implements OnChanges {
 
   private buildSeries(data: ZonasTareasEstado[]) {
     const sorted = [...data].sort((a, b) => {
-      if (a.state === 'Start_end' && b.state !== 'Start_end') return 1;
-      if (b.state === 'Start_end' && a.state !== 'Start_end') return -1;
+      const order: Record<string, number> = {
+        Start_end: 0,
+        operativo: 1,
+        operativo_en_vacio: 2,
+        MANTENIMIENTO: 3,
+      };
+
+      const orderA = order[a.state] ?? 99;
+      const orderB = order[b.state] ?? 99;
+
+      if (orderA !== orderB) {
+        return orderA - orderB;
+      }
 
       return new Date(a.from).getTime() - new Date(b.from).getTime();
     });
@@ -132,7 +143,8 @@ export class KpiGraficoGanttComponent implements OnChanges {
   private ESTADO_COLORS: Record<string, string> = {
     operativo: CHART_COLORS.ERROR,
     operativo_en_vacio: CHART_COLORS.WARNING,
-    Start_end: CHART_COLORS.DARK_2,
+    Start_end: CHART_COLORS.BASE,
+    MANTENIMIENTO: CHART_COLORS.LIGHT_2,
   };
 
   private ESTADO_LABELS: Record<string, string> = {

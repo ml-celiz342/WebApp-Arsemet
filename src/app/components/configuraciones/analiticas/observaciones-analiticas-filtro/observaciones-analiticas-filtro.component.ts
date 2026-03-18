@@ -23,8 +23,15 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { map, Observable, startWith } from 'rxjs';
 
+/* 👇 IMPORTANTE: la interface va AFUERA */
+interface AnaliticaOption {
+  value: number;
+  viewValue: string;
+}
+
 @Component({
   selector: 'app-observaciones-analiticas-filtro',
+  standalone: true,
   imports: [
     CommonModule,
     MatDialogModule,
@@ -44,14 +51,15 @@ import { map, Observable, startWith } from 'rxjs';
 })
 export class ObservacionesAnaliticasFiltroComponent {
   range = new FormGroup({
-    start: new FormControl(),
-    end: new FormControl(),
+    start: new FormControl<Date | null>(null),
+    end: new FormControl<Date | null>(null),
   });
-  options: any[] = [];
-  selectedValue: any;
 
-  analiticaControl = new FormControl('');
-  analiticasFiltradas!: Observable<any[]>;
+  options: AnaliticaOption[] = [];
+  selectedValue!: number;
+
+  analiticaControl = new FormControl<string | AnaliticaOption>('');
+  analiticasFiltradas!: Observable<AnaliticaOption[]>;
 
   constructor(
     public dialogRef: MatDialogRef<ObservacionesAnaliticasFiltroComponent>,
@@ -59,12 +67,36 @@ export class ObservacionesAnaliticasFiltroComponent {
   ) {}
 
   ngOnInit() {
-    this.options = this.data.opciones;
+    this.options = this.data.opciones || [];
 
+    // ✅ SETEAR FECHAS
+    if (this.data.start && this.data.end) {
+      this.range.patchValue({
+        start: new Date(this.data.start),
+        end: new Date(this.data.end),
+      });
+    }
+
+    // ✅ SETEAR ANALÍTICA
+    if (this.data.selectedOption) {
+      this.selectedValue = this.data.selectedOption;
+
+      const selected = this.options.find((o) => o.value === this.selectedValue);
+
+      if (selected) {
+        this.analiticaControl.setValue(selected);
+      }
+    }
+
+    // ✅ AUTOCOMPLETE
     this.analiticasFiltradas = this.analiticaControl.valueChanges.pipe(
       startWith(''),
       map((value) => {
-        const filtro = (value || '').toLowerCase();
+        const filtro =
+          typeof value === 'string'
+            ? value.toLowerCase()
+            : value?.viewValue?.toLowerCase() || '';
+
         return this.options.filter((o) =>
           o.viewValue.toLowerCase().includes(filtro),
         );
@@ -72,12 +104,13 @@ export class ObservacionesAnaliticasFiltroComponent {
     );
   }
 
-  selectAnalitica(option: any) {
+  selectAnalitica(option: AnaliticaOption) {
     this.selectedValue = option.value;
   }
 
-  displayAnalitica(analitica: any): string {
-    return analitica ? analitica.viewValue : '';
+  displayAnalitica(analitica: AnaliticaOption | string): string {
+    if (!analitica) return '';
+    return typeof analitica === 'string' ? analitica : analitica.viewValue;
   }
 
   close(): void {

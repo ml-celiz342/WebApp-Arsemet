@@ -233,8 +233,8 @@ export class KpiComponent {
       // MANTENIMIENTO
       // -------------------------
       this.mantenimiento = {
-        tiempo_ultimo_mantenimiento: Math.round(
-          Math.abs(Number(resp.maintenance.last_maintenance_time)),
+        tiempo_ultimo_mantenimiento: Number(
+          resp.maintenance.last_maintenance_time,
         ),
         consumo_esp_energia: Number(
           Number(resp.maintenance.specific_energy_use).toFixed(1),
@@ -268,10 +268,6 @@ export class KpiComponent {
         consumo_esp_energia: 0,
         tiempo_ciclo_promedio: 0,
       };
-
-      this._snackBar.open('Error cargando radial', 'Cerrar', {
-        duration: 3000,
-      });
     }
   }
 
@@ -297,9 +293,6 @@ export class KpiComponent {
       );
     } catch (err) {
       console.error(err);
-      this._snackBar.open('Error cargando gantt', 'Cerrar', {
-        duration: 3000,
-      });
     }
   }
 
@@ -355,10 +348,6 @@ export class KpiComponent {
 
       // Si api falla = 0
       this.energiaPorTurnoBarra = [];
-
-      this._snackBar.open('Error cargando energía por turno', 'Cerrar', {
-        duration: 3000,
-      });
     }
   }
 
@@ -408,11 +397,34 @@ export class KpiComponent {
 
       // si api falla = 0
       this.piezasPorHoraLinea = [];
-
-      this._snackBar.open('Error cargando piezas por hora', 'Cerrar', {
-        duration: 3000,
-      });
     }
   }
 
+  // Helpers para Hs desde el Ultimo Mantenimiento
+  get lastMaintenanceDisplayValue(): string {
+    const hours = this.mantenimiento.tiempo_ultimo_mantenimiento;
+
+    if (hours === -1 || hours === 0) return '-';
+
+    if (hours > 0 && hours < 1) {
+      return hours.toFixed(1).replace('.', ',');
+    }
+
+    if (hours >= 24) {
+      const dias = hours / 24;
+      return dias.toFixed(1).replace('.', ',');
+    }
+
+    return Math.floor(hours).toString();
+  }
+
+  get lastMaintenanceUnidad(): string {
+    const hours = this.mantenimiento.tiempo_ultimo_mantenimiento;
+
+    if (hours === -1) return '';
+
+    if (hours >= 24) return 'días';
+
+    return 'hs';
+  }
 }
