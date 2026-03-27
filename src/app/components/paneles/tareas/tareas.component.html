@@ -81,6 +81,14 @@
               </td>
             </ng-container>
 
+            <!-- COLUMNA: Duracion -->
+            <ng-container matColumnDef="duracion">
+              <th mat-header-cell *matHeaderCellDef>Duración</th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.cycle_duration }}
+              </td>
+            </ng-container>
+
             <!-- COLUMNA: Cantidad Prog -->
             <ng-container matColumnDef="pza_cant_prog">
               <th mat-header-cell *matHeaderCellDef>Cant Programadas</th>

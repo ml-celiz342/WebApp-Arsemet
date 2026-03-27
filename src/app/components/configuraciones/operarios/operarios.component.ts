@@ -162,7 +162,7 @@ export class OperariosComponent {
     const isEditMode = !!operario;
     const opcionesSectores = this.dataSourceSector.data;
     if (opcionesSectores.length == 0) {
-      this._snackBar.open('No hay tipos de secotres registrados ', 'Cerrar', {
+      this._snackBar.open('No hay tipos de sectores registrados ', 'Cerrar', {
         duration: 3000,
       });
       return;

@@ -22,7 +22,7 @@
       [matAutocomplete]="auto"
       placeholder="Buscar activo"
     />
-    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="addActivo($event.option.value)">
+    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="addActivo($event)">
       <mat-option *ngFor="let activo of filteredActivos | async" [value]="activo">
         {{ activo }}
       </mat-option>
@@ -43,4 +43,8 @@
   <button mat-button (click)="close()">Cancelar</button>
   <button mat-flat-button color="primary" (click)="applyFilters()">Aplicar</button>
 </mat-dialog-actions>
+
+
+
+
 

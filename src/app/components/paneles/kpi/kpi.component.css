@@ -302,7 +302,7 @@ apx-chart {
   }
 }
 
-@media (min-width: 90em) {
+@media (min-width: 85em) {
   .kpi-grid {
     grid-template-columns: repeat(auto-fill, minmax(22rem, 1fr));
   }

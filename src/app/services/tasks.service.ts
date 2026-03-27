@@ -3,6 +3,7 @@ import { environment } from '../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { EMPTY, expand, Observable, reduce} from 'rxjs';
 import {Tarea} from '../models/tasks';
+import { UtilidadesService } from './utilidades.service';
 
 
 @Injectable({
@@ -11,7 +12,7 @@ import {Tarea} from '../models/tasks';
 export class TasksService {
   private apiURLTasks = environment.apiUrl + 'data/tasks';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private utilidades: UtilidadesService) {}
 
   // Obtener todas las tareas
   getTasks(
@@ -74,7 +75,14 @@ export class TasksService {
                 ? new Date(item.cycle_start_est)
                 : null,
               cycle_end: item.cycle_end ? new Date(item.cycle_end) : null,
-              cycle_duration: item.cycle_duration ?? null,
+              cycle_duration:
+                item.cycle_start_est && item.cycle_end
+                  ? this.utilidades.convertirSegundosAStringTime(
+                      (new Date(item.cycle_end).getTime() -
+                        new Date(item.cycle_start_est).getTime()) /
+                        1000,
+                    )
+                  : undefined,
 
               // Lote
               batch_weight: item.batch_weight ?? null,

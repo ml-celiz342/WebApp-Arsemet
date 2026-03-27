@@ -115,20 +115,41 @@ export class KpiGraficoGanttComponent implements OnChanges {
   }
 
   private buildSeries(data: ZonasTareasEstado[]) {
-    return data.map((item) => ({
-      x: item.alias,
+    const sorted = [...data].sort((a, b) => {
+      const order: Record<string, number> = {
+        Start_end: 0,
+        operativo: 1,
+        operativo_en_vacio: 2,
+        MANTENIMIENTO: 3,
+      };
+
+      const orderA = order[a.state] ?? 99;
+      const orderB = order[b.state] ?? 99;
+
+      if (orderA !== orderB) {
+        return orderA - orderB;
+      }
+
+      return new Date(a.from).getTime() - new Date(b.from).getTime();
+    });
+
+    return sorted.map((item) => ({
+      x: this.ESTADO_LABELS[item.state] ?? item.alias,
       y: [new Date(item.from).getTime(), new Date(item.to).getTime()],
       fillColor: this.ESTADO_COLORS[item.state] ?? '#999999',
     }));
   }
 
   private ESTADO_COLORS: Record<string, string> = {
-    Planing: CHART_COLORS.SUCCESS,
-    Folding: CHART_COLORS.COMPLEMENTARY,
-    //Work_Zone: CHART_COLORS.SUCCESS,
-    Mixed: CHART_COLORS.WARNING,
-    Measure: CHART_COLORS.DARK_1,
-    Undefined: CHART_COLORS.ERROR,
-    Tunning: CHART_COLORS.DARK_2,
+    operativo: CHART_COLORS.ERROR,
+    operativo_en_vacio: CHART_COLORS.WARNING,
+    Start_end: CHART_COLORS.BASE,
+    MANTENIMIENTO: CHART_COLORS.LIGHT_2,
+  };
+
+  private ESTADO_LABELS: Record<string, string> = {
+    operativo: 'Operativo',
+    operativo_en_vacio: 'Operativo en vacío',
+    Start_end: 'Inicio/ Fin de Turno',
   };
 }

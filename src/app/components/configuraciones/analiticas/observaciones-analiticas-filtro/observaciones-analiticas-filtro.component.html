@@ -13,15 +13,35 @@
 
   <mat-form-field appearance="outline">
     <mat-label>Analítica</mat-label>
-    <mat-select [(ngModel)]="selectedValue">
-      <mat-option *ngFor="let option of options" [value]="option.value">
+
+    <input
+      type="text"
+      matInput
+      [formControl]="analiticaControl"
+      [matAutocomplete]="autoAnalitica"
+      placeholder="Buscar analítica"
+    />
+
+    <mat-autocomplete
+      #autoAnalitica="matAutocomplete"
+      [displayWith]="displayAnalitica"
+      (optionSelected)="selectAnalitica($event.option.value)"
+    >
+      <mat-option
+        *ngFor="let option of analiticasFiltradas | async"
+        [value]="option"
+      >
         {{ option.viewValue }}
       </mat-option>
-    </mat-select>
+    </mat-autocomplete>
+
   </mat-form-field>
+
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
   <button mat-button (click)="close()">Cancelar</button>
   <button mat-flat-button color="primary" (click)="applyFilters()">Aplicar</button>
 </mat-dialog-actions>
+
+

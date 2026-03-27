@@ -86,12 +86,19 @@ export class TareasFiltroComponent {
         !this.activosSelected.includes(activo),
     );
   }
+  
+  addActivo(event: any) {
+    const activo = event.option.value;
 
-  addActivo(activo: string) {
     if (activo && !this.activosSelected.includes(activo)) {
       this.activosSelected.push(activo);
     }
+
+    // limpiar input
     this.activosCtrl.setValue('');
+
+    // quitar selección visual
+    event.option.deselect();
   }
 
   removeActivo(activo: string) {

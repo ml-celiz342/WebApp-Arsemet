@@ -46,6 +46,7 @@ export class KpiGraficoLineaComponent implements OnChanges {
       return;
     }
 
+
     const series: ApexAxisChartSeries = this.data.map((serie) => ({
       name: 'Piezas/Hora',
       data: serie.data.map((d) => ({
@@ -67,6 +68,7 @@ export class KpiGraficoLineaComponent implements OnChanges {
         type: 'datetime',
         tickAmount: 10,
         labels: {
+          datetimeUTC: false,
           datetimeFormatter: {
             year: 'yyyy',
             month: 'dd MMM',

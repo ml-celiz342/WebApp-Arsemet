@@ -67,7 +67,7 @@ export class MantenimientoComponent {
     private maintenanceService: MaintenanceService,
     public utilidades: UtilidadesService,
     public authService: AuthService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
   ) {}
 
   async ngAfterViewInit() {
@@ -80,19 +80,12 @@ export class MantenimientoComponent {
   }
 
   async loadDataAssets() {
-
-    const types: string[] = ['tablero_electrico', 'tandem'];
-
     try {
       const response = await lastValueFrom(
-        this.assetsService.getFiltroAssets(
-          true,
-          types
-        )
+        this.assetsService.getFiltroAssets(true),
       );
       if (response.length !== 0) {
         this.assetsFiltro = response;
-        this.activos = this.assetsFiltro.map((item) => item.id);
       } else {
         this.assetsFiltro = [];
       }
@@ -110,12 +103,17 @@ export class MantenimientoComponent {
       this.datePipe.transform(this.range.end, 'yyyy-MM-dd HH:mm:ss') ?? '';
 
     try {
+      const activosFiltrados =
+        this.activos.length > 0
+          ? this.activos
+          : this.assetsFiltro.map((item) => item.id);
+
       const response = await lastValueFrom(
         this.maintenanceService.getMaintenanceByFiltro(
-          formattedStart, // desde
-          formattedEnd, // hasta
-          this.activos
-        )
+          formattedStart,
+          formattedEnd,
+          activosFiltrados,
+        ),
       );
       if (response.length !== 0) {
         this.dataSourceMantenimiento.data = response;
@@ -187,8 +185,8 @@ export class MantenimientoComponent {
             const response = await lastValueFrom(
               this.maintenanceService.updateMaintenance(
                 result.updateData,
-                element.id_maintenance
-              )
+                element.id_maintenance,
+              ),
             );
 
             if (response === 200) {
@@ -203,7 +201,7 @@ export class MantenimientoComponent {
                 'Cerrar',
                 {
                   duration: 3000,
-                }
+                },
               );
             }
           } catch (err) {
@@ -215,7 +213,9 @@ export class MantenimientoComponent {
           //LLamo a la API de post
           try {
             const response = await lastValueFrom(
-              this.maintenanceService.createMaintenance(result.newMantenimiento)
+              this.maintenanceService.createMaintenance(
+                result.newMantenimiento,
+              ),
             );
             if (response === 200) {
               // Agregando un nuevo activo
@@ -229,7 +229,7 @@ export class MantenimientoComponent {
                 'Cerrar',
                 {
                   duration: 3000,
-                }
+                },
               );
             }
           } catch (err) {
@@ -255,7 +255,7 @@ export class MantenimientoComponent {
         this.cargando = true;
         try {
           const response = await lastValueFrom(
-            this.maintenanceService.deleteMaintenance(element.id_maintenance)
+            this.maintenanceService.deleteMaintenance(element.id_maintenance),
           );
           if (response == 200) {
             this._snackBar.open(
@@ -263,7 +263,7 @@ export class MantenimientoComponent {
               'Cerrar',
               {
                 duration: 3000,
-              }
+              },
             );
             await this.loadDataMaintenance();
           } else {
@@ -272,7 +272,7 @@ export class MantenimientoComponent {
               'Cerrar',
               {
                 duration: 3000,
-              }
+              },
             );
           }
         } catch (err) {

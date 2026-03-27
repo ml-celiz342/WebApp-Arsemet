@@ -4,21 +4,56 @@
       <!-- Activo -->
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>Activo</mat-label>
-        <mat-select [(ngModel)]="selectActivo" name="selectActivo" required>
-          <mat-option *ngFor="let activo of activos" [value]="activo.id">
-            {{ activo.code }}
+
+        <input
+          type="text"
+          matInput
+          [formControl]="activoControl"
+          [matAutocomplete]="autoActivo"
+          placeholder="Buscar activo"
+        />
+
+        <mat-autocomplete
+          #autoActivo="matAutocomplete"
+          [displayWith]="displayActivo"
+          (optionSelected)="selectActivoFromAutocomplete($event.option.value)"
+        >
+          <mat-option
+            *ngFor="let a of activosFiltrados | async"
+            [value]="a"
+          >
+            {{ a.code }}
           </mat-option>
-        </mat-select>
+        </mat-autocomplete>
+
       </mat-form-field>
 
       <!-- Dispositivo -->
       <mat-form-field appearance="fill" class="full-width">
+
         <mat-label>Dispositivo</mat-label>
-        <mat-select [(ngModel)]="selectDispositivo" name="selectDispositivo" required>
-          <mat-option *ngFor="let dispositivo of dispositivos" [value]="dispositivo.id">
-            {{ dispositivo.numero_serie }}
+
+        <input
+          type="text"
+          matInput
+          [formControl]="dispositivoControl"
+          [matAutocomplete]="autoDispositivo"
+          placeholder="Buscar dispositivo"
+        />
+
+        <mat-autocomplete
+          #autoDispositivo="matAutocomplete"
+          [displayWith]="displayDispositivo"
+          (optionSelected)="selectDispositivoFromAutocomplete($event.option.value)"
+        >
+          <mat-option
+            *ngFor="let d of dispositivosFiltrados | async"
+            [value]="d"
+          >
+            {{ d.numero_serie }}
           </mat-option>
-        </mat-select>
+        </mat-autocomplete>
+
       </mat-form-field>
 
 </mat-dialog-content>
@@ -27,3 +62,5 @@
   <button mat-button (click)="close()">Cancelar</button>
   <button mat-flat-button color="primary" (click)="guardarVinculacion()">Guardar</button>
 </mat-dialog-actions>
+
+
