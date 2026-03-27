@@ -96,11 +96,12 @@ export class KpiComponent {
     } else {
       this.perDay = false;
     }
-
+    await Promise.all([
+      this.loadDataStats(), // cargar datos para radial bar chart + mantenimiento y confiabilidad + pie chart
+      this.loadDataPiecesPerHour(), // cargar datos para el lineal
+      this.loadDataEnergyPerShift(), // cargar datos para el barra apilado
+    ])
     await this.loadDataGantt(); // cargar datos para el gantt
-    await this.loadDataStats(); // cargar datos para radial bar chart + mantenimiento y confiabilidad + pie chart
-    await this.loadDataPiecesPerHour(); // cargar datos para el lineal
-    await this.loadDataEnergyPerShift(); // cargar datos para el barra apilado
 
     this.cdr.detectChanges();
   }

@@ -84,6 +84,7 @@ export class TareasComponent {
     'codigo_articulo',
     'ciclo_fecha_fin',
     'ciclo_fecha_inicio_est',
+    'duracion',
     'pza_cant_prog',
     'pza_cant_usuario',
     'estadio',

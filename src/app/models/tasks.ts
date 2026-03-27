@@ -13,7 +13,7 @@ export interface Tarea {
   // Ciclo
   cycle_start_est?: Date | null;
   cycle_end?: Date | null;
-  cycle_duration?: number | null;
+  cycle_duration?: string | null;
 
   // Lote
   batch_weight?: number | null;
