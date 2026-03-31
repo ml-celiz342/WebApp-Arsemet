@@ -35,7 +35,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 })
 export class CalarmasEditarNivelComponent {
   nombre: string = '';
-  accion: string = '';
+  intervalo: number = 0;
 
   AlarmLevelAnterior?: AlarmLevel;
 
@@ -48,7 +48,7 @@ export class CalarmasEditarNivelComponent {
       this.AlarmLevelAnterior = data.level;
       if (this.AlarmLevelAnterior) {
         this.nombre = this.AlarmLevelAnterior.nombre;
-        this.accion = this.AlarmLevelAnterior.accion;
+        this.intervalo = this.AlarmLevelAnterior.intervalo;
       }
     }
   }
@@ -59,12 +59,14 @@ export class CalarmasEditarNivelComponent {
 
   guardarAlarmLevel(): void {
     if (
-      this.accion
+      this.intervalo
     ) {
       const nuevaAlarmLevel: Partial<UpdateAlarmLevel> = {};
 
-        if (this.accion !== this.AlarmLevelAnterior?.accion) {
-          nuevaAlarmLevel.accion = this.accion;
+        if (this.intervalo !== this.AlarmLevelAnterior?.intervalo) {
+          nuevaAlarmLevel.intervalo = this.intervalo !== null
+              ? Number(this.intervalo)
+              : undefined;
         }
 
       this.dialogRef.close(nuevaAlarmLevel);

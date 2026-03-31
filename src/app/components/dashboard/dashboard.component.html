@@ -11,21 +11,38 @@
   <span class="spacer"></span>
   <span class="user-name" *ngIf="!isMobile" >{{ userName }}</span>
   <button mat-icon-button [matMenuTriggerFor]="menu" class="user-icon">
-    <mat-icon>account_circle</mat-icon>
+    <mat-icon
+      class="material-symbols-outlined"
+      [ngClass]="{ 'icono-error': emailConfirmado === false }"
+    >
+      {{ emailConfirmado === false ? 'person_cancel' : 'how_to_reg' }}
+    </mat-icon>
   </button>
+
   <mat-menu #menu="matMenu">
     <div class="menu-user-name" *ngIf="isMobile">
       <mat-icon>person</mat-icon>
       <span>{{ userName }}</span>
     </div>
+
+    <!-- BOTON CAMBIAR CLAVE -->
     <button mat-menu-item (click)="cambiarClave()">
       <mat-icon>key</mat-icon>
       <span>Clave</span>
     </button>
+
+    <!-- BOTON MI PERFIL -->
+    <button mat-menu-item (click)="abrirMiPerfil()">
+      <mat-icon>person</mat-icon>
+      <span>Usuario</span>
+    </button>
+
+    <!-- BOTON SALIR -->
     <button mat-menu-item (click)="logout()">
       <mat-icon>logout</mat-icon>
       <span>Salir</span>
     </button>
+
   </mat-menu>
 </mat-toolbar>
 
@@ -64,3 +81,4 @@
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
+

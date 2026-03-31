@@ -50,3 +50,32 @@ mat-dialog-actions {
     gap: 0.4rem;
   }
 }
+
+.email-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+}
+
+.email-field {
+  flex: 1;
+}
+
+.verificado-icono {
+  color: var(--color-success);
+  font-size: 25px;
+  margin-top: 16px;
+}
+
+.pendiente-icono {
+  color: #9e9e9e;
+  font-size: 25px;
+  margin-top: 16px;
+}
+
+.estado-email {
+  color: var(--text-dark);
+  font-size: 22px;
+  margin-top: 9px;
+}

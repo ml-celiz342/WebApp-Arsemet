@@ -33,6 +33,7 @@ export class LoginComponent {
   isLoading: boolean = false;
   isLoggedIn: boolean = false;
   isRenewPass: boolean = false;
+  verificacionPendiente: boolean = false;
   currentYear!: number;
   private _snackBar = inject(MatSnackBar);
 
@@ -44,13 +45,24 @@ export class LoginComponent {
 
   validationErrorsN: string[] = [];
 
+  // confirmacion de token
+  mostrarVerificacion = false;
+  tokenVerificacion = '';
+  tokenError = '';
+
   constructor(
     private authService: AuthService,
     private userService: UsersService,
-    private router: Router
+    private router: Router,
   ) {
+    // renovar pass
     if (this.authService.getRenovarPass()) {
       this.isRenewPass = true;
+    }
+
+    // confirmar email
+    if (this.authService.getVerificacionPendiente()) {
+      this.verificacionPendiente = true;
     }
   }
 
@@ -68,7 +80,15 @@ export class LoginComponent {
     this.authService.login(this.email, this.password).subscribe({
       next: () => {
         this.isLoading = false;
+
+        if (this.authService.getVerificacionPendiente()) {
+          // verificacion de email pendiente
+          this.mostrarVerificacion = true;
+          return;
+        }
+
         if (this.authService.getRenovarPass()) {
+          // renovar contraseña
           this.isRenewPass = true;
         } else {
           this.isLoggedIn = true;
@@ -76,6 +96,7 @@ export class LoginComponent {
           this._snackBar.open('Ingreso exitoso!', 'Cerrar', { duration: 3000 });
         }
       },
+
       error: (error) => {
         this.isLoading = false;
         console.error('Login failed:', error);
@@ -90,7 +111,7 @@ export class LoginComponent {
         this._snackBar.open(
           `Fallo en inicio de sesión: ${this.loginError}`,
           'Cerrar',
-          { duration: 3000, panelClass: 'error-snackbar' }
+          { duration: 3000, panelClass: 'error-snackbar' },
         );
       },
     });
@@ -138,12 +159,19 @@ export class LoginComponent {
     ) {
       this.isLoading = true;
       this.userService
-        .updateContraseneaUsuario(this.contraseneaN, userId)
+        .updateContraseneaUsuario(this.contraseneaN) // userId
         .subscribe({
           next: () => {
             this.isLoading = false;
+
+            // limpiar campos
+            this.contraseneaN = '';
+            this.contraseneaRN = '';
+            this.password = '';
+
             this.authService.localLogout(true);
             this.isRenewPass = false;
+
             this._snackBar.open('Clave renovada', 'Cerrar', {
               duration: 3000,
             });
@@ -159,5 +187,39 @@ export class LoginComponent {
           },
         });
     }
+  }
+
+  confirmarToken() {
+    if (!this.tokenVerificacion) {
+      this.tokenError = 'Ingrese el token';
+      return;
+    }
+
+    this.isLoading = true;
+
+    this.userService.confirmarToken(this.tokenVerificacion).subscribe({
+      next: () => {
+        this.isLoading = false;
+
+        // ACTUALIZAR ESTADO EN FRONT
+        this.authService.setEmailConfirmado(true);
+
+        this._snackBar.open('¡Verificación de email exitosa!', 'Cerrar', {
+          duration: 3000,
+        });
+
+        this.mostrarVerificacion = false;
+        this.router.navigate(['/home']);
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.tokenError = err.error?.error_description || 'Token inválido';
+      },
+    });
+  }
+
+  cancelarVerificacion() {
+    this.mostrarVerificacion = false;
+    this.router.navigate(['/home']);
   }
 }

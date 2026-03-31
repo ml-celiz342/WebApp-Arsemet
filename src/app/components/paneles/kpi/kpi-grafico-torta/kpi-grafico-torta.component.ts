@@ -38,14 +38,53 @@ export class KpiGraficoTortaComponent implements OnChanges {
 
   chartOptions?: PieChartOptions;
 
+  private ESTADO_TRANSLATE: Record<string, string> = {
+    folding: 'Plegado',
+    planning: 'Planificacion',
+    measure: 'Medicion',
+    tuning: 'Ajuste',
+    mixed: 'Mixto',
+    undefined: 'Indefinido',
+    mantenimiento: 'Mantenimiento',
+    apagado: 'Apagado',
+  };
+
+  private ESTADO_COLORS: Record<string, string> = {
+    Planificacion: CHART_COLORS.SUCCESS,
+    Plegado: CHART_COLORS.COMPLEMENTARY,
+    Mixto: CHART_COLORS.WARNING,
+    Medicion: CHART_COLORS.DARK_1,
+    Indefinido: CHART_COLORS.ERROR,
+    Ajuste: CHART_COLORS.DARK_2,
+    Mantenimiento: CHART_COLORS.BASE,
+    Apagado: CHART_COLORS.TEXT_DARK,
+  };
+
   ngOnChanges(): void {
     if (!this.data || this.data.length === 0) {
       this.chartOptions = undefined;
       return;
     }
 
+    const normalize = (text: string): string => {
+      return text?.toLowerCase().trim();
+    };
+
+    const translate = (estado: string): string => {
+      const key = normalize(estado);
+      return this.ESTADO_TRANSLATE[key] || estado; // fallback: deja el original
+    };
+
     const series = this.data.map((item) => item.valor);
-    const labels = this.data.map((item) => item.estado);
+
+    const labels = this.data.map((item) => translate(item.estado));
+
+    const colors = this.data.map((item) => {
+      const estadoTraducido = translate(item.estado);
+      return (
+        this.ESTADO_COLORS[estadoTraducido] || CHART_COLORS.LIGHT_2 // fallback
+      );
+    });
 
     this.chartOptions = {
       series,
@@ -57,12 +96,7 @@ export class KpiGraficoTortaComponent implements OnChanges {
 
       labels,
 
-      colors: [
-        CHART_COLORS.ERROR,
-        CHART_COLORS.WARNING,
-        CHART_COLORS.LIGHT_2,
-        CHART_COLORS.DARK_2,
-      ],
+      colors,
 
       dataLabels: {
         enabled: false,

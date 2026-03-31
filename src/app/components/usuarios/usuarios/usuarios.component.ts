@@ -25,6 +25,8 @@ import { RolesService } from '../../../services/roles.service';
 import { Roles } from '../../../models/roles';
 import { AuthService } from '../../../auth.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { DialogPasswordGeneradaComponent } from './dialog-password-generada/dialog-password-generada.component';
+import { UsuariosUpdateClaveComponent } from './usuarios-update-clave/usuarios-update-clave.component';
 
 @Component({
   selector: 'app-usuarios',
@@ -59,6 +61,7 @@ export class UsuariosComponent {
     'sesiones',
     'fecha_alta',
     'fecha_baja',
+    'verificado',
     'acciones',
   ];
   dataSourceUsuarios = new MatTableDataSource<Usuarios>([]);
@@ -72,14 +75,14 @@ export class UsuariosComponent {
     private sessionService: SessionService,
     private oauthService: OauthService,
     private rolesService: RolesService,
-    public authService: AuthService
+    public authService: AuthService,
   ) {}
 
   ngOnInit(): void {
     // Filtro personalizado para la columna 'id' con el rango
     this.dataSourceUsuarios.filterPredicate = (
       data: Usuarios,
-      filter: string
+      filter: string,
     ) => {
       if (filter == '-1') {
         return false;
@@ -107,17 +110,17 @@ export class UsuariosComponent {
           response.map(async (usuario) => {
             try {
               const sesiones = await lastValueFrom(
-                this.sessionService.getCountSesionsUsers(usuario.id)
+                this.sessionService.getCountSesionsUsers(usuario.id),
               );
               return { ...usuario, sesiones };
             } catch (error) {
               console.error(
                 `Error al obtener sesiones para usuario ${usuario.id}`,
-                error
+                error,
               );
               return { ...usuario, sesiones: 0 };
             }
-          })
+          }),
         );
         this.dataSourceUsuarios.data = usuariosConSesiones;
         this.aplicarfiltro();
@@ -180,7 +183,7 @@ export class UsuariosComponent {
           //LLamo a la API de put /assets/type/id
           try {
             const response = await lastValueFrom(
-              this.usersService.updateUsuario(result, usuario.id)
+              this.usersService.updateUsuario(result, usuario.id),
             );
 
             if (response === 200) {
@@ -196,7 +199,7 @@ export class UsuariosComponent {
                 'Cerrar',
                 {
                   duration: 3000,
-                }
+                },
               );
             }
           } catch (err) {
@@ -208,7 +211,7 @@ export class UsuariosComponent {
           //LLamo a la API de post /assets
           try {
             const response = await lastValueFrom(
-              this.usersService.createUsuario(result)
+              this.usersService.createUsuario(result),
             );
 
             if (response === 200) {
@@ -224,7 +227,7 @@ export class UsuariosComponent {
                 'Cerrar',
                 {
                   duration: 3000,
-                }
+                },
               );
             }
           } catch (err) {
@@ -239,37 +242,43 @@ export class UsuariosComponent {
   }
 
   async renovarContraseneaUsuario(usuario: Usuarios): Promise<void> {
-    const dialogRef = this.dialog.open(UsuariosClaveComponent, {
+    const dialogRef = this.dialog.open(UsuariosUpdateClaveComponent, {
       width: '400px',
+      data: {
+        titulo: 'Cambiar Contraseña',
+        mensaje:
+          '¿Está seguro de que desea generar una nueva contraseña para este usuario?',
+        icono: 'warning',
+      },
     });
 
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
         this.cargando = true;
+
         try {
           const response = await lastValueFrom(
-            this.usersService.updateContraseneaTemporalUsuario(
-              result,
-              usuario.id
-            )
+            this.usersService.updateContraseneaTemporalUsuario(usuario.id),
           );
-          if (response == 200) {
-            this._snackBar.open(
-              'Contraseña del usuario actualizada',
-              'Cerrar',
-              {
-                duration: 3000,
-              }
-            );
+
+          if (response?.password) {
+            this._snackBar.open('Contraseña generada correctamente', 'Cerrar', {
+              duration: 3000,
+            });
+
+            // Mostrar contraseña generada
+            this.dialog.open(DialogPasswordGeneradaComponent, {
+              width: '400px',
+              data: { password: response.password },
+            });
+
             await this.loadDataUsuarios();
             this.aplicarfiltro();
           } else {
             this._snackBar.open(
-              'No fue posible actualizar la contraseña',
+              'No fue posible generar la contraseña',
               'Cerrar',
-              {
-                duration: 3000,
-              }
+              { duration: 3000 },
             );
           }
         } catch (err) {
@@ -277,6 +286,62 @@ export class UsuariosComponent {
             duration: 3000,
           });
         }
+
+        this.cargando = false;
+      }
+    });
+  }
+
+  // verificar email
+  async verificarEmailUsuario(usuario: Usuarios): Promise<void> {
+    const dialogRef = this.dialog.open(UsuariosUpdateClaveComponent, {
+      width: '400px',
+      data: {
+        titulo: 'Verificar Email de Usuario',
+        mensaje:
+          '¿Está seguro de que desea generar un código de verificación para confirmar el email del usuario?',
+        detalle:
+          'Este código será válido durante 2 horas y solo podrá utilizarse una vez.',
+        icono: 'warning',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(async (result) => {
+      if (result) {
+        this.cargando = true;
+
+        try {
+          const response = await lastValueFrom(
+            this.usersService.verifiedUserEmail(usuario.id),
+          );
+
+          if (response?.result === 'token generado') {
+            this._snackBar.open(
+              'Token de verificacion generado correctamente',
+              'Cerrar',
+              {
+                duration: 3000,
+              },
+            );
+            await this.loadDataUsuarios();
+            this.aplicarfiltro();
+          } else {
+            this._snackBar.open(
+              'No fue posible generar el token de verificacion',
+              'Cerrar',
+              { duration: 3000 },
+            );
+          }
+        } catch (err) {
+          this._snackBar.open(
+            'Error al actualizar el token de verificacion',
+            'Cerrar',
+            {
+              duration: 3000,
+            },
+          );
+        }
+
         this.cargando = false;
       }
     });
@@ -292,7 +357,7 @@ export class UsuariosComponent {
         this.cargando = true;
         try {
           const response = await lastValueFrom(
-            this.oauthService.cerrarTodasSesiones(usuario.id)
+            this.oauthService.cerrarTodasSesiones(usuario.id),
           );
           if (response == 200) {
             this._snackBar.open(
@@ -300,7 +365,7 @@ export class UsuariosComponent {
               'Cerrar',
               {
                 duration: 3000,
-              }
+              },
             );
           } else {
             this._snackBar.open(
@@ -308,7 +373,7 @@ export class UsuariosComponent {
               'Cerrar',
               {
                 duration: 3000,
-              }
+              },
             );
           }
         } catch (err) {
@@ -332,7 +397,7 @@ export class UsuariosComponent {
         this.cargando = true;
         try {
           const response = await lastValueFrom(
-            this.usersService.deleteUsuario(usuario.id)
+            this.usersService.deleteUsuario(usuario.id),
           );
           if (response == 200) {
             this._snackBar.open(
@@ -340,7 +405,7 @@ export class UsuariosComponent {
               'Cerrar',
               {
                 duration: 3000,
-              }
+              },
             );
             await this.loadDataUsuarios();
             this.aplicarfiltro();
@@ -350,7 +415,7 @@ export class UsuariosComponent {
               'Cerrar',
               {
                 duration: 3000,
-              }
+              },
             );
           }
         } catch (err) {

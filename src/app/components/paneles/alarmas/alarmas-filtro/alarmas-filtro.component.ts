@@ -23,6 +23,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { map, Observable, startWith } from 'rxjs';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-alarmas-filtro',
@@ -39,6 +40,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     ReactiveFormsModule,
     FormsModule,
     MatAutocompleteModule,
+    MatIconModule,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './alarmas-filtro.component.html',
@@ -122,6 +124,15 @@ export class AlarmasFiltroComponent {
     if (index >= 0) {
       this.activosSelected.splice(index, 1);
     }
+  }
+
+  selectAllActivos() {
+    this.activosSelected = [...this.activosList];
+    this.activosCtrl.setValue('');
+  }
+
+  clearAllActivos() {
+    this.activosSelected = [];
   }
 
   close(): void {

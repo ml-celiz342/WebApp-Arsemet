@@ -1,0 +1,39 @@
+<h2 mat-dialog-title>Agregar destino</h2>
+<br>
+
+<mat-dialog-content>
+
+  <!-- Mensaje si no hay usuarios -->
+  <p *ngIf="options.length === 0" class="no-usuarios">
+    No hay usuarios verificados
+  </p>
+
+  <!-- Campo solo si hay usuarios -->
+  <mat-form-field *ngIf="options.length > 0" appearance="outline">
+    <mat-label>Usuarios</mat-label>
+
+    <input
+      matInput
+      [formControl]="control"
+      [matAutocomplete]="auto"
+      placeholder="Escribí el nombre del usuario..."
+    />
+
+    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+      <mat-option
+        *ngFor="let option of filteredOptions | async"
+        [value]="option"
+      >
+        {{ option.viewValue }}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="guardarDestino()">
+    Guardar
+  </button>
+</mat-dialog-actions>
