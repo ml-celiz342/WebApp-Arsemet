@@ -10,6 +10,8 @@ import {
   AlarmState,
   NewAlarmaList,
   UpdateAlarmLevel,
+  AlarmaOrigenDestino,
+  NewAlarmSource,
 } from '../models/alarmas';
 
 @Injectable({
@@ -31,7 +33,7 @@ export class AlarmasService {
     id_activos: number[],
     estados: string[],
     nivels: string[],
-    origenes: string[]
+    origenes: string[],
   ): Observable<Alarmas[]> {
     let params = new HttpParams();
 
@@ -115,12 +117,13 @@ export class AlarmasService {
               reconocida: item.recognition
                 ? new Date(item.recognition)
                 : undefined,
-            })
+              evidencia: item.evidence ?? undefined,
+            }),
           );
           acc.push(...mappedData);
         }
         return acc;
-      }, [])
+      }, []),
     );
   }
 
@@ -155,7 +158,7 @@ export class AlarmasService {
           acc.push(...mappedData);
         }
         return acc;
-      }, [])
+      }, []),
     );
   }
 
@@ -186,11 +189,12 @@ export class AlarmasService {
           const mappedData = response.data.map((item) => ({
             id: item.id_alarm_level,
             nombre: item.name,
+            intervalo: item.interval,
           }));
           acc.push(...mappedData);
         }
         return acc;
-      }, [])
+      }, []),
     );
   }
 
@@ -228,11 +232,12 @@ export class AlarmasService {
           const mappedData = response.data.map((item) => ({
             id: item.id_alarm_source,
             nombre: item.name,
+            flag_email: item.flag_email,
           }));
           acc.push(...mappedData);
         }
         return acc;
-      }, [])
+      }, []),
     );
   }
 
@@ -273,7 +278,7 @@ export class AlarmasService {
           acc.push(...mappedData);
         }
         return acc;
-      }, [])
+      }, []),
     );
   }
 
@@ -304,12 +309,12 @@ export class AlarmasService {
           const mappedData = response.data.map((item) => ({
             id: item.id_alarm_level,
             nombre: item.name,
-            accion: item.action,
+            intervalo: item.interval,
           }));
           acc.push(...mappedData);
         }
         return acc;
-      }, [])
+      }, []),
     );
   }
 
@@ -340,11 +345,12 @@ export class AlarmasService {
           const mappedData = response.data.map((item) => ({
             id: item.id_alarm_source,
             nombre: item.name,
+            flag_email: item.flag_email,
           }));
           acc.push(...mappedData);
         }
         return acc;
-      }, [])
+      }, []),
     );
   }
 
@@ -361,7 +367,7 @@ export class AlarmasService {
     };
     if (Object.keys(body).length === 0) {
       return throwError(
-        () => new Error('El cuerpo de la solicitud está vacío')
+        () => new Error('El cuerpo de la solicitud está vacío'),
       );
     }
     return this.http
@@ -384,7 +390,7 @@ export class AlarmasService {
     };
     if (Object.keys(body).length === 0) {
       return throwError(
-        () => new Error('El cuerpo de la solicitud está vacío')
+        () => new Error('El cuerpo de la solicitud está vacío'),
       );
     }
     return this.http
@@ -402,12 +408,12 @@ export class AlarmasService {
   updateAlarmLevel(data: UpdateAlarmLevel, id: number): Observable<number> {
     const baseUrl = `${this.apiURLAlarmasNivel}/${id}`;
     const body = {
-      ...(data.accion !== undefined &&
-        data.accion != '' && { action: data.accion }),
+      ...(data.intervalo !== undefined &&
+        data.intervalo != 0 && { interval: data.intervalo }),
     };
     if (Object.keys(body).length === 0) {
       return throwError(
-        () => new Error('El cuerpo de la solicitud está vacío')
+        () => new Error('El cuerpo de la solicitud está vacío'),
       );
     }
     return this.http
@@ -422,18 +428,93 @@ export class AlarmasService {
       .pipe(map((response) => response.status));
   }
 
-  createOrigen(data: AlarmSource) {
+  createOrigen(data: NewAlarmSource) {
     const baseUrl = `${this.apiURLAlarmasOrigen}`;
     const body = {
       name: data.nombre,
+      ...(data.flag_email !== undefined && { flag_email: data.flag_email }),
     };
     if (Object.keys(body).length === 0) {
       return throwError(
-        () => new Error('El cuerpo de la solicitud está vacío')
+        () => new Error('El cuerpo de la solicitud está vacío'),
       );
     }
     return this.http
       .post<void>(baseUrl, body, { observe: 'response' })
+      .pipe(map((response) => response.status));
+  }
+
+  updateOrigen(data: NewAlarmSource, id: number): Observable<number> {
+    const baseUrl = `${this.apiURLAlarmasOrigen}/${id}`;
+    const body = {
+      ...(data.flag_email !== undefined && { flag_email: data.flag_email }),
+    };
+    if (Object.keys(body).length === 0) {
+      return throwError(
+        () => new Error('El cuerpo de la solicitud está vacío'),
+      );
+    }
+    return this.http
+      .put<void>(baseUrl, body, { observe: 'response' })
+      .pipe(map((response) => response.status));
+  }
+
+  getAlarmSourceDestiny(id: number): Observable<AlarmaOrigenDestino[]> {
+    const url = `${this.apiURLAlarmasOrigen}/${id}/destiny?limit=100`;
+    return this.http.get<any>(url).pipe(
+      expand((response, index) => {
+        if (
+          response?.pagination?.current_page !== undefined &&
+          response?.pagination?.total_pages !== undefined &&
+          response?.pagination?.limit !== undefined &&
+          response.pagination.current_page < response.pagination.total_pages
+        ) {
+          const nextPageUrl = `${url}&offset=${
+            response.pagination.current_page * response.pagination.limit
+          }`;
+          return this.http.get<any>(nextPageUrl);
+        }
+        return EMPTY;
+      }),
+      reduce<AlarmaOrigenDestino[], any>((acc, response) => {
+        if (
+          response &&
+          typeof response === 'object' &&
+          'data' in response &&
+          Array.isArray(response.data)
+        ) {
+          const mappedData = response.data.map((item) => ({
+            id: item.id_user,
+            nombre: item.name,
+            apellido: item.last_name,
+            verificado: item.verified,
+          }));
+          acc.push(...mappedData);
+        }
+        return acc;
+      }, []),
+    );
+  }
+
+  createAlarmSourceDestiny(id: number, id_usuario: number) {
+    const baseUrl = `${this.apiURLAlarmasOrigen}/${id}/destiny`;
+    const body = {
+      id_user: id_usuario,
+    };
+    if (Object.keys(body).length === 0) {
+      return throwError(
+        () => new Error('El cuerpo de la solicitud está vacío'),
+      );
+    }
+    return this.http
+      .post<void>(baseUrl, body, { observe: 'response' })
+      .pipe(map((response) => response.status));
+  }
+
+  deleteAlarmSourceDestiny(id: number, id_usuario: number): Observable<number> {
+    const baseUrl = `${this.apiURLAlarmasOrigen}/${id}/destiny/${id_usuario}`;
+    return this.http
+      .delete<void>(baseUrl, { observe: 'response' })
       .pipe(map((response) => response.status));
   }
 }

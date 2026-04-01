@@ -1,0 +1,103 @@
+.titulo {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding-bottom: 10px;
+  text-align: center;
+  justify-content: center;
+  height: auto;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #000000;
+
+  justify-content: space-between;
+}
+
+mat-dialog-content {
+  padding: 20px;
+  min-width: 350px;
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+mat-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+mat-accordion {
+  width: 100%;
+}
+
+mat-expansion-panel {
+  margin-bottom: 0.8rem;
+}
+
+mat-panel-title {
+  font-weight: 600;
+  justify-content: space-between;
+}
+
+p {
+  margin: 0;
+  font-size: 15px;
+  color: #444;
+}
+
+/* BOTONES */
+.eliminar-icono {
+  color: var(--color-error);
+  cursor: pointer;
+}
+
+.agregar-icono {
+  color: #000000;
+  cursor: pointer;
+}
+
+/* Cambiar el color al hacer hover */
+.agregar-icono:hover,
+.eliminar-icono:hover {
+  opacity: 0.7;
+}
+
+.no-destinos {
+  color: gray;
+  margin-bottom: 10px;
+}
+
+.mat-expansion-panel {
+  margin-bottom: 12px;
+  border-radius: 10px;
+  /* Sombra suave alrededor */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.20);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.mat-expansion-panel:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px);
+}
+
+.mat-expansion-panel-header {
+  padding: 0 16px;
+  height: 48px;
+  display: flex;
+}
+
+/* icono verficado color verde */
+.verificado-icono {
+  color: var(--color-success);
+}
+
+/* scroll */
+mat-dialog-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+mat-dialog-content::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}

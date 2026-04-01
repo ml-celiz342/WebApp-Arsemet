@@ -3,7 +3,11 @@ import { Component, Inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogModule,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -45,7 +49,7 @@ export class UsuariosAgregarComponent {
 
   constructor(
     public dialogRef: MatDialogRef<UsuariosAgregarComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
     this.isEditMode = data.isEditMode || false;
     this.tiposRoles = data.roles || [];
@@ -118,7 +122,7 @@ export class UsuariosAgregarComponent {
         if (
           this.contrasenea != this.contraseneaR ||
           this.contrasenea == '' ||
-          this.validationErrors.length !=0
+          this.validationErrors.length != 0
         ) {
           return;
         }

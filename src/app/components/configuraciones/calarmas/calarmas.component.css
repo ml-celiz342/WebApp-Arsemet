@@ -40,11 +40,11 @@
 }
 
 .origen-contenedor-tabla{
-  width: calc(25% - 12px)
+  width: calc(75% - 12px)
 }
 
 .nivel-contenedor-tabla {
-  width: calc(75% - 12px)
+  width: calc(25% - 12px)
 }
 
 .mat-card-custom {
@@ -156,6 +156,20 @@ mat-spinner.mostrar {
 .table-paginator {
   margin-top: 10px;
   background: transparent;
+}
+
+.mat-column-email {
+  width: 80px;
+  text-align: center;
+}
+
+.mat-column-origen {
+  width: auto;
+}
+
+.mat-column-acciones {
+  width: 140px;
+  text-align: center;
 }
 
 @media (max-width: 768px) {

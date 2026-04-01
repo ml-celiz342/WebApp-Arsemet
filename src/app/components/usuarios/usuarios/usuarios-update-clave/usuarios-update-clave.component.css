@@ -1,0 +1,58 @@
+.titulo {
+  width: 100%;
+  text-align: center;
+  padding-bottom: 10px;
+  font-size: 1.4rem;
+  font-weight: 600;
+  /* más suave que bold */
+}
+
+.contenido-confirmacion {
+  padding-top: 10px;
+}
+
+/* contenedor centrado */
+.warning-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+}
+
+/* icono */
+.warning-icon {
+  color: #fbc02d;
+  /* amarillo warning más lindo */
+  font-size: 36px;
+  width: 36px;
+  height: 36px;
+}
+
+/* texto principal */
+.mensaje {
+  color: #4a4a4a;
+  font-size: 15px;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* texto secundario */
+.detalle {
+  color: #7a7a7a;
+  font-size: 13px;
+  margin: 0;
+}
+
+/* botones */
+mat-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* IMPORTANTE: sacar mayúsculas y bold feo */
+button {
+  text-transform: none !important;
+  font-weight: 500;
+}

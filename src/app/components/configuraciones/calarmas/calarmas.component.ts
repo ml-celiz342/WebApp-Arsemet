@@ -14,14 +14,15 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { AuthService } from '../../../auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { AlarmaList, AlarmLevel, AlarmSource } from '../../../models/alarmas';
+import { AlarmaList, AlarmaOrigenDestino, AlarmLevel, AlarmSource } from '../../../models/alarmas';
 import { AlarmasService } from '../../../services/alarmas.service';
 import { lastValueFrom } from 'rxjs';
 import { UtilidadesService } from '../../../services/utilidades.service';
 import { CalarmasAgregarListaComponent } from './calarmas-agregar-lista/calarmas-agregar-lista.component';
 import { DialogoConfirmarComponent } from '../../utilidades/dialogo-confirmar/dialogo-confirmar.component';
-import { CalarmasEditarNivelComponent } from './calarmas-editar-nivel/calarmas-editar-nivel.component';
 import { CalarmasCrearOrigenComponent } from './calarmas-crear-origen/calarmas-crear-origen.component';
+import { CalarmasEditarNivelComponent } from './calarmas-editar-nivel/calarmas-editar-nivel.component';
+import { CalarmasDestinosComponent } from './calarmas-destinos/calarmas-destinos.component';
 
 @Component({
   selector: 'app-calarmas',
@@ -59,11 +60,11 @@ export class CalarmasComponent {
   @ViewChild('paginatorDefinicion') paginatorDefinicion!: MatPaginator;
 
   dataSourceOrigen = new MatTableDataSource<AlarmSource>([]);
-  displayedOrigen: string[] = ['origen', 'acciones'];
+  displayedOrigen: string[] = ['origen', 'email', 'acciones'];
   @ViewChild('paginatorOrigen') paginatorOrigen!: MatPaginator;
 
   dataSourceNiveles = new MatTableDataSource<AlarmLevel>([]);
-  displayedNiveles: string[] = ['nivel', 'notificacion', 'acciones'];
+  displayedNiveles: string[] = ['nivel', 'intervalo', 'acciones'];
   @ViewChild('paginatorNiveles') paginatorNiveles!: MatPaginator;
 
   private _snackBar = inject(MatSnackBar);
@@ -72,13 +73,13 @@ export class CalarmasComponent {
     private dialog: MatDialog,
     public authService: AuthService,
     public utilidades: UtilidadesService,
-    public alarmService: AlarmasService
+    private alarmService: AlarmasService,
   ) {}
 
   ngOnInit(): void {
     this.dataSourceListAlarmas.filterPredicate = (
       data: AlarmaList,
-      filter: string
+      filter: string,
     ) => {
       if (filter == '-1') {
         return false;
@@ -151,7 +152,7 @@ export class CalarmasComponent {
   }
 
   async agregarEditarDefiniciones(
-    alarmList: AlarmaList | null = null
+    alarmList: AlarmaList | null = null,
   ): Promise<void> {
     const isEditMode = !!alarmList;
     const opcionesNivel = this.dataSourceNiveles.data;
@@ -162,7 +163,7 @@ export class CalarmasComponent {
         'Cerrar',
         {
           duration: 3000,
-        }
+        },
       );
       return;
     }
@@ -182,7 +183,7 @@ export class CalarmasComponent {
           //LLamo a la API de put /alarms/list/{id}
           try {
             const response = await lastValueFrom(
-              this.alarmService.updateAlarmList(result, alarmList.id)
+              this.alarmService.updateAlarmList(result, alarmList.id),
             );
 
             if (response === 200) {
@@ -197,7 +198,7 @@ export class CalarmasComponent {
                 'Cerrar',
                 {
                   duration: 3000,
-                }
+                },
               );
             }
           } catch (err) {
@@ -209,7 +210,7 @@ export class CalarmasComponent {
           //LLamo a la API de post "/alarms/list"
           try {
             const response = await lastValueFrom(
-              this.alarmService.createAlarmList(result)
+              this.alarmService.createAlarmList(result),
             );
 
             if (response === 200) {
@@ -224,7 +225,7 @@ export class CalarmasComponent {
                 'Cerrar',
                 {
                   duration: 3000,
-                }
+                },
               );
             }
           } catch (err) {
@@ -232,46 +233,6 @@ export class CalarmasComponent {
               duration: 3000,
             });
           }
-        }
-        this.cargando = false;
-      }
-    });
-  }
-
-  async editarNivel(level: AlarmLevel): Promise<void> {
-    const dialogRef = this.dialog.open(CalarmasEditarNivelComponent, {
-      width: '400px',
-      data: { level },
-    });
-
-    dialogRef.afterClosed().subscribe(async (result) => {
-      if (result) {
-        this.cargando = true;
-        //LLamo a la API de put/alarms/levels/{id}
-        try {
-          const response = await lastValueFrom(
-            this.alarmService.updateAlarmLevel(result, level.id)
-          );
-
-          if (response === 200) {
-            // Agregando un nuevo activo
-            this._snackBar.open('Nivel de alarma actualizada', 'Cerrar', {
-              duration: 3000,
-            });
-            await this.loadDataAlarmLevel();
-          } else {
-            this._snackBar.open(
-              'No fue posible actualizar el nivel de alarma',
-              'Cerrar',
-              {
-                duration: 3000,
-              }
-            );
-          }
-        } catch (err) {
-          this._snackBar.open('Error al actualizar los datos', 'Cerrar', {
-            duration: 3000,
-          });
         }
         this.cargando = false;
       }
@@ -290,7 +251,7 @@ export class CalarmasComponent {
         //LLamo a la API de delete /alarms/list/{id}
         try {
           const response = await lastValueFrom(
-            this.alarmService.deleteAlarmList(element.id)
+            this.alarmService.deleteAlarmList(element.id),
           );
           if (response == 200) {
             this._snackBar.open(
@@ -298,7 +259,7 @@ export class CalarmasComponent {
               'Cerrar',
               {
                 duration: 3000,
-              }
+              },
             );
             await this.loadDataAlarmList();
           } else {
@@ -307,7 +268,7 @@ export class CalarmasComponent {
               'Cerrar',
               {
                 duration: 3000,
-              }
+              },
             );
           }
         } catch (err) {
@@ -320,35 +281,80 @@ export class CalarmasComponent {
     });
   }
 
-  async agregarOrigen(): Promise<void> {
+  async agregarEditarOrigen(
+    alarmsource: AlarmSource | null = null,
+  ): Promise<void> {
+    const isEditMode = !!alarmsource;
     const dialogRef = this.dialog.open(CalarmasCrearOrigenComponent, {
       width: '400px',
+      data: {
+        isEditMode,
+        alarmOrigen: alarmsource,
+      },
     });
 
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
         this.cargando = true;
-        try {
-          const response = await lastValueFrom(
-            this.alarmService.createOrigen(result)
-          );
-          if (response === 200) {
-            this._snackBar.open('Orien agregado', 'Cerrar', {
-              duration: 3000,
-            });
-            await this.loadDataAlarmSource();
-          } else {
-            this._snackBar.open('No fue posible agregar el origen', 'Cerrar', {
+        if (isEditMode) {
+          try {
+            const response = await lastValueFrom(
+              this.alarmService.updateOrigen(result, alarmsource.id),
+            );
+            if (response === 200) {
+              this._snackBar.open('Origen actualizado', 'Cerrar', {
+                duration: 3000,
+              });
+              await this.loadDataAlarmSource();
+            } else {
+              this._snackBar.open(
+                'No fue posible actualizar el origen de alarma',
+                'Cerrar',
+                {
+                  duration: 3000,
+                },
+              );
+            }
+          } catch (err) {
+            this._snackBar.open('Usuarios asociados sin verificar', 'Cerrar', {
               duration: 3000,
             });
           }
-        } catch (err) {
-          this._snackBar.open('Error al agregar los datos', 'Cerrar', {
-            duration: 3000,
-          });
+        } else {
+          try {
+            const response = await lastValueFrom(
+              this.alarmService.createOrigen(result),
+            );
+            if (response === 200) {
+              this._snackBar.open('Origen agregado', 'Cerrar', {
+                duration: 3000,
+              });
+              await this.loadDataAlarmSource();
+            } else {
+              this._snackBar.open(
+                'No fue posible agregar el origen',
+                'Cerrar',
+                {
+                  duration: 3000,
+                },
+              );
+            }
+          } catch (err) {
+            this._snackBar.open('Error al agregar los datos', 'Cerrar', {
+              duration: 3000,
+            });
+          }
         }
       }
       this.cargando = false;
+    });
+  }
+
+  async abrirDestinos(element: AlarmSource): Promise<void> {
+    const dialogRef = this.dialog.open(CalarmasDestinosComponent, {
+      width: '500px',
+      height: '300px',
+      data: { campos: element },
     });
   }
 
@@ -364,7 +370,7 @@ export class CalarmasComponent {
         //LLamo a la API de delete /alarms/states/{id}
         try {
           const response = await lastValueFrom(
-            this.alarmService.deleteAlarmSource(element.id)
+            this.alarmService.deleteAlarmSource(element.id),
           );
           if (response == 200) {
             this._snackBar.open(
@@ -372,7 +378,7 @@ export class CalarmasComponent {
               'Cerrar',
               {
                 duration: 3000,
-              }
+              },
             );
             await this.loadDataAlarmSource();
           } else {
@@ -381,11 +387,51 @@ export class CalarmasComponent {
               'Cerrar',
               {
                 duration: 3000,
-              }
+              },
             );
           }
         } catch (err) {
           this._snackBar.open('Error al eliminar el registro', 'Cerrar', {
+            duration: 3000,
+          });
+        }
+        this.cargando = false;
+      }
+    });
+  }
+
+  async editarNivel(level: AlarmLevel): Promise<void> {
+    const dialogRef = this.dialog.open(CalarmasEditarNivelComponent, {
+      width: '400px',
+      data: { level },
+    });
+
+    dialogRef.afterClosed().subscribe(async (result) => {
+      if (result) {
+        this.cargando = true;
+        //LLamo a la API de put/alarms/levels/{id}
+        try {
+          const response = await lastValueFrom(
+            this.alarmService.updateAlarmLevel(result, level.id),
+          );
+
+          if (response === 200) {
+            // Agregando un nuevo activo
+            this._snackBar.open('Nivel de alarma actualizada', 'Cerrar', {
+              duration: 3000,
+            });
+            await this.loadDataAlarmLevel();
+          } else {
+            this._snackBar.open(
+              'No fue posible actualizar el nivel de alarma',
+              'Cerrar',
+              {
+                duration: 3000,
+              },
+            );
+          }
+        } catch (err) {
+          this._snackBar.open('Error al actualizar los datos', 'Cerrar', {
             duration: 3000,
           });
         }

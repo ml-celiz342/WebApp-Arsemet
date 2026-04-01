@@ -10,6 +10,7 @@ export interface Usuarios {
   fecha_alta: Date;
   fecha_baja: Date;
   fecha_actualizacion: Date;
+  email_confirmado: Boolean;
 }
 
 export interface NuevoUsuario {
@@ -18,4 +19,10 @@ export interface NuevoUsuario {
   email?: string;
   contrasenea?: string;
   rol_id?: number;
+}
+
+export interface UsuariosVerificados {
+  id: number;
+  nombre: string;
+  apellido: string;
 }

@@ -6,7 +6,7 @@
   </div>
 
   <!-- Tarjeta de login -->
-  <mat-card class="login-card" *ngIf="!isRenewPass">
+  <mat-card class="login-card" *ngIf="!mostrarVerificacion && !isRenewPass">
     <mat-card-title class="login-title">Iniciar sesión</mat-card-title>
 
     <div class="loading-message">
@@ -39,6 +39,7 @@
           [type]="hide() ? 'password' : 'text'"
           [(ngModel)]="password"
           name="password"
+          autocomplete="current-password"
           required
           placeholder="Ingrese su contraseña"
         />
@@ -70,6 +71,56 @@
     </form>
   </mat-card>
 
+  <!-- Tarjeta de verificación de email -->
+  <mat-card class="login-card" *ngIf="mostrarVerificacion">
+    <mat-card-title class="login-title">Verificar Email</mat-card-title>
+
+    <div *ngIf="isLoading" class="loading-message">
+      <mat-spinner diameter="30"></mat-spinner> Verificando token...
+    </div>
+
+    <form *ngIf="!isLoading" class="login-form">
+
+      <p style="text-align:center; font-size: 0.9rem;">
+        Ingrese el código enviado a su email
+      </p>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Token</mat-label>
+        <input
+          matInput
+          [(ngModel)]="tokenVerificacion"
+          name="token"
+          placeholder="ABCD-EFGH"
+          required
+        />
+      </mat-form-field>
+
+      <div *ngIf="tokenError" class="error-message">
+        <mat-icon>error</mat-icon> {{ tokenError }}
+      </div>
+
+      <button
+        mat-raised-button
+        color="primary"
+        class="full-width"
+        (click)="confirmarToken()"
+      >
+        Aceptar
+      </button>
+
+      <button
+        mat-button
+        class="full-width"
+        style="margin-top: 8px;"
+        (click)="cancelarVerificacion()"
+      >
+        Cancelar
+      </button>
+
+    </form>
+  </mat-card>
+
   <!-- Tarjeta de renovar clave -->
   <mat-card class="login-card" *ngIf="isRenewPass">
     <mat-card-title class="login-title">Clave caducada</mat-card-title>
@@ -88,6 +139,7 @@
           [type]="hideContraseneaN() ? 'password' : 'text'"
           [(ngModel)]="contraseneaN"
           name="contrasenea"
+          autocomplete="new-password"
           required
           placeholder="Ingrese la contraseña"
           (input)="validatePasswordN()"
@@ -118,6 +170,7 @@
           [type]="hideRContraseneaN() ? 'password' : 'text'"
           [(ngModel)]="contraseneaRN"
           name="contraseneaR"
+          autocomplete="new-password"
           required
           placeholder="Ingrese nuevamente la contraseña"
         />
@@ -177,3 +230,4 @@
 
 
 </div>
+

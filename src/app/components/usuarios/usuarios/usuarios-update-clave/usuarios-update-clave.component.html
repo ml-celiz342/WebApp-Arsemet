@@ -1,0 +1,32 @@
+<h2 class="titulo" mat-dialog-title>
+  {{ data.titulo }}
+</h2>
+
+<mat-dialog-content class="contenido-confirmacion">
+
+  <div class="warning-container">
+
+    <mat-icon class="warning-icon">
+      {{ data.icono || 'warning' }}
+    </mat-icon>
+
+    <p class="mensaje">
+      {{ data.mensaje }}
+    </p>
+
+    <!-- SOLO aparece si viene -->
+    <p class="detalle" *ngIf="data.detalle">
+      {{ data.detalle }}
+    </p>
+
+  </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancelar()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="aceptar()">
+    Aceptar
+  </button>
+</mat-dialog-actions>
+

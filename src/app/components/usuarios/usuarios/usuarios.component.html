@@ -96,11 +96,26 @@
               </td>
             </ng-container>
 
+            <!--Verficado -->
+            <ng-container matColumnDef="verificado">
+              <th mat-header-cell *matHeaderCellDef>Verificado</th>
+              <td mat-cell *matCellDef="let element">
+                <mat-icon
+                  *ngIf="element.email_confirmado"
+                  class="verificado-icono"
+                  matTooltip="Verificado"
+                >
+                  check_circle
+                </mat-icon>
+              </td>
+            </ng-container>
+
             <!-- Acciones -->
             <ng-container matColumnDef="acciones">
               <th mat-header-cell *matHeaderCellDef>Acciones</th>
               <td mat-cell *matCellDef="let element">
                 <div class="evidencia-cell">
+
                   <!-- Botón para Editar -->
                   <button
                     mat-icon-button
@@ -114,6 +129,7 @@
                       >edit</mat-icon
                     >
                   </button>
+
                   <!-- Botón para renovar clave -->
                   <button
                     mat-icon-button
@@ -127,6 +143,21 @@
                       >key</mat-icon
                     >
                   </button>
+
+                  <!-- Botón para verificar usuario -->
+                  <button
+                    mat-icon-button
+                    (click)="verificarEmailUsuario(element)"
+                    [disabled]="element.fecha_baja"
+                    *ngIf=" (authService.hasPermission('users','edit'))"
+                     matTooltip="Verificar email"
+                  >
+                    <mat-icon
+                      [ngClass]="{ 'verfificar-icono': !element.fecha_baja }"
+                      >check</mat-icon
+                    >
+                  </button>
+
                   <!-- Botón para cerrar sesiones activas -->
                   <button
                     mat-icon-button
@@ -140,6 +171,7 @@
                       >logout</mat-icon
                     >
                   </button>
+
                   <!-- Botón para Eliminar -->
                   <button
                     mat-icon-button
@@ -178,3 +210,4 @@
     </mat-card>
   </div>
 </div>
+

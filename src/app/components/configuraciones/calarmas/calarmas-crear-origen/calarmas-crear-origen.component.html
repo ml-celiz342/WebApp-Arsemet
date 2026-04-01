@@ -1,11 +1,18 @@
-<h2 class="titulo">Agregar Origen Alarma</h2>
+<h2 class="titulo">{{ isEditMode ? 'Editar Origen Alarma' : 'Agregar Origen Alarma' }}</h2>
 <mat-dialog-content>
 
    <!-- Nombre -->
-      <mat-form-field appearance="outline">
-        <mat-label>Origen</mat-label>
-        <input matInput [(ngModel)]="nombre" name="nombre" required placeholder="Ingrese el nombre del origen">
-      </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Origen</mat-label>
+    <input matInput [(ngModel)]="nombre" [disabled]="isEditMode" name="nombre" required placeholder="Ingrese el nombre del origen">
+  </mat-form-field>
+
+  <!-- Email -->
+  <mat-slide-toggle class="check mb-2"
+    [(ngModel)]="email" name="estado"
+  >
+  Email: {{ email ? 'Activo' : 'Inactivo' }}
+  </mat-slide-toggle>
 
 </mat-dialog-content>
 
