@@ -22,7 +22,6 @@ mat-form-field {
 mat-dialog-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 1rem;
 }
 
 .error-message {
@@ -50,13 +49,4 @@ mat-dialog-actions {
     align-items: center;
     gap: 0.4rem;
   }
-}
-
-button {
-  text-transform: uppercase;
-  font-weight: bold;
-}
-
-button[mat-flat-button] {
-  min-width: 120px;
 }

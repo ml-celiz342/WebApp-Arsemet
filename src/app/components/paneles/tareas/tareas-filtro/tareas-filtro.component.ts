@@ -20,8 +20,11 @@ import {
   FormGroup,
   FormControl,
 } from '@angular/forms';
+
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { map, Observable, startWith } from 'rxjs';
-import { MatAutocompleteModule } from "@angular/material/autocomplete";
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-tareas-filtro',
@@ -37,7 +40,8 @@ import { MatAutocompleteModule } from "@angular/material/autocomplete";
     ReactiveFormsModule,
     FormsModule,
     MatAutocompleteModule,
-    MatOptionModule,
+    MatIconModule,
+    MatTooltipModule,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './tareas-filtro.component.html',
@@ -86,7 +90,7 @@ export class TareasFiltroComponent {
         !this.activosSelected.includes(activo),
     );
   }
-  
+
   addActivo(event: any) {
     const activo = event.option.value;
 
@@ -97,7 +101,7 @@ export class TareasFiltroComponent {
     // limpiar input
     this.activosCtrl.setValue('');
 
-    // quitar selección visual
+    // quitar tilde visual
     event.option.deselect();
   }
 
@@ -106,6 +110,15 @@ export class TareasFiltroComponent {
     if (index >= 0) {
       this.activosSelected.splice(index, 1);
     }
+  }
+
+  selectAllActivos() {
+    this.activosSelected = [...this.activosList];
+    this.activosCtrl.setValue('');
+  }
+
+  clearAllActivos() {
+    this.activosSelected = [];
   }
 
   close(): void {

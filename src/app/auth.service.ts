@@ -21,6 +21,8 @@ export type modelUserRoleModule = {
 export type modelUserData = {
   token: string;
   userName: string;
+  emailConfirmado: boolean;
+  verificacionPendiente: boolean;
   userId: number;
   userRoleIde: number;
   renewPass: boolean;
@@ -39,6 +41,8 @@ export class AuthService {
   private userData: modelUserData = {
     token: '',
     userName: '',
+    emailConfirmado: false,
+    verificacionPendiente: false,
     userId: -1,
     userRoleIde: -1,
     renewPass: false,
@@ -75,9 +79,10 @@ export class AuthService {
         catchError((error) => {
           console.error('Error obteniendo el token', error);
           return throwError(
-            () => new Error(error.error?.message || 'Error al obtener el token')
+            () =>
+              new Error(error.error?.message || 'Error al obtener el token'),
           );
-        })
+        }),
       );
   }
 
@@ -88,19 +93,21 @@ export class AuthService {
         if (userInfo) {
           this.setUserId(userInfo.id_user);
           this.setUserName(userInfo.name);
+          this.setEmailConfirmado(userInfo.confirmed_email);
+          this.setVerificacionPendiente(userInfo.pending_verification);
           this.setUserRole(userInfo.role.id_role);
           this.setRenovarPass(userInfo.renew_password);
           return this.getUserModulesByRole(userInfo.role.id_role);
         }
         return throwError(
-          () => new Error('No se pudo recuperar la información del usuario')
+          () => new Error('No se pudo recuperar la información del usuario'),
         );
       }),
       tap((response) => {
         if (response && response.data && response.data.modules) {
           this.setUserRoleModules(response.data.modules);
         }
-        if (response && response.data && response.data.panels){
+        if (response && response.data && response.data.panels) {
           this.setUserRolePanels(response.data.panels);
         }
         this.setUserData();
@@ -108,9 +115,9 @@ export class AuthService {
       catchError((error) => {
         console.error('Error recuperando módulos del usuario', error);
         return throwError(
-          () => new Error(error.error?.message || 'Error al recuperar módulos')
+          () => new Error(error.error?.message || 'Error al recuperar módulos'),
         );
-      })
+      }),
     );
   }
 
@@ -122,15 +129,15 @@ export class AuthService {
           return this.loadUserData();
         }
         return throwError(
-          () => new Error('Token no recibido, autenticación fallida')
+          () => new Error('Token no recibido, autenticación fallida'),
         );
       }),
       catchError((error) => {
         console.error('Error en el proceso de login', error);
         return throwError(
-          () => new Error(error.message || 'Error desconocido en login')
+          () => new Error(error.message || 'Error desconocido en login'),
         );
-      })
+      }),
     );
   }
 
@@ -155,6 +162,8 @@ export class AuthService {
     this.userData = {
       token: '',
       userName: '',
+      emailConfirmado: false,
+      verificacionPendiente: false,
       userId: -1,
       userRoleIde: -1,
       renewPass: false,
@@ -177,7 +186,7 @@ export class AuthService {
           catchError((error) => {
             console.error('Error al cerrar sesión en la API', error);
             return of(null);
-          })
+          }),
         )
         .subscribe((response) => {
           console.log('Sesión cerrada con éxito', response);
@@ -187,6 +196,8 @@ export class AuthService {
     this.userData = {
       token: '',
       userName: '',
+      emailConfirmado: false,
+      verificacionPendiente: false,
       userId: -1,
       userRoleIde: -1,
       renewPass: false,
@@ -213,6 +224,22 @@ export class AuthService {
 
   private setUserName(name: string) {
     this.userData.userName = name;
+  }
+
+  getEmailConfirmado(): boolean | null {
+    return this.userData.emailConfirmado;
+  }
+
+  setEmailConfirmado(confirmed_email: boolean) {
+    this.userData.emailConfirmado = confirmed_email;
+  }
+
+  getVerificacionPendiente(): boolean | null {
+    return this.userData.verificacionPendiente;
+  }
+
+  private setVerificacionPendiente(pending_verification: boolean) {
+    this.userData.verificacionPendiente = pending_verification;
   }
 
   getUserId(): number | null {
@@ -266,12 +293,11 @@ export class AuthService {
       .filter((name: string | undefined): name is string => !!name);
   }
 
-
   setUserData() {
     const userDataString = JSON.stringify(this.userData);
     const userDataCifrado = AES.encrypt(
       userDataString,
-      this.encryptionKey
+      this.encryptionKey,
     ).toString();
     localStorage.setItem('userData', userDataCifrado);
   }
@@ -281,13 +307,15 @@ export class AuthService {
     if (userDataCifrado) {
       const userDataJSON = AES.decrypt(
         userDataCifrado,
-        this.encryptionKey
+        this.encryptionKey,
       ).toString(enc.Utf8);
       this.userData = JSON.parse(userDataJSON);
     } else {
       this.userData = {
         token: '',
         userName: '',
+        emailConfirmado: false,
+        verificacionPendiente: false,
         userId: -1,
         userRoleIde: -1,
         renewPass: false,
@@ -299,7 +327,7 @@ export class AuthService {
 
   hasPermission(
     moduleName: string,
-    action: 'read' | 'write' | 'edit'
+    action: 'read' | 'write' | 'edit',
   ): boolean {
     // Verifica si userRoleModule no es un objeto vacío
     if (this.userData.userRoleModule) {
@@ -315,20 +343,18 @@ export class AuthService {
     return false;
   }
 
-  hasPanels(
-    panelName: string
-  ): boolean {
+  hasPanels(panelName: string): boolean {
     if (this.userData.userRolePanels) {
-      if (this.userData.userRolePanels.includes(panelName)){
-        return true
+      if (this.userData.userRolePanels.includes(panelName)) {
+        return true;
       }
-      return false
+      return false;
     }
-    return false
+    return false;
   }
 
   getUserInfo(): Observable<any> {
-    return this.http.get<any>(`${this.apiURL}users/info/`);
+    return this.http.get<any>(`${this.apiURL}iam/info/`);
   }
 
   getUserModulesByRole(idRole: number): Observable<any> {

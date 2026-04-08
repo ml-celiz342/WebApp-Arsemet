@@ -2,11 +2,14 @@ import { CommonModule } from '@angular/common';
 import { Component, Inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogModule,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-
 
 @Component({
   selector: 'app-usuarios-clave',
@@ -33,7 +36,7 @@ export class UsuariosClaveComponent {
 
   constructor(
     public dialogRef: MatDialogRef<UsuariosClaveComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
   ) {}
 
   clickEventHideContrasenea(event: MouseEvent) {
@@ -73,7 +76,11 @@ export class UsuariosClaveComponent {
   }
 
   guardarContrasenea(): void {
-    if (this.contrasenea != this.contraseneaR || this.contrasenea == '' || this.validationErrors.length !=0) {
+    if (
+      this.contrasenea != this.contraseneaR ||
+      this.contrasenea == '' ||
+      this.validationErrors.length != 0
+    ) {
       return;
     }
     this.dialogRef.close(this.contrasenea);

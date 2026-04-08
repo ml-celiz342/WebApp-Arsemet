@@ -14,7 +14,7 @@
   padding-bottom: 24px;
 }
 
-.usuarios-contenedor-filtro{
+.usuarios-contenedor-filtro {
   flex: 1 1 100%;
   height: auto;
   display: flex;
@@ -24,7 +24,7 @@
   text-align: center;
 }
 
-.usuarios-contenedor-tabla{
+.usuarios-contenedor-tabla {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -116,12 +116,17 @@
   cursor: pointer;
 }
 
-.renovar-icono{
+.renovar-icono {
   color: var(--color-success);
   cursor: pointer;
 }
 
-.cerrarsesion-icono{
+.verfificar-icono {
+  color: var(--color-dark);
+  cursor: pointer;
+}
+
+.cerrarsesion-icono {
   color: var(--color-complementary);
   cursor: pointer;
 }
@@ -163,4 +168,9 @@ mat-spinner.mostrar {
     width: 100%;
     margin-right: 0;
   }
+}
+
+/* icono verficado color verde */
+.verificado-icono {
+  color: var(--color-success);
 }

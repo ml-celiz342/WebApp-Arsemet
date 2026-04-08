@@ -15,33 +15,34 @@ export interface Alarmas {
   nombre_usuario_reconocida?: string;
   apellido_usuario_reconocida?: string;
   reconocida?: Date;
+  evidencia?: string;
 }
 
 export interface AlarmState {
   id: number;
-  nombre: string
+  nombre: string;
 }
 
 export interface AlarmLevel {
   id: number;
   nombre: string;
-  accion: string;
+  intervalo: number;
 }
 
 export interface UpdateAlarmLevel {
-  accion: string;
+  intervalo?: number;
 }
-
 
 export interface AlarmSource {
   id: number;
   nombre: string;
+  flag_email: boolean;
 }
 
 export interface NewAlarmSource {
   nombre?: string;
+  flag_email?: boolean;
 }
-
 
 export interface AlarmaList {
   id: number;
@@ -54,11 +55,17 @@ export interface AlarmaList {
   nivel: string;
 }
 
-
 export interface NewAlarmaList {
   nombre: string;
   alias: string;
   estado: boolean;
   id_origen: number;
   id_nivel_alarma: number;
+}
+
+export interface AlarmaOrigenDestino {
+  id: number;
+  nombre: string;
+  apellido: string;
+  verificado: boolean;
 }

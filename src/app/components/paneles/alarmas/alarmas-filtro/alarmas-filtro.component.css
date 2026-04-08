@@ -36,3 +36,16 @@
   cursor: pointer;
   font-weight: bold;
 }
+
+.activos-container {
+  display: flex;
+  align-items: flex-start;
+}
+
+.activos-container button {
+  margin-top: 8px;
+}
+
+.activos-container .full-width {
+  flex: 1;
+}

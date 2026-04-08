@@ -1,0 +1,92 @@
+<h2 class="titulo">Usuario</h2>
+
+<mat-dialog-content>
+  <!-- Nombre -->
+  <mat-form-field appearance="outline">
+    <mat-label>Nombre</mat-label>
+    <input
+      matInput
+      [(ngModel)]="nombre"
+      name="nombre"
+      required
+      placeholder="Nombre"
+    />
+  </mat-form-field>
+
+  <!-- Apellido -->
+  <mat-form-field appearance="outline">
+    <mat-label>Apellido</mat-label>
+    <input
+      matInput
+      [(ngModel)]="apellido"
+      name="apellido"
+      required
+      placeholder="Apellido"
+    />
+  </mat-form-field>
+
+  <!-- Email + icono al lado -->
+  <div class="email-container">
+    <mat-form-field appearance="outline" class="email-field">
+      <mat-label>Email</mat-label>
+      <input
+        matInput
+        [(ngModel)]="email"
+        name="email"
+        [disabled]="!esEditable"
+        placeholder="Email"
+      />
+    </mat-form-field>
+
+    <!-- VERIFICADO -->
+    <mat-icon
+      *ngIf="emailConfirmado"
+      class="verificado-icono"
+      matTooltip="Email Verificado"
+    >
+      check_circle
+    </mat-icon>
+
+    <!-- PENDIENTE (token enviado) -->
+    <mat-icon
+      *ngIf="!emailConfirmado && !esEditable"
+      class="pendiente-icono"
+      matTooltip="Pendiente de Validación"
+    >
+      check_circle
+    </mat-icon>
+
+    <!-- NO VERIFICADO (puede generar token) -->
+    <button
+      *ngIf="!emailConfirmado && esEditable"
+      mat-icon-button
+      class="estado-email"
+      (click)="verificarEmailUsuario(userId)"
+      matTooltip="Verificar Email"
+    >
+      <mat-icon>check</mat-icon>
+    </button>
+
+  </div>
+
+  <!-- Rol (bloqueado, NO select) -->
+  <mat-form-field appearance="outline">
+    <mat-label>Rol</mat-label>
+    <input
+      matInput
+      [(ngModel)]="rolNombre"
+      name="rol"
+      disabled
+      placeholder="Rol"
+    />
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="guardarUsuario()">
+    Guardar
+  </button>
+</mat-dialog-actions>
+
+

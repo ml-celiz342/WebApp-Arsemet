@@ -1,0 +1,68 @@
+<h2 class="titulo" mat-dialog-title>
+  <span>
+    Destino - Origen ({{ origen.nombre }})
+  </span>
+
+  <button
+    mat-icon-button
+    *ngIf="authService.hasPermission('alarms','edit')"
+    (click)="agregarDestino()"
+    matTooltip="Agregar destino"
+  >
+    <mat-icon class="agregar-icono">add_circle</mat-icon>
+  </button>
+</h2>
+
+<mat-dialog-content>
+
+  <!-- Mensaje si no hay descansos -->
+  <p *ngIf="destinos.length == 0" class="no-destinos">
+    No hay destinos configurados para este origen.
+  </p>
+
+  <mat-accordion multi>
+
+    <div
+    class="mat-expansion-panel mat-elevation-z2"
+    *ngFor="let b of destinos"
+  >
+    <div class="mat-expansion-panel-header">
+
+      <span class="mat-content">
+        {{ b.nombre }} – {{ b.apellido }}
+      </span>
+
+      <!-- Acciones -->
+      <span style="margin-left:auto; display:flex; align-items:center; gap:8px;">
+
+        <!-- Verificado -->
+        <mat-icon
+          *ngIf="b.verificado"
+          class="verificado-icono"
+          matTooltip="Verificado"
+        >
+          check_circle
+        </mat-icon>
+
+        <!-- Eliminar -->
+        <button
+          mat-icon-button
+          *ngIf="authService.hasPermission('shifts','edit')"
+          (click)="eliminarDestino(b.id)"
+          matTooltip="Eliminar destino"
+        >
+          <mat-icon class="eliminar-icono">delete</mat-icon>
+        </button>
+
+      </span>
+
+    </div>
+  </div>
+
+  </mat-accordion>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cerrar</button>
+</mat-dialog-actions>

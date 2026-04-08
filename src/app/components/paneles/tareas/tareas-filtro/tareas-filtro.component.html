@@ -14,20 +14,44 @@
   </mat-form-field>
 
   <!-- Autocomplete de activos -->
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Activos</mat-label>
-    <input
-      matInput
-      [formControl]="activosCtrl"
-      [matAutocomplete]="auto"
-      placeholder="Buscar activo"
-    />
-    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="addActivo($event)">
-      <mat-option *ngFor="let activo of filteredActivos | async" [value]="activo">
-        {{ activo }}
-      </mat-option>
-    </mat-autocomplete>
-  </mat-form-field>
+  <div class="activos-container">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Activos</mat-label>
+
+      <input
+        matInput
+        [formControl]="activosCtrl"
+        [matAutocomplete]="auto"
+        placeholder="Buscar activo"
+      />
+
+      <mat-autocomplete
+        #auto="matAutocomplete"
+        (optionSelected)="addActivo($event)"
+      >
+        <!-- Seleccionar TODOS -->
+        <mat-option (click)="selectAllActivos()">
+          Todos
+        </mat-option>
+
+        <mat-option
+          *ngFor="let activo of filteredActivos | async"
+          [value]="activo"
+        >
+          {{ activo }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <!-- BOTÓN AFUERA -->
+    <button
+      mat-icon-button
+      (click)="clearAllActivos()"
+      matTooltip="Deseleccionar todo"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
 
   <!-- Activos seleccionados -->
   <div class="activos-selected">
@@ -43,3 +67,5 @@
   <button mat-button (click)="close()">Cancelar</button>
   <button mat-flat-button color="primary" (click)="applyFilters()">Aplicar</button>
 </mat-dialog-actions>
+
+

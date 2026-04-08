@@ -22,6 +22,7 @@ import {
 } from '@angular/forms';
 import { map, Observable, startWith } from 'rxjs';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-mantenimiento-filtro',
@@ -38,6 +39,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     FormsModule,
     MatAutocompleteModule,
     MatOptionModule,
+    MatIconModule,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './mantenimiento-filtro.component.html',
@@ -106,6 +108,15 @@ export class MantenimientoFiltroComponent {
     if (index >= 0) {
       this.activosSelected.splice(index, 1);
     }
+  }
+
+  selectAllActivos() {
+    this.activosSelected = [...this.activosList];
+    this.activosCtrl.setValue('');
+  }
+
+  clearAllActivos() {
+    this.activosSelected = [];
   }
 
   close(): void {
