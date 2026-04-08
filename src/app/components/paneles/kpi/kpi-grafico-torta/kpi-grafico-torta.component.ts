@@ -40,11 +40,12 @@ export class KpiGraficoTortaComponent implements OnChanges {
 
   private ESTADO_TRANSLATE: Record<string, string> = {
     folding: 'Plegado',
-    planning: 'Planificacion',
+    planing: 'Planificacion',
     measure: 'Medicion',
-    tuning: 'Ajuste',
+    tunning: 'Ajuste',
     mixed: 'Mixto',
     undefined: 'Indefinido',
+    start_end: 'Inicio_Fin',
     mantenimiento: 'Mantenimiento',
     apagado: 'Apagado',
   };
@@ -56,6 +57,7 @@ export class KpiGraficoTortaComponent implements OnChanges {
     Medicion: CHART_COLORS.DARK_1,
     Indefinido: CHART_COLORS.ERROR,
     Ajuste: CHART_COLORS.DARK_2,
+    Inicio_Fin: CHART_COLORS.LIGHT_1,
     Mantenimiento: CHART_COLORS.BASE,
     Apagado: CHART_COLORS.TEXT_DARK,
   };
