@@ -276,15 +276,13 @@ export class TareasComponent {
 
   /* Obtener porcentaje de una zona respecto al ciclo total */
   getZonePercentage(element: Tarea, zoneTotal: number): number {
-    if (!element.cycle_start_est || !element.cycle_end) return 0;
+    if (!element.zones?.length) return 0;
 
-    const start = new Date(element.cycle_start_est).getTime();
-    const end = new Date(element.cycle_end).getTime();
+    const totalZonas = element.zones.reduce((acc, z) => acc + z.total, 0);
 
-    const totalSegundos = (end - start) / 1000;
-    if (!totalSegundos || totalSegundos <= 0) return 0;
+    if (!totalZonas || totalZonas <= 0) return 0;
 
-    return Math.round((zoneTotal / totalSegundos) * 100);
+    return Math.round((zoneTotal / totalZonas) * 100);
   }
 
   /* Obtener abreviatura de zona */
