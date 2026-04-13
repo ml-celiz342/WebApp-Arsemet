@@ -30,6 +30,7 @@ import { TareasDetalleComponent } from './tareas-detalle/tareas-detalle.componen
 import { MatSort, MatSortHeader, MatSortModule } from '@angular/material/sort';
 import { TareasInstanciaGanttComponent } from './tareas-instancia-gantt/tareas-instancia-gantt.component';
 import { CHART_COLORS } from '../../../constants/chart-colors.constants';
+import { UtilidadesService } from '../../../services/utilidades.service';
 
 @Component({
   selector: 'app-tareas',
@@ -85,7 +86,7 @@ export class TareasComponent {
     'ciclo_fecha_fin',
     'ciclo_fecha_inicio_est',
     'duracion',
-    'pza_cant_prog',
+    'tiempo_neto_programado',
     'pza_cant_usuario',
     'estadio',
     'detalle',
@@ -107,6 +108,7 @@ export class TareasComponent {
     public authService: AuthService,
     private dialogDescripcion: MatDialog,
     private datePipe: DatePipe,
+    private utilidades: UtilidadesService,
   ) {}
 
   ngOnInit(): void {
@@ -213,10 +215,16 @@ export class TareasComponent {
           .map((item) => item.id);
         if (this.activos.length > 0) {
           if (this.range.start && this.range.end) {
-            this.range.start.setHours(0, 0, 0, 0);
+            // START → 01:00 del mismo día seleccionado
+            this.range.start.setHours(1, 0, 0, 0);
+
+            // END → 01:00 del día siguiente
             const endDate = new Date(this.range.end);
-            endDate.setHours(23, 59, 59, 999);
+            endDate.setDate(endDate.getDate() + 1);
+            endDate.setHours(1, 0, 0, 0);
+
             this.range.end = endDate;
+
             await this.loadDataTasks();
           }
         } else {
@@ -328,6 +336,39 @@ export class TareasComponent {
         cicleEnd: row.cycle_end,
       },
     });
+  }
+
+  /* Calcular porcentaje de PLE para tiempo neto de plegado */
+  getPLEPercentageFromZones(element: Tarea): number {
+    if (!element.zones?.length) return 0;
+
+    const pleZone = element.zones.find(
+      (z) => this.getZoneAbbreviation(z.zone_name) === 'PLE',
+    );
+
+    if (!pleZone) return 0;
+
+    return this.getZonePercentage(element, pleZone.total);
+  }
+
+  /* Tiempo neto de plegado */
+  getTiempoNetoProgramado(element: Tarea): string {
+    const duracionSeg = this.getTotalCycleSeconds(element);
+    const cantidad = element.user_qty ?? 0;
+
+    if (!cantidad) return '00:00:00';
+
+    const porcentajePLE = this.getPLEPercentageFromZones(element);
+
+    if (!porcentajePLE) return '00:00:00';
+
+    const factorPLE = porcentajePLE * 0.01;
+
+    const resultado = (duracionSeg / cantidad) * factorPLE;
+
+    const segundos = Math.round(resultado);
+
+    return this.utilidades.convertirSegundosAStringTime(segundos);
   }
 
   async recargar() {
