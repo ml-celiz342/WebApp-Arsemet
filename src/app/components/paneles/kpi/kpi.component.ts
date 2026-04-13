@@ -144,7 +144,8 @@ export class KpiComponent {
         }
 
         if (this.range.start && this.range.end) {
-          this.range.start.setHours(0, 0, 0, 0);
+          // START → 01:00 del día seleccionado
+          this.range.start.setHours(1, 0, 0, 0);
 
           const endDate = new Date(this.range.end);
           const hoy = new Date();
@@ -155,9 +156,21 @@ export class KpiComponent {
             endDate.getDate() === hoy.getDate();
 
           if (mismaFecha) {
-            this.range.end = hoy;
+            // Si es hoy → desde 01:00 hasta AHORA
+            const now = new Date();
+
+            // IMPORTANTE: si todavía no pasó la 01:00, evitás rango inválido
+            if (now.getHours() < 1) {
+              // caso borde: antes de la 01:00 → el turno todavía no empezó
+              this.range.end = new Date(this.range.start);
+            } else {
+              this.range.end = now;
+            }
           } else {
-            endDate.setHours(23, 59, 59, 999);
+            // END → 01:00 del día siguiente
+            endDate.setDate(endDate.getDate() + 1);
+            endDate.setHours(1, 0, 0, 0);
+
             this.range.end = endDate;
           }
 
