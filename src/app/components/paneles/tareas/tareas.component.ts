@@ -338,7 +338,7 @@ export class TareasComponent {
     });
   }
 
-  /* Calcular porcentaje de PLE para tiempo neto programado */
+  /* Calcular porcentaje de PLE para tiempo neto de plegado */
   getPLEPercentageFromZones(element: Tarea): number {
     if (!element.zones?.length) return 0;
 
@@ -351,7 +351,7 @@ export class TareasComponent {
     return this.getZonePercentage(element, pleZone.total);
   }
 
-  /* Tiempo neto programado */
+  /* Tiempo neto de plegado */
   getTiempoNetoProgramado(element: Tarea): string {
     const duracionSeg = this.getTotalCycleSeconds(element);
     const cantidad = element.user_qty ?? 0;
