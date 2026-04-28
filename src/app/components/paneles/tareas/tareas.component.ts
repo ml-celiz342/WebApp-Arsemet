@@ -87,6 +87,7 @@ export class TareasComponent {
     'ciclo_fecha_inicio_est',
     'duracion',
     'tiempo_neto_programado',
+    'tiempo_unitario_sig',
     'pza_cant_usuario',
     'estadio',
     'detalle',
@@ -365,6 +366,23 @@ export class TareasComponent {
     const factorPLE = porcentajePLE * 0.01;
 
     const resultado = (duracionSeg / cantidad) * factorPLE;
+
+    const segundos = Math.round(resultado);
+
+    return this.utilidades.convertirSegundosAStringTime(segundos);
+  }
+
+  /* Tiempo unitario sig */
+  getTiempoUnitarioSig(element: Tarea): string {
+    const processTime = element.process_time ?? 0;
+    const plannedQty = element.planned_qty ?? 0;
+
+    // Validaciones
+    if (!processTime || processTime <= 0) return '00:00:00';
+    if (!plannedQty || plannedQty <= 0) return '00:00:00';
+
+    // Calculo
+    const resultado = processTime / plannedQty;
 
     const segundos = Math.round(resultado);
 

@@ -111,6 +111,9 @@ export class TasksService {
               hits_count: item.hits_count ?? null,
               tool_change_count: item.tool_change_count ?? null,
 
+              // Nuevo campo para tiempo de proceso
+              process_time: item.process_time ?? null,
+
               // Zonas
               zones: Array.isArray(item.zones)
                 ? item.zones.map((z: any) => ({
