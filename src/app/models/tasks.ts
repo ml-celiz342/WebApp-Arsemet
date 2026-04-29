@@ -42,5 +42,7 @@ export interface Tarea {
   hits_count?: number | null;
   tool_change_count?: number | null;
 
+  process_time?: number | null;
+
   zones?: Zone[];
 }

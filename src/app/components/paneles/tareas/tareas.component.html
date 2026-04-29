@@ -97,6 +97,14 @@
               </td>
             </ng-container>
 
+            <!-- COLUMNA: Tiempo Unitario Sig -->
+            <ng-container matColumnDef="tiempo_unitario_sig">
+              <th mat-header-cell *matHeaderCellDef>Tiempo Unitario Sig</th>
+              <td mat-cell *matCellDef="let element">
+                {{ getTiempoUnitarioSig(element) }}
+              </td>
+            </ng-container>
+
             <!-- COLUMNA: Cantidad Usuario -->
             <ng-container matColumnDef="pza_cant_usuario">
               <th mat-header-cell *matHeaderCellDef>Cant Ejecutadas</th>
