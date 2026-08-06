@@ -31,6 +31,7 @@ import { MatSort, MatSortHeader, MatSortModule } from '@angular/material/sort';
 import { TareasInstanciaGanttComponent } from './tareas-instancia-gantt/tareas-instancia-gantt.component';
 import { CHART_COLORS } from '../../../constants/chart-colors.constants';
 import { UtilidadesService } from '../../../services/utilidades.service';
+import { ReportService } from '../../../services/report.service';
 
 @Component({
   selector: 'app-tareas',
@@ -106,6 +107,7 @@ export class TareasComponent {
     private tasksService: TasksService,
     private assetsService: AssetsService,
     private csvService: CsvService,
+    private reportService: ReportService,
     public authService: AuthService,
     private dialogDescripcion: MatDialog,
     private datePipe: DatePipe,
@@ -387,6 +389,53 @@ export class TareasComponent {
     const segundos = Math.round(resultado);
 
     return this.utilidades.convertirSegundosAStringTime(segundos);
+  }
+
+  /* Descargar reporte CSV */
+  descargarCsv(): void {
+    const formattedStart =
+      this.datePipe.transform(this.range.start, 'yyyy-MM-dd HH:mm:ss') ?? '';
+    const formattedEnd =
+      this.datePipe.transform(this.range.end, 'yyyy-MM-dd HH:mm:ss') ?? '';
+
+    // Formato para el nombre de archivo (ej: 20260606 y 20260807)
+    const startFile =
+      this.datePipe.transform(this.range.start, 'yyyyMMdd') ?? '';
+    const endFile = this.datePipe.transform(this.range.end, 'yyyyMMdd') ?? '';
+
+    this.cargando = true;
+
+    this.reportService
+      .downloadTasksCsvReport(formattedStart, formattedEnd, this.activos)
+      .subscribe({
+        next: (blob: Blob) => {
+          this.cargando = false;
+
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+
+          // Nombre usando las fechas seleccionadas en el rango
+          a.download = `${startFile}_${endFile}_reporte_tareas.csv`;
+
+          document.body.appendChild(a);
+          a.click();
+
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(url);
+
+          this._snackBar.open('Reporte descargado correctamente', 'Cerrar', {
+            duration: 3000,
+          });
+        },
+        error: (err) => {
+          this.cargando = false;
+          console.error('Error al descargar el archivo CSV:', err);
+          this._snackBar.open('Error al descargar el reporte CSV', 'Cerrar', {
+            duration: 3000,
+          });
+        },
+      });
   }
 
   async recargar() {
