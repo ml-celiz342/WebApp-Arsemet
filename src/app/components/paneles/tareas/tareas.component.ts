@@ -408,8 +408,27 @@ export class TareasComponent {
     this.reportService
       .downloadTasksCsvReport(formattedStart, formattedEnd, this.activos)
       .subscribe({
-        next: (blob: Blob) => {
+        next: async (response) => {
           this.cargando = false;
+
+          const contentType = response.headers.get('content-type') ?? '';
+          const blob = response.body;
+
+          if (!blob) {
+            this._snackBar.open('No fue posible generar el reporte', 'Cerrar', {
+              duration: 3000,
+            });
+            return;
+          }
+
+          if (contentType.includes('application/json') || contentType.includes('text/json')) {
+            let message = 'No se encontraron datos para exportar';
+
+            this._snackBar.open(message, 'Cerrar', {
+              duration: 5000,
+            });
+            return;
+          }
 
           const url = window.URL.createObjectURL(blob);
           const a = document.createElement('a');

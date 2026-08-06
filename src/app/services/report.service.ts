@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { HttpClient} from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import {Observable} from 'rxjs';
-import { UtilidadesService } from './utilidades.service';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +15,7 @@ export class ReportService {
     desde: string,
     hasta: string,
     id_activos: number[],
-  ): Observable<Blob> {
+  ): Observable<HttpResponse<Blob>> {
     const body: any = {};
 
     if (desde) {
@@ -34,6 +33,7 @@ export class ReportService {
 
     return this.http.post(this.apiURLGenerateReport, body, {
       responseType: 'blob',
+      observe: 'response',
     });
   }
 }
