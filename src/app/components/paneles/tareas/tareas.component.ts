@@ -356,18 +356,19 @@ export class TareasComponent {
 
   /* Tiempo neto de plegado */
   getTiempoNetoProgramado(element: Tarea): string {
-    const duracionSeg = this.getTotalCycleSeconds(element);
     const cantidad = element.user_qty ?? 0;
 
     if (!cantidad) return '00:00:00';
 
-    const porcentajePLE = this.getPLEPercentageFromZones(element);
+    if (!element.zones?.length) return '00:00:00';
 
-    if (!porcentajePLE) return '00:00:00';
+    const pleZone = element.zones.find(
+      (z) => this.getZoneAbbreviation(z.zone_name) === 'PLE',
+    );
 
-    const factorPLE = porcentajePLE * 0.01;
+    if (!pleZone) return '00:00:00';
 
-    const resultado = (duracionSeg / cantidad) * factorPLE;
+    const resultado = (pleZone.total / cantidad);
 
     const segundos = Math.round(resultado);
 
