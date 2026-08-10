@@ -15,6 +15,16 @@
           <!-- Spinner -->
           <mat-spinner *ngIf="cargando"></mat-spinner>
 
+          <!-- Descargar CSV -->
+          <button
+            mat-icon-button
+            (click)="descargarCsv()"
+            [disabled]="cargando"
+            matTooltip="Descargar reporte .CSV"
+          >
+            <mat-icon>file_download</mat-icon>
+          </button>
+
           <!-- Cargar csv -->
           <!-- *ngIf="authService.hasPermission('tasks', 'write')" -->
           <button
